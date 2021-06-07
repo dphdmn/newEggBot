@@ -1,6 +1,9 @@
 images/*
 tables/*
-
+__pycache__/*
+pyproject.toml
+poetry.lock
+images.zip
 all_solutions.txt
 anal.txt
 compare.txt
