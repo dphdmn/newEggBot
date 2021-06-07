@@ -21,18 +21,150 @@ import requests
 import shutil
 from PIL import Image, ImageDraw, ImageFont
 import ffmpeg
+import json
 
 client = discord.Client()
 def uninstall (name):
     subprocess.call(['pip', 'uninstall', name])
 def install (name):
     subprocess.call(['pip', 'install', name])
-    
+
 uninstall('ffmpeg')
 install('ffmpeg-python')
 
+
+
+
 #___________GIF_MAKER
 
+def getLeaderboard():
+  my_secret = os.environ['slidysim']
+  r = requests.post(my_secret, data = {'width':'-1',
+'height':'-1',
+'solvetype':'any',
+'displaytype':'Standard',
+'avglen':'-1',
+'pbtype':'time',
+'sortby':'time',
+'controls':'km',
+'user':'',
+'solvedata':0,
+'version':'28.3'})
+
+  data = r.text.split("<br>")
+  data = data[1:-1]
+  solvesdata = []
+ #goodPuzzles=["3x3","4x4","5x5","6x6","7x7","8x8","9x9","10x10"]
+ # goodModes=["Standard","2-N relay", "Marathon 10", "Marathon 42"]
+  catNames = [
+    ["3x3-ao5", "Standard", "3x3", "5"],
+    ["3x3-ao12","Standard", "3x3", "12"],
+    ["3x3-ao50","Standard", "3x3", "50"],
+    ["3x3-ao100","Standard", "3x3", "100"],
+    ["3x3-x10","Marathon 10","3x3", "1"],
+    ["3x3-x42","Marathon 42","3x3", "1"],
+    ["4x4-sin","Standard", "4x4", "1"],
+    ["4x4-ao5","Standard", "4x4", "5"],
+    ["4x4-ao12","Standard", "4x4", "12"],
+    ["4x4-ao50","Standard", "4x4", "50"],
+    ["4x4-ao100","Standard", "4x4", "100"],
+    ["4x4-x10","Marathon 10","4x4", "1"],
+    ["4x4-x42","Marathon 42","4x4", "1"],
+    ["4x4-rel","2-N relay","4x4", "1"],
+    ["5x5-sin","Standard", "5x5", "1"],
+    ["5x5-ao5","Standard", "5x5", "5"],
+    ["5x5-ao12","Standard", "5x5", "12"],
+    ["5x5-ao50","Standard", "5x5", "50"],
+    ["5x5-rel","2-N relay","5x5", "1"],
+    ["6x6-sin","Standard", "6x6", "1"],
+    ["6x6-ao5","Standard", "6x6", "5"],
+    ["6x6-ao12","Standard", "6x6", "12"],
+    ["6x6-rel","2-N relay","6x6", "1"],
+    ["7x7-sin","Standard", "7x7", "1"],
+    ["7x7-ao5","Standard", "7x7", "5"],
+    ["7x7-rel","2-N relay","7x7", "1"],
+    ["8x8-sin","Standard", "8x8", "1"],
+    ["8x8-ao5","Standard", "8x8", "5"],
+    ["9x9-sin","Standard", "9x9", "1"],
+    ["10x10-sin","Standard", "10x10", "1"],
+    ]
+  namelist=[]
+  for i in data:
+    ilist = i.split(",")
+    puzzle=str(ilist[0]) + "x" + str(ilist[1])
+    mode = ilist[2]
+    name = ilist[4]
+    solvetime = str(round(int(ilist[5])/1000,3))
+    avgType = str(ilist[8])
+    category = ""
+    for cat in catNames:
+      if cat[1]==mode and cat[2] == puzzle and cat[3] == avgType:
+        category = cat[0]
+    if category != "":
+      if name not in namelist:
+        namelist.append(name)
+      solvesdata.append({
+        "Cat" : category,
+        "Name": name,
+        "Time": solvetime,
+        }
+    )
+  reqstring = readFile("tiers.txt").splitlines()
+  req=[]
+  tier_cost = readFile("tier_cost.txt").split("\t")
+  for id, item in enumerate(tier_cost):
+      tier_cost[id] = int(item)
+  id = 0
+  for i in reqstring:
+    i = i.split("\t")
+    req.append({"Tiercost":tier_cost[id], "Scores": i[1:]})
+    id += 1
+  req.reverse()
+  #print(namelist)
+  userData = []
+  for name in namelist:
+    userCatsolves = [name]
+    power=0
+    for catid, cat in enumerate(catNames):
+      category = cat[0]
+      solves=[]
+      for solve in solvesdata:
+        if solve["Cat"] == category and solve["Name"] == name:
+          solves.append(float(solve["Time"]))
+      if len(solves) == 0:
+        userCatsolves.append("N")
+      else:
+        userscoretime=round(min(solves),3)
+        userCatsolves.append(str(userscoretime))
+        for reqdata in req:
+          scoresValues=reqdata["Scores"]
+          if userscoretime < float(scoresValues[catid]):
+            power+=int(reqdata["Tiercost"])
+            #if name == "dphdmn":
+            #  print(int(reqdata["Tiercost"]), power)
+            break
+    userCatsolves.append(str(power))
+    #print(userCatsolves)
+    userData.append(userCatsolves)
+  
+  string = ""
+  userData.sort(key=lambda x: int(x[31]))
+  userData.reverse()
+  smartstring = ""
+  for num,i in enumerate(userData):
+    #print("doing")
+    #print(str(i))
+    string+='\t'.join(i)+"\n"
+    smartstring += i[0] + "\t" + str(num+1) +"\t" + i[31] + "\t"
+    for j in range(len(catNames)):
+      smartstring += i[j+1] + "\t"
+    smartstring += "\n"
+  f = open("leaderboard.txt", "w+")    
+  f.write(string)
+  f.close()
+  f = open("smartboard.txt", "w+")    
+  f.write(smartstring)
+  f.close()
 def clearImages():
   folder = 'images'
   for filename in os.listdir(folder):
@@ -966,6 +1098,15 @@ async def on_message(message):
             for x in range(3000):
                 msg += shit + " "
             spam.start(message.channel, msg[:2000])
+    if "!update" in message.content.lower():
+      await message.channel.send("Wait for it!")
+      try:
+        getLeaderboard()
+        with open("smartboard.txt", "rb") as f:
+          txt = discord.File(f)
+          await message.channel.send("Probably updated! Try !getpb command: ", file=txt)
+      except:
+        await message.channel.send("Sorry, something is wrong")
     if "!stop" in message.content.lower():
         if message.author.guild_permissions.administrator:
             spam.cancel()
@@ -1025,10 +1166,10 @@ async def on_message(message):
                 "Something is wrong\n```" + traceback.format_exc() + "```"
             )
     if "!getpb" in message.content:
-        with open("shit.txt", "r") as file:
+        with open("leaderboard.txt", "r") as file:
             mystr = file.read().lower()  # .replace('\n', '')
         # print(mystr)
-        filedate = str(mod_date("shit.txt")).split(" ")[0]
+        filedate = str(mod_date("leaderboard.txt")).split(" ")[0]
         mystr = mystr.splitlines()
         contentArray = message.content.lower().split(" ")
         # print(contentArray)
@@ -1587,22 +1728,6 @@ async def on_message(message):
             f.write(text)
             f.close()
             await message.channel.send("Probably updated")
-    if "!update" in message.content.lower():
-        if message.author.guild_permissions.administrator:
-            good = False
-            try:
-                text = requests.get(message.attachments[0].url).content.decode("utf-8")
-                # print(message.attachments)
-                good = True
-            except:
-                await message.channel.send("Can't get file")
-            if good:
-                f = open("shit.txt", "w+")
-                f.write(text)
-                f.close()
-                await message.channel.send("Probably updated, try !getpb dph 4")
-        else:
-            await message.channel.send("Sorry, you are not admin")
     if "!goodm" in message.content.lower():
       try:
         scramble = message.content[7:]
