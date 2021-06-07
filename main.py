@@ -21,7 +21,6 @@ import requests
 import shutil
 from PIL import Image, ImageDraw, ImageFont
 import ffmpeg
-import json
 
 client = discord.Client()
 def uninstall (name):
@@ -35,7 +34,7 @@ install('ffmpeg-python')
 
 
 
-#___________GIF_MAKER
+#_______________________________Auto leaderboard
 
 def getLeaderboard():
   my_secret = os.environ['slidysim']
@@ -109,14 +108,19 @@ def getLeaderboard():
         "Time": solvetime,
         }
     )
-  reqstring = readFile("tiers.txt").splitlines()
+  reqstring = readFilenormal("tiers.txt").splitlines()
   req=[]
   tier_cost = readFile("tier_cost.txt").split("\t")
   for id, item in enumerate(tier_cost):
-      tier_cost[id] = int(item)
+    tier_cost[id] = int(item)
+  tier_limits = readFile("tier_limits.txt").split("\t")
+  for id, item in enumerate(tier_limits):
+    tier_limits[id] = int(item)   
   id = 0
+  tierNames=["Unranked"]
   for i in reqstring:
     i = i.split("\t")
+    tierNames.append(i[0])
     req.append({"Tiercost":tier_cost[id], "Scores": i[1:]})
     id += 1
   req.reverse()
@@ -144,27 +148,88 @@ def getLeaderboard():
             #  print(int(reqdata["Tiercost"]), power)
             break
     userCatsolves.append(str(power))
-    #print(userCatsolves)
+    tierID=0
+    for id,i in enumerate(tier_limits):
+      if power>int(i):
+        tierID=id+1
+    userCatsolves.append(tierNames[tierID])
     userData.append(userCatsolves)
   
   string = ""
   userData.sort(key=lambda x: int(x[31]))
   userData.reverse()
   smartstring = ""
+  y = PrettyTable()
+  y.field_names = ["Name","Place","Power","Tier","3x3 ao5","3x3 ao12","3x3 ao50","3x3 ao100","3x3 x10", "3x3 x42", "4x4 single", "4x4 ao5", "4x4 ao12", "4x4 ao50", "4x4 ao100", "4x4 x10", "4x4 x42", "4x4 relay", "5x5 single", "5x5 ao5", "5x5 ao12", "5x5 ao50", "5x5 relay", "6x6 single", "6x6 ao5", "6x6 ao12", "6x6 relay", "7x7 single", "7x7 ao5", "7x7 relay", "8x8 single", "8x8 ao5", "9x9 single", "10x10 single"]
+  headers = ["3x3 ao5","3x3 ao12","3x3 ao50","3x3 ao100","3x3 x10", "3x3 x42", "4x4 single", "4x4 ao5", "4x4 ao12", "4x4 ao50", "4x4 ao100", "4x4 x10", "4x4 x42", "4x4 relay", "5x5 single", "5x5 ao5", "5x5 ao12", "5x5 ao50", "5x5 relay", "6x6 single", "6x6 ao5", "6x6 ao12", "6x6 relay", "7x7 single", "7x7 ao5", "7x7 relay", "8x8 single", "8x8 ao5", "9x9 single", "10x10 single"]
+  rows=[]
   for num,i in enumerate(userData):
+    row=[]
     #print("doing")
     #print(str(i))
     string+='\t'.join(i)+"\n"
+    row.append(i[0])
+    row.append(str(num+1))
+    row.append(i[31])
+    row.append(i[32])
     smartstring += i[0] + "\t" + str(num+1) +"\t" + i[31] + "\t"
     for j in range(len(catNames)):
       smartstring += i[j+1] + "\t"
+      row.append(''.join([i[j+1]]))
     smartstring += "\n"
+    rows.append(row)
+  y.add_rows(rows)  
+  tierNames.reverse()
+  myhtml="<main class=\"st_viewport\">"
+  for id, tier in enumerate(tierNames):
+    myhtml+="<div class=\"st_wrap_table\" data-table_id=\"" + str(id+1)+"\">\n"
+    myhtml+="<header class=\"st_table_header\">\n"
+    myhtml+="<h2>"
+    myhtml+= tier
+    myhtml+="</h2>\n"
+    myhtml+="<div class=\"st_row\">\n"
+    myhtml+="<div class=\"st_column _name\">Name</div>\n"
+    myhtml+="<div class=\"st_column _place\">Place</div>\n"
+    myhtml+="<div class=\"st_column _power\">Power</div>\n"
+    for i in headers:
+      myhtml+="<div class=\"st_column _score\">"+ i +"</div>\n"
+    myhtml+="</div>\n"
+    myhtml+="</header>\n"
+
+    myhtml+="<div class=\"st_table\">\n"
+    for person in rows:
+      if person[3] == tier:
+        myhtml+="<div class=\"st_row\">\n"
+        myhtml+="<div class=\"st_column _name\">"+person[0]+"</div>\n"
+        myhtml+="<div class=\"st_column _place\">"+str(person[1])+"</div>\n"
+        myhtml+="<div class=\"st_column _power\">"+str(person[2])+"</div>\n"
+        for idsmall,_ in enumerate(headers):
+          myhtml+="<div class=\"st_column _score\">"+ str(person[idsmall+4]) +"</div>\n"
+        myhtml+="</div>\n"
+    myhtml+="</div>\n"
+    myhtml+="</div>\n"
+  myhtml+="</main>"
   f = open("leaderboard.txt", "w+")    
   f.write(string)
   f.close()
   f = open("smartboard.txt", "w+")    
   f.write(smartstring)
   f.close()
+  f = open("prettylb.txt", "w+")    
+  f.write(y.get_string())
+  f.close()
+  f = open("templates/egg.html", "w+")    
+  f.write(myhtml)
+  f.close()
+  updatehtml()
+
+def updatehtml():
+   f = open("templates/index.html", "w+")    
+   f.write(readFilenormal("templates/header.html"))
+   f.write(readFilenormal("templates/egg.html"))
+   f.write(readFilenormal("templates/footer.html"))
+   f.close()
+#___________GIF_MAKER
 def clearImages():
   folder = 'images'
   for filename in os.listdir(folder):
@@ -180,14 +245,19 @@ def clearImages():
 def makeGif(scramble,solution,tps):
   clearImages()
   makeImages(scramble,solution)
-  (
-    ffmpeg
-    .input('images/*.png', pattern_type='glob', framerate=tps)
-    .filter('scale', size='hd720', force_original_aspect_ratio='increase')
-    .output('movie.mp4',pix_fmt='yuv420p')
-    .overwrite_output()
-    .run()
-  )
+  try:
+    (
+      ffmpeg
+      .input('images/*.png', pattern_type='glob', framerate=tps)
+      .filter('scale', size='hd720', force_original_aspect_ratio='increase')
+      .output('movie.mp4',pix_fmt='yuv420p')
+      .overwrite_output()
+      .run(capture_stdout=True, capture_stderr=True)
+    )
+  except ffmpeg.Error as e:
+    print('stdout:', e.stdout.decode('utf8'))
+    print('stderr:', e.stderr.decode('utf8'))
+    raise e
 
 def makeImages(scramble,solution):
   states = getStates(scramble, solution)
@@ -550,6 +620,10 @@ def solve8(scramble):
 
 
 # _____________compare tables___________________
+def readFilenormal(name):
+    with open(name, "r") as file:
+        mystr = file.read()
+    return mystr
 def readFile(name):
     with open(name, "r") as file:
         mystr = file.read().lower()
@@ -1098,14 +1172,19 @@ async def on_message(message):
             for x in range(3000):
                 msg += shit + " "
             spam.start(message.channel, msg[:2000])
+    if "!getlb" in message.content.lower():
+      with open("prettylb.txt", "rb") as f:
+          txt = discord.File(f)
+          await message.channel.send("Leaderboard for ranks: ", file=txt)
     if "!update" in message.content.lower():
       await message.channel.send("Wait for it!")
       try:
         getLeaderboard()
         with open("smartboard.txt", "rb") as f:
           txt = discord.File(f)
-          await message.channel.send("Probably updated! Try !getpb command: ", file=txt)
+          await message.channel.send("Check this: https://eggserver.dphdmntranquilc.repl.co/\nProbably updated! Try !getpb command: ", file=txt)
       except:
+        print(traceback.format_exc())
         await message.channel.send("Sorry, something is wrong")
     if "!stop" in message.content.lower():
         if message.author.guild_permissions.administrator:
@@ -1279,7 +1358,7 @@ async def on_message(message):
           await message.channel.send("Solution for " + scramble + " by " + message.author.mention + "\n" + str(len(solution)) + " moves (May not be optimal)\nTPS (playback): "+str(tps) +"\nTime (playback): "+ str(round(len(solution)/tps,3)) , file=picture)
       except Exception as e:
         #print(e)
-        #traceback.print_exc()
+        print(traceback.print_exc())
         await message.channel.send("Sorry, something is wrong")
     if "!analyse" in message.content:
       if message.author.guild_permissions.administrator:
