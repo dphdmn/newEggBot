@@ -1,3 +1,5 @@
+
+import os
 from keep_alive import keep_alive
 from prettytable import PrettyTable
 import subprocess
@@ -10,7 +12,6 @@ import html2text
 import random
 import traceback
 from time import perf_counter
-import os
 import datetime
 import math
 from decimal import Decimal
@@ -20,17 +21,9 @@ import sys
 import requests
 import shutil
 from PIL import Image, ImageDraw, ImageFont
-import ffmpeg
+import glob
 
 client = discord.Client()
-def uninstall (name):
-    subprocess.call(['pip', 'uninstall', name])
-def install (name):
-    subprocess.call(['pip', 'install', name])
-
-uninstall('ffmpeg')
-install('ffmpeg-python')
-
 
 
 
@@ -248,19 +241,32 @@ def clearImages():
 def makeGif(scramble,solution,tps):
   clearImages()
   makeImages(scramble,solution)
-  try:
-    (
-      ffmpeg
-      .input('images/*.png', pattern_type='glob', framerate=tps)
-      .filter('scale', size='hd720', force_original_aspect_ratio='increase')
-      .output('movie.mp4',pix_fmt='yuv420p')
-      .overwrite_output()
-      .run(capture_stdout=True, capture_stderr=True)
-    )
-  except ffmpeg.Error as e:
-    print('stdout:', e.stdout.decode('utf8'))
-    print('stderr:', e.stderr.decode('utf8'))
-    raise e
+  img_array = []
+  for filename in glob.glob('images/*.png'):
+    img = cv2.imread(filename)
+    height, width, layers = img.shape
+    size = (width,height)
+    img_array.append(img)
+ 
+ 
+  out = cv2.VideoWriter('movie.webm',cv2.VideoWriter_fourcc(*'VP90'), tps, size)
+ 
+  for i in range(len(img_array)):
+    out.write(img_array[i])
+  out.release()
+ # try:
+ #   (
+ #     ffmpeg
+ #     .input('images/*.png', pattern_type='glob', framerate=tps)
+ #     .filter('scale', size='hd720', force_original_aspect_ratio='increase')
+ #     .output('movie.mp4',pix_fmt='yuv420p')
+ #     .overwrite_output()
+ #     .run(capture_stdout=True, capture_stderr=True)
+ #   )
+ # except ffmpeg.Error as e:
+ #   print('stdout:', e.stdout.decode('utf8'))
+ #   print('stderr:', e.stderr.decode('utf8'))
+ #   raise e
 
 def makeImages(scramble,solution):
   states = getStates(scramble, solution)
@@ -1360,7 +1366,7 @@ async def on_message(message):
         words = words.replace("D2", "DD")
         solution = words
         makeGif(scramble,solution, tps)
-        with open("movie.mp4", "rb") as f:
+        with open("movie.webm", "rb") as f:
           picture = discord.File(f)
           await message.channel.send("Solution for " + scramble + " by " + message.author.mention + "\n" + str(len(solution)) + " moves (May not be optimal)\nTPS (playback): "+str(tps) +"\nTime (playback): "+ str(round(len(solution)/tps,3)) , file=picture)
       except Exception as e:
@@ -1856,7 +1862,7 @@ async def on_message(message):
                     outm += "\nPlease wait! I'm making a gif for you!"
                     await message.channel.send(outm)
                     makeGif(thingy, solution, 10)
-                    with open("movie.mp4", "rb") as f:
+                    with open("movie.webm", "rb") as f:
                       picture = discord.File(f)
                       await message.channel.send("Solution for " + thingy + "\nOptimal: " + str(len(solution)) + " moves", file=picture)
                     
