@@ -92,8 +92,8 @@ def getLeaderboard():
     ilist = i.split(",")
     puzzle=str(ilist[0]) + "x" + str(ilist[1])
     mode = ilist[2]
-    name = ilist[4]
-    solvetime = str(round(int(ilist[5])/1000,3))
+    name = ilist[4].upper()
+    solvetime = str(format((int(ilist[5]))/1000, '.3f'))
     avgType = str(ilist[8])
     category = ""
     for cat in catNames:
@@ -136,10 +136,10 @@ def getLeaderboard():
         if solve["Cat"] == category and solve["Name"] == name:
           solves.append(float(solve["Time"]))
       if len(solves) == 0:
-        userCatsolves.append("N")
+        userCatsolves.append("N/A")
       else:
         userscoretime=round(min(solves),3)
-        userCatsolves.append(str(userscoretime))
+        userCatsolves.append(str(format(userscoretime,'.3f')))
         for reqdata in req:
           scoresValues=reqdata["Scores"]
           if userscoretime < float(scoresValues[catid]):
@@ -204,7 +204,10 @@ def getLeaderboard():
         myhtml+="<div class=\"st_column _place\">"+str(person[1])+"</div>\n"
         myhtml+="<div class=\"st_column _power\">"+str(person[2])+"</div>\n"
         for idsmall,_ in enumerate(headers):
-          myhtml+="<div class=\"st_column _score\">"+ str(person[idsmall+4]) +"</div>\n"
+          score = str(person[idsmall+4])
+          if score == "N/A":
+            score = ""
+          myhtml+="<div class=\"st_column _score\">"+ score +"</div>\n"
         myhtml+="</div>\n"
     myhtml+="</div>\n"
     myhtml+="</div>\n"
@@ -218,7 +221,7 @@ def getLeaderboard():
   f = open("prettylb.txt", "w+")    
   f.write(y.get_string())
   f.close()
-  f = open("templates/egg.html", "w+")    
+  f = open("templates/egg.html", "w+")   
   f.write(myhtml)
   f.close()
   updatehtml()
@@ -631,7 +634,7 @@ def readFile(name):
 
 
 def fixSpaces(string):
-    out = string.replace("\t\t", "\tN\t")
+    out = string.replace("\t\t", "\tN/A\t")
     if string == out:
         return out
     return fixSpaces(out)
@@ -665,8 +668,8 @@ def getScores(req, old, new, catNames, rankID):
     log = ""
     ids = []
     for id, (valueNew, valueOld) in enumerate(zip(new, old)):
-        if valueNew != "N" and valueNew != "":
-            if valueOld == "N" or valueOld == "" or float(valueNew) < float(valueOld):
+        if valueNew != "" and valueNew != "N/A" and valueNew != "n/a":
+            if valueOld == "" or valueOld == "N/A" or valueOld == "n/a" or float(valueNew) < float(valueOld):
                 ids.append(id)
     for i in req:
         scoreslog = ""
@@ -676,7 +679,7 @@ def getScores(req, old, new, catNames, rankID):
         watched = []
         for j in ids:
             if reqId > rankID - 2 and float(new[j]) < float(scores[j]):
-                if (old[j] == "N" or old[j] == "") or float(old[j]) > float(scores[j]):
+                if (old[j] == "" or old[j] == "N/A" or old[j] == "n/a") or float(old[j]) > float(scores[j]):
                     scoreslog += " {{" + catNames[j] + "[" + old[j] + "->" + new[j] + "]}}"
                 else:
                     scoreslog += " " + catNames[j] + "[" + old[j] + "->" + new[j] + "]"
@@ -743,7 +746,7 @@ def comparelist(name1, name2):
     log = ""
 
     list_of_lists = []
-
+    #superid=0
     for item_new in new_list:
         item_old = next(
             (item for item in old_list if item["Name"] == item_new["Name"]), None
@@ -760,9 +763,11 @@ def comparelist(name1, name2):
             list_of_lists.append(mylist)
         else:
             # if int(item_old["Power"]) < int(item_new["Power"]):
-            if "".join(item_old["Scores"]) != "".join(item_new["Scores"]):
+            if "".join(item_old["Scores"]).upper() != "".join(item_new["Scores"]).upper() and ("".join(item_old["Scores"]).upper()+"N/A") != "".join(item_new["Scores"]).upper():
                 #  print(item_new["Name"]+''.join(item_old["Scores"]))
                 # print(''.join(item_new["Scores"]))
+                #print("".join(item_old["Scores"]).upper())
+                #print("".join(item_new["Scores"]).upper())
                 mylist = []
                 if int(item_old["Place"]) > int(item_new["Place"]):
                     mylist.append(name)
@@ -793,6 +798,8 @@ def comparelist(name1, name2):
                     mylist.append("Good luck")
                     mylist.append("With beginner scores")
                     mylist.append("Next time :)")
+                #mylist[0] = mylist[0] + str(superid)
+                #superid += 1
                 list_of_lists.append(mylist)
     maxDepth = 0
     maxColumns = len(list_of_lists)
