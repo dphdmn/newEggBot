@@ -143,7 +143,7 @@ def getLeaderboard():
     userCatsolves.append(str(power))
     tierID=0
     for id,i in enumerate(tier_limits):
-      if power>int(i):
+      if power>=int(i):
         tierID=id+1
     userCatsolves.append(tierNames[tierID])
     userData.append(userCatsolves)
@@ -650,13 +650,15 @@ def makeList(string, tierL, rankNames):
     list = []
     for i in string:
         i = i.split("\t")
-
-        power = int(i[2])
+        try:
+          power = int(i[2])
+        except:
+          print(i)
         rankN = 0
         for j in tierL:
             if power > j:
                 rankN += 1
-        if "".join(i[3:]) != "NNNNNNNNNNNNNNNNNNNNNNNNNNNNN":
+        if "".join(i[3:]).upper() != "N/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/A":
             list.append(
                 {
                     "Name": i[0],
