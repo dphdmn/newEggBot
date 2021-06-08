@@ -33,5 +33,12 @@ def getScramble(n):
     for i in range(r):
         arr[g], arr[g-1] = arr[g-1], arr[g]
         g = g-1
-
-    return arr
+    
+    scrl = list(" ".join(map(str,arr)))
+    spaceid = 0
+    for i,el in enumerate(scrl):
+      if el == " ":
+        spaceid += 1
+        if spaceid % n == 0:
+          scrl[i] = "/"
+    return "".join(scrl)

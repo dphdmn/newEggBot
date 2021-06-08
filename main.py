@@ -1,4 +1,4 @@
-
+import scrambler
 import os
 from keep_alive import keep_alive
 from prettytable import PrettyTable
@@ -25,7 +25,23 @@ import glob
 
 client = discord.Client()
 
-
+def solvereverse(words):
+  words = words.replace("R3", "RRR")
+  words = words.replace("R2", "RR")
+  words = words.replace("L3", "LLL")
+  words = words.replace("L2", "LL")
+  words = words.replace("U3", "UUU")
+  words = words.replace("U2", "UU")
+  words = words.replace("D3", "DDD")
+  words = words.replace("D2", "DD")
+  words = words.replace("R", "_")
+  words = words.replace("L", "R")
+  words = words.replace("_", "L")
+  words = words.replace("U", "_")
+  words = words.replace("D", "U")
+  words = words.replace("_", "D")
+  words = words[::-1]
+  return words
 
 #_______________________________Auto leaderboard
 
@@ -225,6 +241,7 @@ def updatehtml():
    f.write(readFilenormal("templates/egg.html"))
    f.write(readFilenormal("templates/footer.html"))
    f.close()
+
 #___________GIF_MAKER
 def clearImages():
   folder = 'images'
@@ -247,32 +264,13 @@ def makeGif(scramble,solution,tps):
     height, width, layers = img.shape
     size = (width,height)
     img_array.append(img)
- 
- 
   out = cv2.VideoWriter('movie.webm',cv2.VideoWriter_fourcc(*'VP90'), tps, size)
- 
   for i in range(len(img_array)):
     out.write(img_array[i])
   out.release()
- # try:
- #   (
- #     ffmpeg
- #     .input('images/*.png', pattern_type='glob', framerate=tps)
- #     .filter('scale', size='hd720', force_original_aspect_ratio='increase')
- #     .output('movie.mp4',pix_fmt='yuv420p')
- #     .overwrite_output()
- #     .run(capture_stdout=True, capture_stderr=True)
- #   )
- # except ffmpeg.Error as e:
- #   print('stdout:', e.stdout.decode('utf8'))
- #   print('stderr:', e.stderr.decode('utf8'))
- #   raise e
 
 def makeImages(scramble,solution):
   states = getStates(scramble, solution)
- # for i in range(5):
-  #  img = drawPuzzle(states[0])
-  #  img.save("images/" + str(i).zfill(5) + ".png", 'PNG')
   for n, scr in enumerate(states):
     img = drawPuzzle(scr)
     img.save("images/" + str(n).zfill(5) + ".png", 'PNG')
@@ -404,6 +402,7 @@ def doMoves(puzzle, blank, moves):
     try:
         for i in moves:
             puzzle, blank = move(puzzle, blank, i)
+            #print(toScramble(puzzle))
         return puzzle, blank
     except:
         return None, None
@@ -475,9 +474,9 @@ def getGoodMoves(scramble):
 
 def bannedmove(blank, move):
   if move == "R":
-    return blank in [0,4,9,13]
+    return blank in [0,4,8,12]
   if move == "L":
-    return blank in [3,8,13,18]
+    return blank in [3,7,11,15]
   if move == "D":
     return blank in [0,1,2,3]
   if move == "U":
@@ -499,7 +498,7 @@ def get4state(scramble):
   list = [] 
   puzzle, blank = createScrambled(scramble)
   legalmoves=getLegalmoves(blank)
-  print(legalmoves)
+  print("legal moves" + str(legalmoves))
   for i in legalmoves:
     puzzle, blank = createScrambled(scramble)
     puz, _ =  move(puzzle, blank, i)
@@ -1204,6 +1203,43 @@ async def on_message(message):
     if "!stop" in message.content.lower():
         if message.author.guild_permissions.administrator:
             spam.cancel()
+    if "!getreal" in message.content.lower():
+      scramble = scrambler.getScramble(4)
+      await message.channel.send("Please wait! I am slow, use ben's scrambler instead: http://benwh.000webhostapp.com/software/15poprs/index.html")
+      solution = solveSimple(scramble)
+      rever = solvereverse(solution)
+      mypuz, blank = create_puz()
+      out = "DDDRUURDDRUUULLL" + rever
+      mypuz, _ = doMoves(mypuz, blank, out)
+      out = " ".join(list(out))
+      out = out.replace("D D D", "D3")
+      out = out.replace("D D", "D2")
+      out = out.replace("L L L", "L3")
+      out = out.replace("L L", "L2")
+      out = out.replace("U U U", "U3")
+      out = out.replace("U U", "U2")
+      out = out.replace("R R R", "R3")
+      out = out.replace("R R", "R2")
+      scr=toScramble(mypuz)
+      img = drawPuzzle(scr)
+      img.save('scramble.png', 'PNG')
+      with open("scramble.png", "rb") as f:
+        picture = discord.File(f)
+        await message.channel.send("Your scramble: \n" + out + "\n" +scr, file=picture)      
+    if "!getscramble" in message.content.lower():
+      contentArray = message.content.lower().split(" ")
+      n = 4
+      if len(contentArray)>1:
+        n = int(contentArray[1])
+      scramble = scrambler.getScramble(n)
+      if n == 4:
+        img = drawPuzzle(scramble)
+        img.save('scramble.png', 'PNG')
+        with open("scramble.png", "rb") as f:
+          picture = discord.File(f)
+          await message.channel.send("Your random 4x4 scramble: \n" + scramble, file=picture)
+      else: 
+        await message.channel.send("Random scramble for " + str(n) + "x" + str(n) + " puzzle\n" + scramble)
     if "!getwr" in message.content:
         try:
             fp = urllib.request.urlopen(
@@ -1739,21 +1775,7 @@ async def on_message(message):
                 )
     if "!rev" in message.content.lower():
         words = message.content[5:]
-        words = words.replace("R3", "RRR")
-        words = words.replace("R2", "RR")
-        words = words.replace("L3", "LLL")
-        words = words.replace("L2", "LL")
-        words = words.replace("U3", "UUU")
-        words = words.replace("U2", "UU")
-        words = words.replace("D3", "DDD")
-        words = words.replace("D2", "DD")
-        words = words.replace("R", "_")
-        words = words.replace("L", "R")
-        words = words.replace("_", "L")
-        words = words.replace("U", "_")
-        words = words.replace("D", "U")
-        words = words.replace("_", "D")
-        words = words[::-1]
+        wrods = solvereverse(words)
         await message.channel.send("Reversed moves:\n||" + words + "||")
     if "!not" in message.content.lower():
         words = message.content[5:]
@@ -1822,6 +1844,22 @@ async def on_message(message):
             f.write(text)
             f.close()
             await message.channel.send("Probably updated")
+    if "!movesgame" in message.content.lower():
+      
+      scramble = scrambler.getScramble(4)
+      img = drawPuzzle(scramble)
+      img.save('scramble.png', 'PNG')
+      with open("scramble.png", "rb") as f:
+        picture = discord.File(f)
+        await message.channel.send("Find good move at this scramble: \n" + scramble + "\nYou will get answer in few seconds", file=picture)
+      goodmoves = getGoodMoves(scramble)
+      goodmovesmessage=""
+      for j in ["R","U","L","D"]:
+        if j in goodmoves:
+          goodmovesmessage+= "**"+j+"**" +" \tis \t**OK!**\t move\n"
+        else:
+          goodmovesmessage+= ""+j+"" +" \tis \tbad\t move\n"
+      await message.channel.send("\n" + "||" + goodmovesmessage + "||")
     if "!goodm" in message.content.lower():
       try:
         scramble = message.content[7:]
