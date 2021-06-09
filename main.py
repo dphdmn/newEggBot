@@ -130,12 +130,13 @@ def getLeaderboard():
   for i in reqstring:
     i = i.split("\t")
     tierNames.append(i[0])
-    req.append({"Tiercost":tier_cost[id], "Scores": i[1:]})
+    req.append({"Tiercost":tier_cost[id], "Scores": i[1:], "TierID":id+1})
     id += 1
   req.reverse()
   #print(namelist)
   userData = []
   for name in namelist:
+    scoresRow=[]
     userCatsolves = [name]
     power=0
     for catid, cat in enumerate(catNames):
@@ -146,24 +147,29 @@ def getLeaderboard():
           solves.append(float(solve["Time"]))
       if len(solves) == 0:
         userCatsolves.append("N/A")
+        scoresRow.append(0)
       else:
         userscoretime=round(min(solves),3)
         userCatsolves.append(str(format(userscoretime,'.3f')))
+        myscoreid=0
         for reqdata in req:
-          scoresValues=reqdata["Scores"]
+          scoresValues=reqdata["Scores"]          
           if userscoretime < float(scoresValues[catid]):
             power+=int(reqdata["Tiercost"])
+            myscoreid=reqdata["TierID"]
             #if name == "dphdmn":
             #  print(int(reqdata["Tiercost"]), power)
             break
+        scoresRow.append(myscoreid) 
     userCatsolves.append(str(power))
     tierID=0
     for id,i in enumerate(tier_limits):
       if power>=int(i):
         tierID=id+1
     userCatsolves.append(tierNames[tierID])
+    userCatsolves.extend(scoresRow)
     userData.append(userCatsolves)
-  
+    #print(userCatsolves)
   string = ""
   userData.sort(key=lambda x: int(x[31]))
   userData.reverse()
@@ -172,11 +178,12 @@ def getLeaderboard():
   y.field_names = ["Name","Place","Power","Tier","3x3 ao5","3x3 ao12","3x3 ao50","3x3 ao100","3x3 x10", "3x3 x42", "4x4 single", "4x4 ao5", "4x4 ao12", "4x4 ao50", "4x4 ao100", "4x4 x10", "4x4 x42", "4x4 relay", "5x5 single", "5x5 ao5", "5x5 ao12", "5x5 ao50", "5x5 relay", "6x6 single", "6x6 ao5", "6x6 ao12", "6x6 relay", "7x7 single", "7x7 ao5", "7x7 relay", "8x8 single", "8x8 ao5", "9x9 single", "10x10 single"]
   headers = ["3x3 ao5","3x3 ao12","3x3 ao50","3x3 ao100","3x3 x10", "3x3 x42", "4x4 single", "4x4 ao5", "4x4 ao12", "4x4 ao50", "4x4 ao100", "4x4 x10", "4x4 x42", "4x4 relay", "5x5 single", "5x5 ao5", "5x5 ao12", "5x5 ao50", "5x5 relay", "6x6 single", "6x6 ao5", "6x6 ao12", "6x6 relay", "7x7 single", "7x7 ao5", "7x7 relay", "8x8 single", "8x8 ao5", "9x9 single", "10x10 single"]
   rows=[]
+  scoresbase=33
   for num,i in enumerate(userData):
     row=[]
     #print("doing")
     #print(str(i))
-    string+='\t'.join(i)+"\n"
+    string+='\t'.join(str(i))+"\n"
     row.append(i[0])
     row.append(str(num+1))
     row.append(i[31])
@@ -206,17 +213,31 @@ def getLeaderboard():
     myhtml+="</header>\n"
 
     myhtml+="<div class=\"st_table\">\n"
-    for person in rows:
+    for personid, person in enumerate(rows):
+      dataRow = userData[personid]
       if person[3] == tier:
+        userTierID = 12-int(tierNames.index(tier))
         myhtml+="<div class=\"st_row\">\n"
         myhtml+="<div class=\"st_column _name\">"+person[0]+"</div>\n"
         myhtml+="<div class=\"st_column _place\">"+str(person[1])+"</div>\n"
         myhtml+="<div class=\"st_column _power\">"+str(person[2])+"</div>\n"
         for idsmall,_ in enumerate(headers):
+          #print(scoresbase+idsmall)
+          #print (dataRow)
+          #print("last id: "+str((len(dataRow)-1)))
+          scoreTierID = int(dataRow[scoresbase+idsmall])
+          if scoreTierID > userTierID:
+            colorID = 3
+          elif scoreTierID == userTierID-1:
+            colorID = 1
+          elif scoreTierID == userTierID:
+            colorID = 0
+          else:
+            colorID = 2
           score = str(person[idsmall+4])
           if score == "N/A":
             score = ""
-          myhtml+="<div class=\"st_column _score\">"+ score +"</div>\n"
+          myhtml+="<div class=\"st_column _score\" color-id=\"" + str(colorID)+"\">"+ score +"</div>\n"
         myhtml+="</div>\n"
     myhtml+="</div>\n"
     myhtml+="</div>\n"
@@ -1096,37 +1117,37 @@ def getProbText(f1, f2, pzlName, nscr):
     )
     # print(nscr)
     # if nscr > 100:
-    maxi = 1
-    maxFind = min(1000, nscr)
-    for i in range(1, maxFind):
-        ber = bernully(i, nscr, rp)
-        maxi = i
-        if ber != "[Very small]":
-            break
-    if bernully(maxi, nscr, rp) == "[Very small]":
-        out += (
-            "```Sorry, can't find chance of getting scramble exactly "
-            + str(maxi)
-            + " times after "
-            + str(nscr)
-            + " solves, it's still very small```"
-        )
-    else:
-        out += "```"
-        lasti = maxi + 17
-        for i in range(maxi, lasti):
-            berv = bernully(i, nscr, rp)
-            if berv == "1 in i":
-                berv = "[Very big]"
-            out += (
-                "\nChance of getting scramble exactly "
-                + str(i)
-                + " times after "
-                + str(nscr)
-                + " solves is "
-                + berv
-            )
-        out += "```"
+#    maxi = 1
+#    maxFind = min(1000, nscr)
+#    for i in range(1, maxFind):
+#        ber = bernully(i, nscr, rp)
+#        maxi = i
+#        if ber != "[Very small]":
+#            break
+#    if bernully(maxi, nscr, rp) == "[Very small]":
+#        out += (
+#            "```Sorry, can't find chance of getting scramble exactly "
+#            + str(maxi)
+#            + " times after "
+#            + str(nscr)
+#            + " solves, it's still very small```"
+#        )
+#    else:
+#        out += "```"
+#        lasti = maxi + 17
+#        for i in range(maxi, lasti):
+#            berv = bernully(i, nscr, rp)
+#            if berv == "1 in i":
+#                berv = "[Very big]"
+#            out += (
+#                "\nChance of getting scramble exactly "
+#                + str(i)
+#                + " times after "
+#                + str(nscr)
+#                + " solves is "
+#                + berv
+#            )
+#        out += "```"
     out += "\n\nCheck this: https://dphdmn.github.io/15puzzleprob/"
     return out
 
