@@ -1942,7 +1942,7 @@ async def on_message(message):
             await message.channel.send("Something is wrong\n```" + str(e) + "```")
     if "!help" in message.content.lower():
         await message.channel.send(
-            "Egg bot commands:\nhttps://discord.com/channels/800441014611214337/800505933137707052/809695325203333140"
+            "Egg bot commands: https://github.com/dphdmn/newEggBot/blob/master/README.md"
         )
 
 
