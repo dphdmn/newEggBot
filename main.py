@@ -1243,8 +1243,7 @@ def readLog():
 def addFMCResult(name, solution):
   text = name + "\t" + solution + "\t" + str(len(solution)) + "\n"
   appendFile("daily_log.txt", text)
-
-
+  rewriteFile("daily_backup.txt", readFilenormal("daily_log.txt"))
 def appendFile(file, text):
   f = open(file, 'a')
   f.write(text)
@@ -1345,7 +1344,10 @@ async def on_message(message):
             item_old = next((item for item in log if item["Name"] == name), None)
             if item_old == None:
               addFMCResult(name, solution)
-              
+              channel2 = client.get_channel(852636984475516928)
+              with open("daily_backup.txt", "rb") as f:
+                txt = discord.File(f)
+                await channel2.send("Backup", file=txt)
               await message.channel.send(lenstr + "Your solution added, " + name)
             else:
               if int(item_old["Len"]) <= len(solution):
@@ -1353,7 +1355,11 @@ async def on_message(message):
               else:
                 removeResult(name)
                 addFMCResult(name, solution)
-                await message.channel.send(item_old["Len"]+"Your solution updated, " + name)
+                channel2 = client.get_channel(852636984475516928)
+                with open("daily_backup.txt", "rb") as f:
+                  txt = discord.File(f)
+                  await channel2.send("Backup", file=txt)
+                await message.channel.send("||" + item_old["Len"] + "||->" + lenstr + "Your solution updated, " + name)
     if "!daily_open" in message.content.lower():
         if not message.author.guild_permissions.administrator:
           await message.channel.send("Sorry you are not FMC manager.")

@@ -23,3 +23,6 @@ movie.avi
 movie.webm
 FMC_results.txt
 daily_log.txt
+daily_status.txt
+daily_backup.txt
+main.py
