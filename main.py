@@ -1337,7 +1337,7 @@ async def on_message(message):
           solution = solution.replace("|","")
           solution = fixSolution(solution)
           scramble = getDailyStats()[0]
-          
+          lenstr = "[" + str(len(solution)) + "] "
           if not checkSol(scramble, solution):
             await message.channel.send("Sorry, " + name + ", your solution is not working.")
           else:
@@ -1345,14 +1345,15 @@ async def on_message(message):
             item_old = next((item for item in log if item["Name"] == name), None)
             if item_old == None:
               addFMCResult(name, solution)
-              await message.channel.send("Your solution added, " + name)
+              
+              await message.channel.send(lenstr + "Your solution added, " + name)
             else:
               if int(item_old["Len"]) <= len(solution):
-                await message.channel.send("You already have a better or same solution in the list, " + name)
+                await message.channel.send(lenstr+ "You already have a better or same solution in the list, " + name + " (You have " + item_old["Len"]+ ")")
               else:
                 removeResult(name)
                 addFMCResult(name, solution)
-                await message.channel.send("Your solution updated, " + name)
+                await message.channel.send(item_old["Len"]+"Your solution updated, " + name)
     if "!daily_open" in message.content.lower():
         if not message.author.guild_permissions.administrator:
           await message.channel.send("Sorry you are not FMC manager.")
