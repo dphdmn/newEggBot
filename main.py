@@ -1337,7 +1337,7 @@ async def on_message(message):
           solution = solution.replace("|","")
           solution = fixSolution(solution)
           scramble = getDailyStats()[0]
-          lenstr = "[" + str(len(solution)) + "] "
+          lenstr = "||[" + str(len(solution)) + "]|| "
           if not checkSol(scramble, solution):
             await message.channel.send("Sorry, " + name + ", your solution is not working.")
           else:
@@ -1349,7 +1349,7 @@ async def on_message(message):
               await message.channel.send(lenstr + "Your solution added, " + name)
             else:
               if int(item_old["Len"]) <= len(solution):
-                await message.channel.send(lenstr+ "You already have a better or same solution in the list, " + name + " (You have " + item_old["Len"]+ ")")
+                await message.channel.send(lenstr+ "You already have a better or same solution in the list, " + name + " (You have ||" + item_old["Len"]+ "||)")
               else:
                 removeResult(name)
                 addFMCResult(name, solution)
