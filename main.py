@@ -1307,6 +1307,8 @@ async def on_message(message):
             row.append(str(int(i["Len"])-int(leng)))
             row.append(i["Solution"])
             rowarray.append(row)
+          if len(rowarray)>0:
+            rowarray.sort(key=lambda x: int(x[1]))
           y = PrettyTable()
           y.field_names = rowheaders
           y.add_rows(rowarray)
@@ -1332,6 +1334,7 @@ async def on_message(message):
           await message.channel.send("Sorry, " + name + ", i can't get your solution")
         else:
           solution = contentArray[1].upper()
+          solution = solution.replace("|","")
           solution = fixSolution(solution)
           scramble = getDailyStats()[0]
           
@@ -1961,7 +1964,7 @@ async def on_message(message):
                 )
     if "!rev" in message.content.lower():
         words = message.content[5:]
-        wrods = solvereverse(words)
+        words = solvereverse(words)
         await message.channel.send("Reversed moves:\n||" + words + "||")
     if "!not" in message.content.lower():
         words = message.content[5:]
