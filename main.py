@@ -1186,7 +1186,12 @@ def editP(rp):
 
 #_________________daily fmc
 def getFMCstatus():
-  return "CLOSED" in readFilenormal("daily_status.txt") #true if you can start
+  try:
+    status = readFilenormal("daily_status.txt")
+    return "CLOSED" in status #true if you can start
+  except:
+    return True
+  
 
 
 def checkSol(scramble, solution):
