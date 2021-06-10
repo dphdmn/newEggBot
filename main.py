@@ -1889,8 +1889,11 @@ async def on_message(message):
       except:
         print(traceback.format_exc())
         await message.channel.send("Sorry, something is wrong")
-    if "!solve" in message.content.lower():
+    if "!solve" in message.content.lower() or "!video" in message.content.lower():
         try:
+            solve = "!solve" in message.content.lower()
+            video = "!video" in message.content.lower()
+
             thingy = message.content[7:]
             if len(thingy) == 37:
                 await message.channel.send(
@@ -1917,22 +1920,24 @@ async def on_message(message):
                     solution = solution.replace("'", "")
                     solution = solution.replace("\\n", "")
                     outm = "Solution for: " + thingy + "\n"
-                    outm += solution + "\n"
+                    outm += "||" + solution + "||\n"
                     outm += "Moves: " + str(len(solution)) + "\n"
                     outm += "Time: " + str(round((b - a), 3))
-                    outm += "\nPlease wait! I'm making a gif for you!"
+                    if video:
+                        outm += "\nPlease wait! I'm making a video for you!"
                     await message.channel.send(outm)
-                    makeGif(thingy, solution, 10)
-                    with open("movie.webm", "rb") as f:
-                      picture = discord.File(f)
-                      await message.channel.send("Solution for " + thingy + "\nOptimal: " + str(len(solution)) + " moves", file=picture)
-                    
-            elif len(thingy) == 17:
-                await message.channel.send(solve8(thingy).replace(", ", "\n"))
-            else:
-                await message.channel.send(
-                    "Sorry, something is wrong with your scramble"
-                )
+                    if video:
+                        makeGif(thingy, solution, 10)
+                        with open("movie.webm", "rb") as f:
+                            picture = discord.File(f)
+                            await message.channel.send("Solution for " + thingy + "\nOptimal: " + str(len(solution)) + " moves", file=picture)
+            elif solve:
+                if len(thingy) == 17:
+                    await message.channel.send(solve8(thingy).replace(", ", "\n"))
+                else:
+                    await message.channel.send(
+                        "Sorry, something is wrong with your scramble"
+                    )
         except Exception as e:
             await message.channel.send("Something is wrong\n```" + str(e) + "```")
     if "!help" in message.content.lower():
