@@ -1920,7 +1920,7 @@ async def on_message(message):
                     solution = solution.replace("'", "")
                     solution = solution.replace("\\n", "")
                     outm = "Solution for: " + thingy + "\n"
-                    outm += solution + "\n"
+                    outm += "||" + solution + "||\n"
                     outm += "Moves: " + str(len(solution)) + "\n"
                     outm += "Time: " + str(round((b - a), 3))
                     if video:
