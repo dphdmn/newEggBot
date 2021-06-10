@@ -183,7 +183,7 @@ def getLeaderboard():
     row=[]
     #print("doing")
     #print(str(i))
-    string+='\t'.join(str(i))+"\n"
+    string+='\t'.join(str(x) for x in i)+"\n"
     row.append(i[0])
     row.append(str(num+1))
     row.append(i[31])
