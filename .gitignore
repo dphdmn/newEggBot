@@ -21,3 +21,5 @@ templates/egg.html
 templates/index.html
 movie.avi
 movie.webm
+FMC_results.txt
+daily_log.txt
