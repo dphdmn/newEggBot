@@ -13,18 +13,18 @@ PB/ranks-related commands
 - !update - updates current pbs for getpb command, also gives a file of current pbs at 30 tiers  [technical]
 
 Solver-related commands:
-- !getreal - returns real scramble (moves) and draws a picture of it
-- !getscramble (size-optionally) - get random puzzle for sliding puzzle with that size
-- !movesgame - find a good moves for a random scramble game
 - !solve [scramble] - solve some 4x4 scramble
+- !video [scramble] - like !solve but also get a video
+- !getreal - returns real scramble (moves) and draws a picture of it
+- !movesgame - find a good moves for a random scramble game
+- !analyse\n[scramble]\n[solution]  - analyse solution for the scramble and find mistakes (use new string as separator! not just space) [admin]
 
 Scramble/solution-related commands:
 - !rev [solution] - reverse the solution of scramble, use RLUD notation, you can also use numbers like in slidysim
 - !not [solution] - change notation (R = L, U = D) etc. of the solution
+- !getscramble (size-optionally) - get random puzzle for sliding puzzle with that size
 - !draw [scrambles] - draws image of your scramble
-- !video [scramble] - like !solve but also get a video
 - !animate\n[scramble]\n[solution]\n(tps - optionally) - makes an animation of your solve (use new string as separator! not just space)
-- !analyse\n[scramble]\n[solution]  - analyse solution for the scramble and find mistakes (use new string as separator! not just space) [admin]
 
 Fun/stats commands:
 - !getprob [puzzle] [moves] [[moves], [amount] || [amount] - get probability of getting N moves optimal scramble, type !getprob for examples
