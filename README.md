@@ -5,7 +5,14 @@ https://discord.gg/7vXrWAS3yZ
 WR-related commands:
 - !getwr [NxM] - get wr for this puzzle (single)
 - !wrsby [username] - get all wrs for that username
-  
+
+FMC-competion related commands:
+- !submit [solution] - submit solution to current fmc competition
+- !daily_scramble - get current scramble of fmc competition
+- !daily_open - start FMC competition [admin]
+- !daily_close - finish FMC competition [admin]
+
+
 PB/ranks-related commands
 - !getpb [user] [puzzle] - get pb for one of 30 main categories in tier ranks, puzzle for 3x3 to 10x10
 - !getreq [tier] [puzzle] - get requirement for getting tier in new ranked system

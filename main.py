@@ -1370,7 +1370,7 @@ async def on_message(message):
             img.save('scramble.png', 'PNG')
             mess = "Daily FMC scramble: " + scramble + "\n"
             mess += "Optimal solution length: " + sollen + "\n"
-            mess += "Use **!submit** command to submit solutions, for example:\n"
+            mess += "Use **!submit** command to submit solutions (You can submit multiple times!), for example:\n"
             mess += "!submit LULD3RU2LD2LUR2UL2D2RU2RLULDR3UL2D2R2U2L2DLDRU2LDRURDL2DR2U2L2DRULDR2ULDLU\n"
             with open("scramble.png", "rb") as f:
               picture = discord.File(f)
