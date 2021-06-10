@@ -5,6 +5,7 @@ https://discord.gg/7vXrWAS3yZ
 WR-related commands:
 - !getwr <NxM> - get wr for this puzzle (single)
 - !wrsby <username> - get all wrs for that username
+  
 PB/ranks-related commands
 - !getpb <user> <puzzle> - get pb for one of 30 main categories in tier ranks, puzzle for 3x3 to 10x10
 - !getreq <tier> <puzzle> - get requirement for getting tier in new ranked system
