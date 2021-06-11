@@ -21,8 +21,32 @@ import requests
 import shutil
 from PIL import Image, ImageDraw, ImageFont
 import glob
+from replit import db
 
 client = discord.Client()
+
+async def makeTmpSend(filename, filedata, messagewith, msgchn):
+  f = open(filename, "w+")    
+  f.write(filedata)
+  f.close()
+  with open(filename, "rb") as f:
+    myfile = discord.File(f)
+    await msgchn.send(messagewith, file=myfile)
+  os.remove(filename)
+
+def readFilenormal(name):
+    with open(name, "r") as file:
+        mystr = file.read()
+    return mystr
+
+def addConstants():
+  for filename in glob.glob('Constant_Files/*.*'):
+    print(filename[15:])
+    text = readFilenormal(filename)
+    db[filename[15:]] = text
+
+addConstants()
+
 
 def solvereverse(words):
   words = words.replace("R3", "RRR")
@@ -116,12 +140,12 @@ def getLeaderboard():
         "Time": solvetime,
         }
     )
-  reqstring = readFilenormal("tiers.txt").splitlines()
+  reqstring = db["tiers.txt"].splitlines()
   req=[]
-  tier_cost = readFile("tier_cost.txt").split("\t")
+  tier_cost = db["tier_cost.txt"].lower().split("\t")
   for id, item in enumerate(tier_cost):
     tier_cost[id] = int(item)
-  tier_limits = readFile("tier_limits.txt").split("\t")
+  tier_limits = db["tier_limits.txt"].lower().split("\t")
   for id, item in enumerate(tier_limits):
     tier_limits[id] = int(item)   
   id = 0
@@ -241,25 +265,17 @@ def getLeaderboard():
     myhtml+="</div>\n"
     myhtml+="</div>\n"
   myhtml+="</main>"
-  f = open("leaderboard.txt", "w+")    
-  f.write(string)
-  f.close()
-  f = open("smartboard.txt", "w+")    
-  f.write(smartstring)
-  f.close()
-  f = open("prettylb.txt", "w+")    
-  f.write(y.get_string())
-  f.close()
-  f = open("templates/egg.html", "w+")   
-  f.write(myhtml)
-  f.close()
+  db["leaderboard.txt"] = string
+  db["smartboard.txt"] = smartstring
+  db["prettylb.txt"] = y.get_string()
+  db["egg.html"] = myhtml
   updatehtml()
 
 def updatehtml():
    f = open("templates/index.html", "w+")    
-   f.write(readFilenormal("templates/header.html"))
-   f.write(readFilenormal("templates/egg.html"))
-   f.write(readFilenormal("templates/footer.html"))
+   f.write(db["header.html"])
+   f.write(db["egg.html"])
+   f.write(db["footer.html"])
    f.close()
 
 #___________GIF_MAKER
@@ -288,6 +304,7 @@ def makeGif(scramble,solution,tps):
   for i in range(len(img_array)):
     out.write(img_array[i])
   out.release()
+  clearImages()
 
 def makeImages(scramble,solution):
   states = getStates(scramble, solution)
@@ -648,10 +665,7 @@ def solve8(scramble):
 
 
 # _____________compare tables___________________
-def readFilenormal(name):
-    with open(name, "r") as file:
-        mystr = file.read()
-    return mystr
+
 def readFile(name):
     with open(name, "r") as file:
         mystr = file.read().lower()
@@ -753,7 +767,7 @@ def comparelist(name1, name2):
         "10x10-sin",
     ]
     rankNames = ["{UNRANKED}"]
-    reqstring = readFile("tiers.txt").splitlines()
+    reqstring = db["tiers.txt"].lower().splitlines()
     id = 0
     for i in reqstring:
         i = i.split("\t")
@@ -761,11 +775,11 @@ def comparelist(name1, name2):
         req.append({"Tier": i[0].upper(), "rankID": id, "Scores": i[1:]})
         rankNames.append(i[0].upper())
     req.reverse()
-    tier_limits = readFile("tier_limits.txt").split("\t")
+    tier_limits = db["tier_limits.txt"].lower().split("\t")
     for id, item in enumerate(tier_limits):
         tier_limits[id] = int(item)
-    textinfo1 = fixSpaces(readFile(name1)).splitlines()
-    textinfo2 = fixSpaces(readFile(name2)).splitlines()
+    textinfo1 = fixSpaces(db[name1].lower()).splitlines()
+    textinfo2 = fixSpaces(db[name2].lower()).splitlines()
 
     old_list = makeList(textinfo1, tier_limits, rankNames)
     new_list = makeList(textinfo2, tier_limits, rankNames)
@@ -1187,7 +1201,7 @@ def editP(rp):
 #_________________daily fmc
 def getFMCstatus():
   try:
-    status = readFilenormal("daily_status.txt")
+    status = db["daily_status.txt"]
     return "CLOSED" in status #true if you can start
   except:
     return True
@@ -1206,7 +1220,7 @@ def checkSol(scramble, solution):
 
 
 def getDailyStats():
-  return readFilenormal("daily_status.txt").splitlines()
+  return db["daily_status.txt"].splitlines()
 
 
 def fixSolution(solution):
@@ -1227,17 +1241,22 @@ def rewriteFile(file, text):
   f.close()
 
 def removeResult(name):
-  text = readFilenormal("daily_log.txt").splitlines()
+  text = db["daily_log.txt"].splitlines()
   newtext = ""
   name = name + "\t"
   for i in text:
     if not (name in i):
       newtext+= i + "\n"
-  rewriteFile("daily_log.txt", newtext)
+  db["daily_log.txt"] = newtext
 
 
 def readLog():
-  text = readFilenormal("daily_log.txt").splitlines()
+  try:
+    text = db["daily_log.txt"].splitlines()
+  except:
+    text = ""
+    db["daily_log.txt"] = ""
+    print("DAILY LOG IS EMPTY ERROR")
   logdata = []
   for i in text:
     rowlist = i.split("\t")
@@ -1247,8 +1266,14 @@ def readLog():
 
 def addFMCResult(name, solution):
   text = name + "\t" + solution + "\t" + str(len(solution)) + "\n"
-  appendFile("daily_log.txt", text)
-  rewriteFile("daily_backup.txt", readFilenormal("daily_log.txt"))
+  appendDB("daily_log.txt", text)
+  rewriteFile("daily_backup.txt", db["daily_log.txt"])
+
+def appendDB(key, text):
+  dbtext = db[key]
+  dbtext += text
+  db[key] = dbtext
+
 def appendFile(file, text):
   f = open(file, 'a')
   f.write(text)
@@ -1292,8 +1317,8 @@ async def on_message(message):
         else:
           stats = getDailyStats()
           log = readLog()
-          rewriteFile("daily_status.txt", "CLOSED")
-          rewriteFile("daily_log.txt", "")
+          db["daily_status.txt"] = "CLOSED"
+          db["daily_log.txt"] = ""
           scramble = stats[0]
           solution = stats[1]
           leng = stats[2]
@@ -1323,10 +1348,12 @@ async def on_message(message):
               await message.channel.send(out + "\nNo one joined :(")
             else:
               await message.channel.send(out, file=txt)
+          os.remove("FMC_results.txt")
           makeGif(scramble, solution, 10)
           with open("movie.webm", "rb") as f:
             picture = discord.File(f)
             await message.channel.send("Optimal solution for last FMC competition:\n" + scramble +"\n"+solution+"\n"+leng, file=picture)
+          os.remove("movie.webm")
     if message.content.startswith("!submit"):
       if getFMCstatus():
         await message.channel.send("Sorry, there is no FMC competition now.")
@@ -1353,6 +1380,7 @@ async def on_message(message):
               with open("daily_backup.txt", "rb") as f:
                 txt = discord.File(f)
                 await channel2.send("Backup", file=txt)
+              os.remove("daily_backup.txt")
               await message.channel.send(lenstr + "Your solution added, " + name)
             else:
               if int(item_old["Len"]) <= len(solution):
@@ -1364,6 +1392,7 @@ async def on_message(message):
                 with open("daily_backup.txt", "rb") as f:
                   txt = discord.File(f)
                   await channel2.send("Backup", file=txt)
+                os.remove("daily_backup.txt")  
                 await message.channel.send("||" + item_old["Len"] + "||->" + lenstr + "Your solution updated, " + name)
     if message.content.startswith("!daily_open"):
         if not message.author.guild_permissions.administrator:
@@ -1377,7 +1406,7 @@ async def on_message(message):
             solution = solveSimple(scramble)
             sollen = str(len(solution))
             outString = scramble + "\n" + solution + "\n" + sollen
-            rewriteFile("daily_status.txt",outString)
+            db["daily_status.txt"] = outString
             img = drawPuzzle(scramble)
             img.save('scramble.png', 'PNG')
             mess = "Daily FMC scramble: " + scramble + "\n"
@@ -1386,18 +1415,15 @@ async def on_message(message):
             mess += "!submit LULD3RU2LD2LUR2UL2D2RU2RLULDR3UL2D2R2U2L2DLDRU2LDRURDL2DR2U2L2DRULDR2ULDLU\n"
             with open("scramble.png", "rb") as f:
               picture = discord.File(f)
-              await message.channel.send(mess, file=picture)      
+              await message.channel.send(mess, file=picture) 
+            os.remove("scramble.png")     
     if message.content.startswith("!getlb"):
-      with open("prettylb.txt", "rb") as f:
-          txt = discord.File(f)
-          await message.channel.send("Leaderboard for ranks: ", file=txt)
+      await makeTmpSend("prettylb.txt", db["prettylb.txt"], "Leaderboard for ranks: ", message.channel)
     if message.content.startswith("!update"):
       await message.channel.send("Wait for it!")
       try:
         getLeaderboard()
-        with open("smartboard.txt", "rb") as f:
-          txt = discord.File(f)
-          await message.channel.send("Check this: https://eggserver.dphdmntranquilc.repl.co/\nProbably updated! Try !getpb command: ", file=txt)
+        await makeTmpSend("smartboard.txt", db["smartboard.txt"], "Check this: https://eggserver.dphdmntranquilc.repl.co/\nProbably updated! Try !getpb command: ", message.channel)
       except:
         print(traceback.format_exc())
         await message.channel.send("Sorry, something is wrong")
@@ -1426,7 +1452,8 @@ async def on_message(message):
       img.save('scramble.png', 'PNG')
       with open("scramble.png", "rb") as f:
         picture = discord.File(f)
-        await message.channel.send("Your scramble: \n" + out + "\n" +scr, file=picture)      
+        await message.channel.send("Your scramble: \n" + out + "\n" +scr, file=picture)
+      os.remove("scramble.png")
     if message.content.startswith("!getscramble"):
       contentArray = message.content.lower().split(" ")
       n = 4
@@ -1439,6 +1466,7 @@ async def on_message(message):
         with open("scramble.png", "rb") as f:
           picture = discord.File(f)
           await message.channel.send("Your random 4x4 scramble: \n" + scramble, file=picture)
+        os.remove("scramble.png")
       else: 
         await message.channel.send("Random scramble for " + str(n) + "x" + str(n) + " puzzle\n" + scramble)
     if message.content.startswith("!getwr"):
@@ -1490,6 +1518,7 @@ async def on_message(message):
                   with open("wrsby.txt", "rb") as f:
                     txt = discord.File(f)
                     await message.channel.send("WR list: ", file=txt)
+                  os.remove("wrsby.txt")
                 else:
                   await message.channel.send("```" + my_string + "```")
         except:
@@ -1497,10 +1526,8 @@ async def on_message(message):
                 "Something is wrong\n```" + traceback.format_exc() + "```"
             )
     if message.content.startswith("!getpb"):
-        with open("leaderboard.txt", "r") as file:
-            mystr = file.read().lower()  # .replace('\n', '')
+        mystr=db["leaderboard.txt"].lower()
         # print(mystr)
-        filedate = str(mod_date("leaderboard.txt")).split(" ")[0]
         mystr = mystr.splitlines()
         contentArray = message.content.lower().split(" ")
         # print(contentArray)
@@ -1577,8 +1604,6 @@ async def on_message(message):
                 )
                 bad = True
             if not bad:
-                outputString += "\nLast time update: " + filedate
-                # print(outputString)
                 await message.channel.send(outputString)
         except:
             await message.channel.send(
@@ -1608,6 +1633,7 @@ async def on_message(message):
         with open("movie.webm", "rb") as f:
           picture = discord.File(f)
           await message.channel.send("Solution for " + scramble + " by " + message.author.mention + "\n" + str(len(solution)) + " moves (May not be optimal)\nTPS (playback): "+str(tps) +"\nTime (playback): "+ str(round(len(solution)/tps,3)) , file=picture)
+        os.remove("movie.webm")
       except Exception as e:
         #print(e)
         print(traceback.print_exc())
@@ -1639,6 +1665,7 @@ async def on_message(message):
         with open("anal.txt", "rb") as f:
           txt = discord.File(f)
           await message.channel.send("Your analysis: ", file=txt)
+        os.remove("anal.txt")
       else:
         await message.channel.send("Sorry you are not admin")
     if message.content.startswith("!draw"):
@@ -1649,11 +1676,11 @@ async def on_message(message):
         with open("scramble.png", "rb") as f:
           picture = discord.File(f)
           await message.channel.send("Your scramble: ", file=picture)
+        os.remove("scramble.png")
       except:
         await message.channel.send("Something is wrong, sorry")
     if message.content.startswith("!getreq"):
-        with open("tiers.txt", "r") as file:
-            mystr = file.read().lower()  # .replace('\n', '')
+        mystr = db["tiers.txt"].lower()
         # print(mystr)
         mystr = mystr.splitlines()
         contentArray = message.content.lower().split(" ")
@@ -1839,34 +1866,9 @@ async def on_message(message):
             await message.channel.send(
                 "Something is wrong\n```" + traceback.format_exc() + "```"
             )
-    if message.content.startswith("!ip"):
-        try:
-            fp = urllib.request.urlopen("https://2ip.ru/")
-            mybytes = fp.read()
-            mystr = mybytes.decode("utf8")
-            mystr = html2text.html2text(mystr)
-            mystr = mystr.splitlines()
-            fp.close()
-            username = "Ваш IP адрес"
-            matching = [s for s in mystr if username in s]
-            # my_string = ';\n'.join(matching)
-            await message.channel.send(
-                mystr[mystr.index(matching[0]) + 2].replace("__", "")
-            )
-            await message.channel.send(
-                "It's not my ip probably. My actual ip at 21.05.2021 was 128.71.69.147 but you probably don't need it"
-            )
-        except:
-            await message.channel.send(
-                "Something is wrong\n```" + traceback.format_exc() + "```"
-            )
     if "scrable" in message.content.lower():
         await message.channel.send("Infinity tps, " + message.author.mention + "?")
         await message.add_reaction("0️⃣")
-    if message.content.startswith("!osu"):
-        await message.channel.send(
-            "Osu command probably is not working, why using it tho, it's sliding puzzle server"
-        )
     if message.content.startswith("!paint"):
         good = False
         try:
@@ -1891,6 +1893,7 @@ async def on_message(message):
                 picture = discord.File(f)
                 await message.channel.send("Converted image: ", file=picture)
             my_img = cv2.imread("image_name.jpg")
+            os.remove("image_name.jpg")
             h, w, a = my_img.shape
             desw = round(size / 2)
             bigger = max(w, h)
@@ -1973,6 +1976,7 @@ async def on_message(message):
                     + " sliding puzzle)\n(download file if its large):",
                     file=discord.File(f, "scramble.txt"),
                 )
+            os.remove("scramble.txt")
     if message.content.startswith("!rev"):
         words = message.content[5:]
         words = solvereverse(words)
@@ -2005,6 +2009,7 @@ async def on_message(message):
             with open("img_lemon.jpg", "rb") as f:
                 picture = discord.File(f)
                 await message.channel.send("Your weird image: ", file=picture)
+            os.remove("img_lemon.jpg")
         except:
             await message.channel.send("Something is wrong")
     if message.content.startswith("!compare"):
@@ -2016,6 +2021,7 @@ async def on_message(message):
             with open("compare.txt", "rb") as f:
                 txt = discord.File(f)
                 await message.channel.send("Your cmp: ", file=txt)
+            os.remove("compare.txt")
         else:
             await message.channel.send("```" + out + "```")
     if message.content.startswith("!cmp1"):
@@ -2027,9 +2033,7 @@ async def on_message(message):
         except:
             await message.channel.send("Can't get file")
         if good:
-            f = open("file1.txt", "w+")
-            f.write(text)
-            f.close()
+            db["file1.txt"] = text
             await message.channel.send("Probably updated")
     if message.content.startswith("!cmp2"):
         good = False
@@ -2040,9 +2044,7 @@ async def on_message(message):
         except:
             await message.channel.send("Can't get file")
         if good:
-            f = open("file2.txt", "w+")
-            f.write(text)
-            f.close()
+            db["file2.txt"] = text
             await message.channel.send("Probably updated")
     if message.content.startswith("!movesgame"):
       scramble = scrambler.getScramble(4)
@@ -2051,6 +2053,7 @@ async def on_message(message):
       with open("scramble.png", "rb") as f:
         picture = discord.File(f)
         await message.channel.send("Find good move at this scramble: \n" + scramble + "\nYou will get answer in few seconds", file=picture)
+      os.remove("scramble.png")
       goodmoves = getGoodMoves(scramble)
       goodmovesmessage=""
       for j in ["R","U","L","D"]:
@@ -2109,6 +2112,7 @@ async def on_message(message):
                         with open("movie.webm", "rb") as f:
                             picture = discord.File(f)
                             await message.channel.send("Solution for " + thingy + "\nOptimal: " + str(len(solution)) + " moves", file=picture)
+                        os.remove("movie.webm")
             elif solve:
                 if len(thingy) == 17:
                     await message.channel.send(solve8(thingy).replace(", ", "\n"))
