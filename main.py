@@ -1269,21 +1269,21 @@ async def on_message(message):
         await message.channel.send("You are egg, " + message.author.mention)
     if "fuck you" in message.content.lower():
         await message.channel.send("no u, " + message.author.mention)
-    if "!spam" in message.content.lower():
+    if message.content.startswith("!spam"):
         if message.author.guild_permissions.administrator:
             shit = message.content[6:]
             msg = ""
             for x in range(3000):
                 msg += shit + " "
             spam.start(message.channel, msg[:2000])
-    if "!daily_scramble" in message.content.lower():
+    if message.content.startswith("!daily_scramble"):
       if getFMCstatus():
           await message.channel.send("No FMC challange is going on")
       else:
         stats = getDailyStats()
         out = "Current FMC scramble: " + stats[0] + "\nMoves: " + stats[2]
         await message.channel.send(out)
-    if "!daily_close" in message.content.lower():
+    if message.content.startswith("!daily_close"):
       if not message.author.guild_permissions.administrator:
           await message.channel.send("Sorry you are not FMC manager.")
       else:
@@ -1327,7 +1327,7 @@ async def on_message(message):
           with open("movie.webm", "rb") as f:
             picture = discord.File(f)
             await message.channel.send("Optimal solution for last FMC competition:\n" + scramble +"\n"+solution+"\n"+leng, file=picture)
-    if "!SUBMIT" in message.content.upper():
+    if message.content.startswith("!submit"):
       if getFMCstatus():
         await message.channel.send("Sorry, there is no FMC competition now.")
       else:  
@@ -1365,7 +1365,7 @@ async def on_message(message):
                   txt = discord.File(f)
                   await channel2.send("Backup", file=txt)
                 await message.channel.send("||" + item_old["Len"] + "||->" + lenstr + "Your solution updated, " + name)
-    if "!daily_open" in message.content.lower():
+    if message.content.startswith("!daily_open"):
         if not message.author.guild_permissions.administrator:
           await message.channel.send("Sorry you are not FMC manager.")
         else:
@@ -1387,11 +1387,11 @@ async def on_message(message):
             with open("scramble.png", "rb") as f:
               picture = discord.File(f)
               await message.channel.send(mess, file=picture)      
-    if "!getlb" in message.content.lower():
+    if message.content.startswith("!getlb"):
       with open("prettylb.txt", "rb") as f:
           txt = discord.File(f)
           await message.channel.send("Leaderboard for ranks: ", file=txt)
-    if "!update" in message.content.lower():
+    if message.content.startswith("!update"):
       await message.channel.send("Wait for it!")
       try:
         getLeaderboard()
@@ -1401,10 +1401,10 @@ async def on_message(message):
       except:
         print(traceback.format_exc())
         await message.channel.send("Sorry, something is wrong")
-    if "!stop" in message.content.lower():
+    if message.content.startswith("!stop"):
         if message.author.guild_permissions.administrator:
             spam.cancel()
-    if "!getreal" in message.content.lower():
+    if message.content.startswith("!getreal"):
       scramble = scrambler.getScramble(4)
       await message.channel.send("Please wait! I am slow, use ben's scrambler instead: http://benwh.000webhostapp.com/software/15poprs/index.html")
       solution = solveSimple(scramble)
@@ -1427,7 +1427,7 @@ async def on_message(message):
       with open("scramble.png", "rb") as f:
         picture = discord.File(f)
         await message.channel.send("Your scramble: \n" + out + "\n" +scr, file=picture)      
-    if "!getscramble" in message.content.lower():
+    if message.content.startswith("!getscramble"):
       contentArray = message.content.lower().split(" ")
       n = 4
       if len(contentArray)>1:
@@ -1441,7 +1441,7 @@ async def on_message(message):
           await message.channel.send("Your random 4x4 scramble: \n" + scramble, file=picture)
       else: 
         await message.channel.send("Random scramble for " + str(n) + "x" + str(n) + " puzzle\n" + scramble)
-    if "!getwr" in message.content:
+    if message.content.startswith("!getwr"):
         try:
             fp = urllib.request.urlopen(
                 "http://slidysim.000webhostapp.com/leaderboard/records_all.html"
@@ -1464,7 +1464,7 @@ async def on_message(message):
             await message.channel.send(
                 "Something is wrong\n```" + traceback.format_exc() + "```"
             )
-    if "!wrsby" in message.content:
+    if message.content.startswith("!wrsby"):
         try:
             fp = urllib.request.urlopen(
                 "http://slidysim.000webhostapp.com/leaderboard/records_all.html"
@@ -1496,7 +1496,7 @@ async def on_message(message):
             await message.channel.send(
                 "Something is wrong\n```" + traceback.format_exc() + "```"
             )
-    if "!getpb" in message.content:
+    if message.content.startswith("!getpb"):
         with open("leaderboard.txt", "r") as file:
             mystr = file.read().lower()  # .replace('\n', '')
         # print(mystr)
@@ -1584,7 +1584,7 @@ async def on_message(message):
             await message.channel.send(
                 "Please specify the puzzle size, for example: !getpb dphdmn 4x4"
             )
-    if "!animate" in message.content:
+    if message.content.startswith("!animate"):
       try:
         contentArray = message.content.split("\n")
         await message.channel.send("Working on it! It may take some time, please wait")
@@ -1612,7 +1612,7 @@ async def on_message(message):
         #print(e)
         print(traceback.print_exc())
         await message.channel.send("Sorry, something is wrong")
-    if "!analyse" in message.content:
+    if message.content.startswith("!analyse"):
       if message.author.guild_permissions.administrator:
         await message.channel.send("Working on it!")
         try:
@@ -1641,7 +1641,7 @@ async def on_message(message):
           await message.channel.send("Your analysis: ", file=txt)
       else:
         await message.channel.send("Sorry you are not admin")
-    if "!draw" in message.content.lower():
+    if message.content.startswith("!draw"):
       try:
         scramble=message.content[6:]
         img = drawPuzzle(scramble)
@@ -1651,7 +1651,7 @@ async def on_message(message):
           await message.channel.send("Your scramble: ", file=picture)
       except:
         await message.channel.send("Something is wrong, sorry")
-    if "!getreq" in message.content:
+    if message.content.startswith("!getreq"):
         with open("tiers.txt", "r") as file:
             mystr = file.read().lower()  # .replace('\n', '')
         # print(mystr)
@@ -1739,9 +1739,8 @@ async def on_message(message):
             await message.channel.send(
                 "Please specify the puzzle size, for example: !getreq ascended 4x4"
             )
-    if (
-        "!getprob" in message.content.lower()
-    ):  #!getprob 4x4 30 40 1000, or !getprob 4x4 30 40, or !getprob 4x4 30
+    if message.content.startswith("!getprob"):
+        #!getprob 4x4 30 40 1000, or !getprob 4x4 30 40, or !getprob 4x4 30
         try:
             examples = "- !getprob <puzzle> <moves> [<moves>, <amount> || <amount] - get probability of getting N moves optimal scramble\nCommand examples:\n```!getprob 4x4 30 - get probability for 4x4 in 30 moves\n!getprob 4x4 30 40 - get probability for 4x4 from 30 to 40 moves\n!getprob 4x4 30 40 _1000 - from 30 to 40 moves, repeat 1000 times (default 100)\n!getprob 4x4 30 _1000 - 30 moves, repeat 1000 times\n!getprob 3x3 20 - 3x3 puzzle```\n"
             contentArray = message.content.lower().split(" ")
@@ -1840,7 +1839,7 @@ async def on_message(message):
             await message.channel.send(
                 "Something is wrong\n```" + traceback.format_exc() + "```"
             )
-    if "!ip" in message.content.lower():
+    if message.content.startswith("!ip"):
         try:
             fp = urllib.request.urlopen("https://2ip.ru/")
             mybytes = fp.read()
@@ -1864,11 +1863,11 @@ async def on_message(message):
     if "scrable" in message.content.lower():
         await message.channel.send("Infinity tps, " + message.author.mention + "?")
         await message.add_reaction("0️⃣")
-    if "!osu" in message.content:
+    if message.content.startswith("!osu"):
         await message.channel.send(
             "Osu command probably is not working, why using it tho, it's sliding puzzle server"
         )
-    if "!paint" in message.content.lower():
+    if message.content.startswith("!paint"):
         good = False
         try:
             img_data = requests.get(message.attachments[0].url).content
@@ -1974,11 +1973,11 @@ async def on_message(message):
                     + " sliding puzzle)\n(download file if its large):",
                     file=discord.File(f, "scramble.txt"),
                 )
-    if "!rev" in message.content.lower():
+    if message.content.startswith("!rev"):
         words = message.content[5:]
         words = solvereverse(words)
         await message.channel.send("Reversed moves:\n||" + words + "||")
-    if "!not" in message.content.lower():
+    if message.content.startswith("!not"):
         words = message.content[5:]
         words = words.replace("R", "_")
         words = words.replace("L", "R")
@@ -1988,7 +1987,7 @@ async def on_message(message):
         words = words.replace("_", "D")
         words = words.replace(" ", "")
         await message.channel.send("Changed notation moves:\n||" + words + "||")
-    if "!tti" in message.content.lower():
+    if message.content.startswith("!tti"):
         try:
             words = message.content[5:]
             r = requests.post(
@@ -2008,7 +2007,7 @@ async def on_message(message):
                 await message.channel.send("Your weird image: ", file=picture)
         except:
             await message.channel.send("Something is wrong")
-    if "!compare" in message.content.lower():
+    if message.content.startswith("!compare"):
         out = comparelist("file1.txt", "file2.txt")
         if len(out) > 1900:
             f = open("compare.txt", "w+")
@@ -2019,7 +2018,7 @@ async def on_message(message):
                 await message.channel.send("Your cmp: ", file=txt)
         else:
             await message.channel.send("```" + out + "```")
-    if "!cmp1" in message.content.lower():
+    if message.content.startswith("!cmp1"):
         good = False
         try:
             text = requests.get(message.attachments[0].url).content.decode("utf-8")
@@ -2032,7 +2031,7 @@ async def on_message(message):
             f.write(text)
             f.close()
             await message.channel.send("Probably updated")
-    if "!cmp2" in message.content.lower():
+    if message.content.startswith("!cmp2"):
         good = False
         try:
             text = requests.get(message.attachments[0].url).content.decode("utf-8")
@@ -2045,8 +2044,7 @@ async def on_message(message):
             f.write(text)
             f.close()
             await message.channel.send("Probably updated")
-    if "!movesgame" in message.content.lower():
-      
+    if message.content.startswith("!movesgame"):
       scramble = scrambler.getScramble(4)
       img = drawPuzzle(scramble)
       img.save('scramble.png', 'PNG')
@@ -2061,7 +2059,7 @@ async def on_message(message):
         else:
           goodmovesmessage+= ""+j+"" +" \tis \tbad\t move\n"
       await message.channel.send("\n" + "||" + goodmovesmessage + "||")
-    if "!goodm" in message.content.lower():
+    if message.content.startswith("!goodm"):
       try:
         scramble = message.content[7:]
         goodmoves = getGoodMoves(scramble)
@@ -2069,10 +2067,10 @@ async def on_message(message):
       except:
         print(traceback.format_exc())
         await message.channel.send("Sorry, something is wrong")
-    if "!solve" in message.content.lower() or "!video" in message.content.lower():
+    if message.content.startswith("!solve") or message.content.startswith("!video"):
         try:
-            solve = "!solve" in message.content.lower()
-            video = "!video" in message.content.lower()
+            solve = message.content.startswith("!solve")
+            video = message.content.startswith("!video")
 
             thingy = message.content[7:]
             if len(thingy) == 37:
@@ -2120,7 +2118,7 @@ async def on_message(message):
                     )
         except Exception as e:
             await message.channel.send("Something is wrong\n```" + str(e) + "```")
-    if "!help" in message.content.lower():
+    if message.content.startswith("!help"):
         await message.channel.send(
             "Egg bot commands: https://github.com/dphdmn/newEggBot/blob/master/README.md"
         )
