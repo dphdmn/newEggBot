@@ -24,7 +24,7 @@ import glob
 from replit import db
 
 client = discord.Client()
-
+print('\n'.join(db.keys()))
 async def makeTmpSend(filename, filedata, messagewith, msgchn):
   f = open(filename, "w+")    
   f.write(filedata)
@@ -153,7 +153,7 @@ def getLeaderboard():
   for i in reqstring:
     i = i.split("\t")
     tierNames.append(i[0])
-    req.append({"Tiercost":tier_cost[id], "Scores": i[1:], "TierID":id+1})
+    req.append({"Tiercost":tier_cost[id],"Tierlimit":tier_limits[id], "Scores": i[1:], "TierID":id+1})
     id += 1
   req.reverse()
   #print(namelist)
@@ -221,11 +221,21 @@ def getLeaderboard():
   tierNames.reverse()
   myhtml="<main class=\"st_viewport\">"
   for id, tier in enumerate(tierNames):
+    if tier != "Unranked":
+      myreqdata = req[id]
+    reqscoreslist=myreqdata["Scores"]
     myhtml+="<div class=\"st_wrap_table\" data-table_id=\"" + str(id+1)+"\">\n"
     myhtml+="<header class=\"st_table_header\">\n"
     myhtml+="<h2>"
     myhtml+= tier
     myhtml+="</h2>\n"
+    myhtml+="<div class=\"st_row\">\n"
+    myhtml+="<div class=\"st_column _name\"></div>\n"
+    myhtml+="<div class=\"st_column _place\">"+str(myreqdata["Tiercost"])+"</div>\n"
+    myhtml+="<div class=\"st_column _power\">"+str(myreqdata["Tierlimit"])+"</div>\n"
+    for e,_ in enumerate(headers):
+      myhtml+="<div class=\"st_column _score\">"+ str(reqscoreslist[e]) +"</div>\n"
+    myhtml+="</div>\n"
     myhtml+="<div class=\"st_row\">\n"
     myhtml+="<div class=\"st_column _name\">Name</div>\n"
     myhtml+="<div class=\"st_column _place\">Place</div>\n"
