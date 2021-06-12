@@ -504,24 +504,7 @@ def getReverse(move):
   return None
 
 def getGoodMoves(scramble):
-  states = get4state(scramble)
-  #opt = solveSimple(scramble)
-  solves = []
-  lens = []
-  for i in states:
-    sol=solveSimple(i[1])
-    print(i[1])
-    solves.append(i[0])
-    lens.append(len(sol))
-  min_value = min(lens)
-  idlist=[]
-  for id, i in enumerate(lens):
-    if min_value == i:
-      idlist.append(id)
-  goodmoves=[]
-  for i in idlist:
-    goodmoves.append(solves[i])
-  return goodmoves
+    return [x[0] for x in solver.solveGood(scramble)]
 
 def bannedmove(blank, move):
   if move == "R":
