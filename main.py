@@ -542,16 +542,6 @@ def get4state(scramble):
 
 def isReverse(a, b):
   return getReverse(a) == b
-def solveSimple(scramble):
-  my_com = "./solver2 " + '"' + scramble + '"'
-  print(my_com)
-  cmd = my_com
-  process = subprocess.Popen("exec " + cmd,stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=True)
-  stdout, stderr = process.communicate()
-  sol = str(stdout)
-  sol = sol.replace("b'","").replace("\\n'","")
-  print(sol)
-  return sol
 
 def analyse(scramble, solution):
   solution = solution.upper()
@@ -569,7 +559,7 @@ def analyse(scramble, solution):
       if lastopt !="" and user_end_len==predicted_opt_end_len:
         opt = lastopt[1:]
       else:
-        opt = solveSimple(i)
+        opt = solver.solveOne(i)
       lastopt=opt
       optimals.append(opt)
       optl.append(len(opt))
@@ -1400,7 +1390,7 @@ async def on_message(message):
           else:
             await message.channel.send("Starting daily FMC, please wait!")
             scramble = scrambler.getScramble(4)
-            solution = solveSimple(scramble)
+            solution = solver.solveOne(scramble)
             sollen = str(len(solution))
             outString = scramble + "\n" + solution + "\n" + sollen
             db["daily_status.txt"] = outString

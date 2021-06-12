@@ -27,7 +27,7 @@ class Solver:
 
     def solveOne(self, scramble):
         self.process.stdin.write("one\n")
-        return self.solve(scramble)
+        return self.solve(scramble)[0]
 
     def solveGood(self, scramble):
         self.process.stdin.write("good\n")
