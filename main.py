@@ -1,4 +1,5 @@
 import scrambler
+import solver
 import os
 from keep_alive import keep_alive
 from prettytable import PrettyTable
@@ -22,6 +23,9 @@ import shutil
 from PIL import Image, ImageDraw, ImageFont
 import glob
 from replit import db
+
+solver = solver.Solver()
+solver.start()
 
 client = discord.Client()
 print('\n'.join(db.keys()))
@@ -500,24 +504,7 @@ def getReverse(move):
   return None
 
 def getGoodMoves(scramble):
-  states = get4state(scramble)
-  #opt = solveSimple(scramble)
-  solves = []
-  lens = []
-  for i in states:
-    sol=solveSimple(i[1])
-    print(i[1])
-    solves.append(i[0])
-    lens.append(len(sol))
-  min_value = min(lens)
-  idlist=[]
-  for id, i in enumerate(lens):
-    if min_value == i:
-      idlist.append(id)
-  goodmoves=[]
-  for i in idlist:
-    goodmoves.append(solves[i])
-  return goodmoves
+    return [x[0] for x in solver.solveGood(scramble)]
 
 def bannedmove(blank, move):
   if move == "R":
@@ -555,16 +542,6 @@ def get4state(scramble):
 
 def isReverse(a, b):
   return getReverse(a) == b
-def solveSimple(scramble):
-  my_com = "./solver2 " + '"' + scramble + '"'
-  print(my_com)
-  cmd = my_com
-  process = subprocess.Popen("exec " + cmd,stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=True)
-  stdout, stderr = process.communicate()
-  sol = str(stdout)
-  sol = sol.replace("b'","").replace("\\n'","")
-  print(sol)
-  return sol
 
 def analyse(scramble, solution):
   solution = solution.upper()
@@ -582,7 +559,7 @@ def analyse(scramble, solution):
       if lastopt !="" and user_end_len==predicted_opt_end_len:
         opt = lastopt[1:]
       else:
-        opt = solveSimple(i)
+        opt = solver.solveOne(i)
       lastopt=opt
       optimals.append(opt)
       optl.append(len(opt))
@@ -1413,7 +1390,7 @@ async def on_message(message):
           else:
             await message.channel.send("Starting daily FMC, please wait!")
             scramble = scrambler.getScramble(4)
-            solution = solveSimple(scramble)
+            solution = solver.solveOne(scramble)
             sollen = str(len(solution))
             outString = scramble + "\n" + solution + "\n" + sollen
             db["daily_status.txt"] = outString
@@ -2085,47 +2062,35 @@ async def on_message(message):
             solve = message.content.startswith("!solve")
             video = message.content.startswith("!video")
 
-            thingy = message.content[7:]
-            if len(thingy) == 37:
+            scramble = message.content[7:]
+            if len(scramble) == 37:
                 await message.channel.send(
                     "Hello, i am solving your scramble, please wait 30s before trying another scramble."
                 )
+
                 a = perf_counter()
-                my_com = "./solver2 " + '"' + thingy + '"'
-                solution = ""
-                print(my_com)
-                cmd = my_com
-                command = Command(cmd)
-                command.run(timeout=30)
-                solution = command.getSol()
+                solution = solver.solveOne(scramble)
                 b = perf_counter()
-                if solution == "":
-                    await message.channel.send(
-                        "Uh sorry, that scramble is very hard (30s) :( "
-                    )
-                else:
-                    print(solution)
-                    solution = solution.replace("b", "")
-                    solution = solution.replace(" ", "")
-                    solution = solution.replace("\\r\\n", "\n")
-                    solution = solution.replace("'", "")
-                    solution = solution.replace("\\n", "")
-                    outm = "Solution for: " + thingy + "\n"
-                    outm += "||" + solution + "||\n"
-                    outm += "Moves: " + str(len(solution)) + "\n"
-                    outm += "Time: " + str(round((b - a), 3))
-                    if video:
-                        outm += "\nPlease wait! I'm making a video for you!"
-                    await message.channel.send(outm)
-                    if video:
-                        makeGif(thingy, solution, 10)
-                        with open("movie.webm", "rb") as f:
-                            picture = discord.File(f)
-                            await message.channel.send("Solution for " + thingy + "\nOptimal: " + str(len(solution)) + " moves", file=picture)
-                        os.remove("movie.webm")
+
+                outm = "Solution for: " + scramble + "\n"
+                outm += "||" + solution + "||\n"
+                outm += "Moves: " + str(len(solution)) + "\n"
+                outm += "Time: " + str(round((b - a), 3))
+
+                if video:
+                    outm += "\nPlease wait! I'm making a video for you!"
+
+                await message.channel.send(outm)
+
+                if video:
+                    makeGif(scramble, solution, 10)
+                    with open("movie.webm", "rb") as f:
+                        picture = discord.File(f)
+                        await message.channel.send("Solution for " + scramble + "\nOptimal: " + str(len(solution)) + " moves", file=picture)
+                    os.remove("movie.webm")
             elif solve:
-                if len(thingy) == 17:
-                    await message.channel.send(solve8(thingy).replace(", ", "\n"))
+                if len(scramble) == 17:
+                    await message.channel.send(solve8(scramble).replace(", ", "\n"))
                 else:
                     await message.channel.send(
                         "Sorry, something is wrong with your scramble"
