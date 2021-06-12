@@ -2068,9 +2068,8 @@ async def on_message(message):
           string = ""
           string += "Time: " + str(round((b - a), 3)) + "\n"
           string += "Amount of solutions: " + str(len(solutions)) + "\n"
-          for i in solutions:
-            string += i + "[" + str(len(i)) + "]\n"
-
+          string += "Len: " + str(len(solutions[0])) + "\n"
+          string += '\n'.join(solutions)
           await makeTmpSend("Solutions.txt", string, "All solutions for scramble " + scramble, message.channel)
         except:
           await message.channel.send("Sorry, can't solve it.")
