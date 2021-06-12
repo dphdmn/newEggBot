@@ -1626,7 +1626,6 @@ async def on_message(message):
         print(traceback.print_exc())
         await message.channel.send("Sorry, something is wrong")
     if message.content.startswith("!analyse"):
-      if message.author.guild_permissions.administrator:
         await message.channel.send("Working on it!")
         try:
           contentArray = message.content.split("\n")
@@ -1653,8 +1652,6 @@ async def on_message(message):
           txt = discord.File(f)
           await message.channel.send("Your analysis: ", file=txt)
         os.remove("anal.txt")
-      else:
-        await message.channel.send("Sorry you are not admin")
     if message.content.startswith("!draw"):
       try:
         scramble=message.content[6:]
@@ -2057,6 +2054,26 @@ async def on_message(message):
       except:
         print(traceback.format_exc())
         await message.channel.send("Sorry, something is wrong")
+    if message.content.startswith("!eggsolve"):
+      scramble = message.content[10:]
+      print(scramble)
+      if len(scramble) != 37:
+        print(len(scramble))
+        await message.channel.send("Your scramble is wrong.")
+      else:
+        try:
+          a = perf_counter()
+          solutions = solver.solveAll(scramble)
+          b = perf_counter()
+          string = ""
+          string += "Time: " + str(round((b - a), 3)) + "\n"
+          string += "Amount of solutions: " + str(len(solutions)) + "\n"
+          for i in solutions:
+            string += i + "[" + str(len(i)) + "]\n"
+
+          await makeTmpSend("Solutions.txt", string, "All solutions for scramble " + scramble, message.channel)
+        except:
+          await message.channel.send("Sorry, can't solve it.")
     if message.content.startswith("!solve") or message.content.startswith("!video"):
         try:
             solve = message.content.startswith("!solve")
@@ -2064,10 +2081,6 @@ async def on_message(message):
 
             scramble = message.content[7:]
             if len(scramble) == 37:
-                await message.channel.send(
-                    "Hello, i am solving your scramble, please wait 30s before trying another scramble."
-                )
-
                 a = perf_counter()
                 solution = solver.solveOne(scramble)
                 b = perf_counter()

@@ -21,10 +21,11 @@ PB/ranks-related commands
 
 Solver-related commands:
 - !solve [scramble] - solve some 4x4 scramble
+- !eggsolve [scramble] - solve 4x4 scramble and find all possible optimal solutions
 - !video [scramble] - like !solve but also get a video
 - !getreal - returns real scramble (moves) and draws a picture of it
 - !movesgame - find a good moves for a random scramble game
-- !analyse\n[scramble]\n[solution]  - analyse solution for the scramble and find mistakes (use new string as separator! not just space) [admin]
+- !analyse\n[scramble]\n[solution]  - analyse solution for the scramble and find mistakes (use new string as separator! not just space)
 
 Scramble/solution-related commands:
 - !rev [solution] - reverse the solution of scramble, use RLUD notation, you can also use numbers like in slidysim
