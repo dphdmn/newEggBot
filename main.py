@@ -1148,7 +1148,7 @@ def getProbText(f1, f2, pzlName, nscr):
 #                + berv
 #            )
 #        out += "```"
-    out += "\n\nCheck this: https://dphdmn.github.io/15puzzleprob/"
+    out += "\n\nCheck this: https://egg.dphdmn.repl.co"
     return out
 
 

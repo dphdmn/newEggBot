@@ -4,4 +4,4 @@ __pycache__/*
 pyproject.toml
 poetry.lock
 all_solutions.txt
-templates/index.html 
+templates/index.html
