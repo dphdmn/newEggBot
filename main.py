@@ -2062,47 +2062,35 @@ async def on_message(message):
             solve = message.content.startswith("!solve")
             video = message.content.startswith("!video")
 
-            thingy = message.content[7:]
-            if len(thingy) == 37:
+            scramble = message.content[7:]
+            if len(scramble) == 37:
                 await message.channel.send(
                     "Hello, i am solving your scramble, please wait 30s before trying another scramble."
                 )
+
                 a = perf_counter()
-                my_com = "./solver2 " + '"' + thingy + '"'
-                solution = ""
-                print(my_com)
-                cmd = my_com
-                command = Command(cmd)
-                command.run(timeout=30)
-                solution = command.getSol()
+                solution = solver.solveOne(scramble)
                 b = perf_counter()
-                if solution == "":
-                    await message.channel.send(
-                        "Uh sorry, that scramble is very hard (30s) :( "
-                    )
-                else:
-                    print(solution)
-                    solution = solution.replace("b", "")
-                    solution = solution.replace(" ", "")
-                    solution = solution.replace("\\r\\n", "\n")
-                    solution = solution.replace("'", "")
-                    solution = solution.replace("\\n", "")
-                    outm = "Solution for: " + thingy + "\n"
-                    outm += "||" + solution + "||\n"
-                    outm += "Moves: " + str(len(solution)) + "\n"
-                    outm += "Time: " + str(round((b - a), 3))
-                    if video:
-                        outm += "\nPlease wait! I'm making a video for you!"
-                    await message.channel.send(outm)
-                    if video:
-                        makeGif(thingy, solution, 10)
-                        with open("movie.webm", "rb") as f:
-                            picture = discord.File(f)
-                            await message.channel.send("Solution for " + thingy + "\nOptimal: " + str(len(solution)) + " moves", file=picture)
-                        os.remove("movie.webm")
+
+                outm = "Solution for: " + scramble + "\n"
+                outm += "||" + solution + "||\n"
+                outm += "Moves: " + str(len(solution)) + "\n"
+                outm += "Time: " + str(round((b - a), 3))
+
+                if video:
+                    outm += "\nPlease wait! I'm making a video for you!"
+
+                await message.channel.send(outm)
+
+                if video:
+                    makeGif(scramble, solution, 10)
+                    with open("movie.webm", "rb") as f:
+                        picture = discord.File(f)
+                        await message.channel.send("Solution for " + scramble + "\nOptimal: " + str(len(solution)) + " moves", file=picture)
+                    os.remove("movie.webm")
             elif solve:
-                if len(thingy) == 17:
-                    await message.channel.send(solve8(thingy).replace(", ", "\n"))
+                if len(scramble) == 17:
+                    await message.channel.send(solve8(scramble).replace(", ", "\n"))
                 else:
                     await message.channel.send(
                         "Sorry, something is wrong with your scramble"
