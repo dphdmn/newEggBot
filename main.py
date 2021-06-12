@@ -1,4 +1,5 @@
 import scrambler
+import solver
 import os
 from keep_alive import keep_alive
 from prettytable import PrettyTable
@@ -22,6 +23,9 @@ import shutil
 from PIL import Image, ImageDraw, ImageFont
 import glob
 from replit import db
+
+solver = solver.Solver()
+solver.start()
 
 client = discord.Client()
 print('\n'.join(db.keys()))
