@@ -1472,7 +1472,7 @@ async def on_message(message):
     if message.content.startswith("!getreal"):
       scramble = scrambler.getScramble(4)
       await message.channel.send("Please wait! I am slow, use ben's scrambler instead: http://benwh.000webhostapp.com/software/15poprs/index.html")
-      solution = solveSimple(scramble)
+      solution = solver.solveOne(scramble)
       rever = solvereverse(solution)
       mypuz, blank = create_puz()
       out = "DDDRUURDDRUUULLL" + rever
