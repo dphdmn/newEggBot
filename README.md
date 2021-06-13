@@ -18,6 +18,7 @@ PB/ranks-related commands
 - !getreq [tier] [puzzle] - get requirement for getting tier in new ranked system
 - !getlb - get current version of leaderboard (ascii style)
 - !update - updates current pbs for getpb command, also gives a file of current pbs at 30 tiers  [technical]
+- !datecompare [date1] [date2] - compare two states of leaderboard (!datecompare 2021-06-14 2021-06-13)
 
 Solver-related commands:
 - !solve [scramble] - solve some 4x4 scramble
