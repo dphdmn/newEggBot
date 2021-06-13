@@ -44,6 +44,7 @@ Technical commands to compare rank pages (will be removed or changed in next upd
 - !cmp1 [file] - old file to compare [technical]
 - !cmp2 [file] - new file to compare [technical]
 - !compare - get compare of last 2 uploaded tables [technical]
+- !savecmp - saves current compare state to "anon" date [technical] [admin]
 
 Spamming fun commands:
 - !spam [something] - make bot spam something many times [admin]
