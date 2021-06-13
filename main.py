@@ -22,6 +22,7 @@ import requests
 import shutil
 from PIL import Image, ImageDraw, ImageFont
 import glob
+import zlib
 from replit import db
 
 solver = solver.Solver()
@@ -283,8 +284,10 @@ def getLeaderboard():
   db["leaderboard.txt"] = string #only for getPB command, should be fixed and removed
   db["smartboard.txt"] = smartstring #main format for compare
   db["prettylb.txt"] = y.get_string() #90% useless thing for !getlb - txt format lb
+  
   db["egg.html"] = myhtml #lb that is using on website
-  db["HTML" + updatedate] = myhtml
+
+  db["HTML" + updatedate] = zlib.compress(myhtml.encode("utf-8")).hex()
   updatehtml()
 
 def getAllHTML():
@@ -294,7 +297,7 @@ def getAllHTML():
   myhtmlshots = []
   for i in matches:
     mydate = i.replace("HTML", "")
-    myhtmlshots.append({"date": mydate, "htmlinfo": db[i]})
+    myhtmlshots.append({"date": mydate, "htmlinfo": zlib.decompress(bytes.fromhex(db[i])).decode("utf-8")})
   myhtmlshots.sort(key=lambda x: datetime.datetime.strptime(x["date"], '%Y-%m-%d'))
   myhtmlshots.reverse()
   return myhtmlshots
