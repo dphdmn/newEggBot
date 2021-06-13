@@ -281,14 +281,22 @@ def getLeaderboard():
     myhtml+="</div>\n"
   myhtml+="</main>"
   updatedate = str(datetime.datetime.today().strftime('%Y-%m-%d'))
+  #updatedate = "2021-06-14"
   db["leaderboard.txt"] = string #only for getPB command, should be fixed and removed
   db["smartboard.txt"] = smartstring #main format for compare
   db["prettylb.txt"] = y.get_string() #90% useless thing for !getlb - txt format lb
   
   db["egg.html"] = myhtml #lb that is using on website
 
-  db["HTML" + updatedate] = zlib.compress(myhtml.encode("utf-8")).hex()
+  db["HTML" + updatedate] = dbcomp(myhtml)
+  db["SMART" + updatedate] = dbcomp(smartstring)
   updatehtml()
+
+def dbcomp(string):
+  return zlib.compress(string.encode("utf-8")).hex()
+
+def dbdecomp(compthingy):
+  return zlib.decompress(bytes.fromhex(compthingy).decode("utf-8"))
 
 def getAllHTML():
   matches = db.prefix("HTML")
@@ -297,7 +305,7 @@ def getAllHTML():
   myhtmlshots = []
   for i in matches:
     mydate = i.replace("HTML", "")
-    myhtmlshots.append({"date": mydate, "htmlinfo": zlib.decompress(bytes.fromhex(db[i])).decode("utf-8")})
+    myhtmlshots.append({"date": mydate, "htmlinfo": dbdecomp(db[i])})
   myhtmlshots.sort(key=lambda x: datetime.datetime.strptime(x["date"], '%Y-%m-%d'))
   myhtmlshots.reverse()
   return myhtmlshots
@@ -800,91 +808,96 @@ def comparelist(name1, name2):
     tier_limits = db["tier_limits.txt"].lower().split("\t")
     for id, item in enumerate(tier_limits):
         tier_limits[id] = int(item)
-    textinfo1 = fixSpaces(db[name1].lower()).splitlines()
-    textinfo2 = fixSpaces(db[name2].lower()).splitlines()
+    try:
+      textinfo1 = fixSpaces(dbdecomp(db[name1]).lower()).splitlines()
+      textinfo2 = fixSpaces(dbdecomp(db[name2]).lower()).splitlines()
+    except:
+      dberror = "Error with loading data"
+    if dberror != "Error with loading data":
+      old_list = makeList(textinfo1, tier_limits, rankNames)
+      new_list = makeList(textinfo2, tier_limits, rankNames)
 
-    old_list = makeList(textinfo1, tier_limits, rankNames)
-    new_list = makeList(textinfo2, tier_limits, rankNames)
+      log = ""
 
-    log = ""
+      list_of_lists = []
+      #superid=0
+      for item_new in new_list:
+          item_old = next(
+              (item for item in old_list if item["Name"] == item_new["Name"]), None
+          )
+          name = item_new["Name"]
+          if item_old == None:
+              mylist = []
+              mylist.append(name)
+              mylist.append("[#" + item_new["Place"] + "]")
+              mylist.append(item_new["Rank"])
+              mylist.append("-")
+              mylist.append("New player")
+              mylist.append("Welcome!")
+              list_of_lists.append(mylist)
+          else:
+              # if int(item_old["Power"]) < int(item_new["Power"]):
+              if "".join(item_old["Scores"]).upper() != "".join(item_new["Scores"]).upper() and ("".join(item_old["Scores"]).upper()+"N/A") != "".join(item_new["Scores"]).upper():
+                  #  print(item_new["Name"]+''.join(item_old["Scores"]))
+                  # print(''.join(item_new["Scores"]))
+                  #print("".join(item_old["Scores"]).upper())
+                  #print("".join(item_new["Scores"]).upper())
+                  mylist = []
+                  if int(item_old["Place"]) > int(item_new["Place"]):
+                      mylist.append(name)
+                      mylist.append(
+                          "[#" + item_old["Place"] + " -> #" + item_new["Place"] + "]"
+                      )
+                  else:
+                      mylist.append(name)
+                      mylist.append("[#" + item_new["Place"] + "]")
 
-    list_of_lists = []
-    #superid=0
-    for item_new in new_list:
-        item_old = next(
-            (item for item in old_list if item["Name"] == item_new["Name"]), None
-        )
-        name = item_new["Name"]
-        if item_old == None:
-            mylist = []
-            mylist.append(name)
-            mylist.append("[#" + item_new["Place"] + "]")
-            mylist.append(item_new["Rank"])
-            mylist.append("-")
-            mylist.append("New player")
-            mylist.append("Welcome!")
-            list_of_lists.append(mylist)
-        else:
-            # if int(item_old["Power"]) < int(item_new["Power"]):
-            if "".join(item_old["Scores"]).upper() != "".join(item_new["Scores"]).upper() and ("".join(item_old["Scores"]).upper()+"N/A") != "".join(item_new["Scores"]).upper():
-                #  print(item_new["Name"]+''.join(item_old["Scores"]))
-                # print(''.join(item_new["Scores"]))
-                #print("".join(item_old["Scores"]).upper())
-                #print("".join(item_new["Scores"]).upper())
-                mylist = []
-                if int(item_old["Place"]) > int(item_new["Place"]):
-                    mylist.append(name)
-                    mylist.append(
-                        "[#" + item_old["Place"] + " -> #" + item_new["Place"] + "]"
-                    )
-                else:
-                    mylist.append(name)
-                    mylist.append("[#" + item_new["Place"] + "]")
+                  if item_old["Rank"] != item_new["Rank"]:
+                      mylist.append("[New Tier: " + item_new["Rank"] + "!]")
+                  else:
+                      mylist.append("===" + item_new["Rank"] + "===")
+                  mylist.extend(
+                      getScores(
+                          req,
+                          item_old["Scores"],
+                          item_new["Scores"],
+                          catNames,
+                          item_new["rankID"],
+                      ).split()
+                  )
+                  if item_new["Rank"] == "{UNRANKED}":
+                      mylist.append(" ")
+                      mylist.append(" ")
+                      mylist.append("Nice pbs!")
+                      mylist.append("Good luck")
+                      mylist.append("With beginner scores")
+                      mylist.append("Next time :)")
+                  #mylist[0] = mylist[0] + str(superid)
+                  #superid += 1
+                  list_of_lists.append(mylist)
+      maxDepth = 0
+      maxColumns = len(list_of_lists)
 
-                if item_old["Rank"] != item_new["Rank"]:
-                    mylist.append("[New Tier: " + item_new["Rank"] + "!]")
-                else:
-                    mylist.append("===" + item_new["Rank"] + "===")
-                mylist.extend(
-                    getScores(
-                        req,
-                        item_old["Scores"],
-                        item_new["Scores"],
-                        catNames,
-                        item_new["rankID"],
-                    ).split()
-                )
-                if item_new["Rank"] == "{UNRANKED}":
-                    mylist.append(" ")
-                    mylist.append(" ")
-                    mylist.append("Nice pbs!")
-                    mylist.append("Good luck")
-                    mylist.append("With beginner scores")
-                    mylist.append("Next time :)")
-                #mylist[0] = mylist[0] + str(superid)
-                #superid += 1
-                list_of_lists.append(mylist)
-    maxDepth = 0
-    maxColumns = len(list_of_lists)
-
-    tableRows = []
-    for i in list_of_lists:
-        l = len(i)
-        if l > maxDepth:
-            maxDepth = l
-    for j in range(maxDepth):
-        myrow = []
-        for i in range(maxColumns):
-            i_list = list_of_lists[i]
-            if len(i_list) > j:
-                myrow.append(i_list[j])
-            else:
-                myrow.append("_")
-        tableRows.append(myrow)
-    x = PrettyTable()
-    x.field_names = tableRows[0]
-    x.add_rows(tableRows[1:])
-    return x.get_string().replace("_", " ")
+      tableRows = []
+      for i in list_of_lists:
+          l = len(i)
+          if l > maxDepth:
+              maxDepth = l
+      for j in range(maxDepth):
+          myrow = []
+          for i in range(maxColumns):
+              i_list = list_of_lists[i]
+              if len(i_list) > j:
+                  myrow.append(i_list[j])
+              else:
+                  myrow.append("_")
+          tableRows.append(myrow)
+      x = PrettyTable()
+      x.field_names = tableRows[0]
+      x.add_rows(tableRows[1:])
+      return x.get_string().replace("_", " ")
+    else:
+      return dberror
 
 
 # _______________processing commands in threads with timeout________________________
@@ -2033,6 +2046,21 @@ async def on_message(message):
             os.remove("img_lemon.jpg")
         except:
             await message.channel.send("Something is wrong")
+    if message.content.startswith("!datecompare"):
+      contentArray = message.content.lower().split(" ")
+      if len(contentArray != 3):
+        await message.channel.send("Sorry your dates are wrong. Format:\n!datecompae 2021-06-13 2021-06-14")
+      else:
+        date1 = "SMART"+contentArray[1]
+        date2 = "SMART"+contentArray[2]
+        out = comparelist(date1, date2)
+        f = open("compare.txt", "w+")
+        f.write(out)
+        f.close()
+        with open("compare.txt", "rb") as f:
+          txt = discord.File(f)
+          await message.channel.send("Your cmp: ", file=txt)
+        os.remove("compare.txt")
     if message.content.startswith("!compare"):
         out = comparelist("file1.txt", "file2.txt")
         if len(out) > 1900:
@@ -2054,7 +2082,7 @@ async def on_message(message):
         except:
             await message.channel.send("Can't get file")
         if good:
-            db["file1.txt"] = text
+            db["file1.txt"] = dbcomp(text)
             await message.channel.send("Probably updated")
     if message.content.startswith("!cmp2"):
         good = False
@@ -2065,7 +2093,7 @@ async def on_message(message):
         except:
             await message.channel.send("Can't get file")
         if good:
-            db["file2.txt"] = text
+            db["file2.txt"] = dbcomp(text)
             await message.channel.send("Probably updated")
     if message.content.startswith("!movesgame"):
       scramble = scrambler.getScramble(4)
