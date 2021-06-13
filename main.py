@@ -296,7 +296,7 @@ def dbcomp(string):
   return zlib.compress(string.encode("utf-8")).hex()
 
 def dbdecomp(compthingy):
-  return zlib.decompress(bytes.fromhex(compthingy).decode("utf-8"))
+  return zlib.decompress(bytes.fromhex(compthingy)).decode("utf-8")
 
 def getAllHTML():
   matches = db.prefix("HTML")
@@ -809,11 +809,14 @@ def comparelist(name1, name2):
     for id, item in enumerate(tier_limits):
         tier_limits[id] = int(item)
     try:
+      dberror = "none"
       textinfo1 = fixSpaces(dbdecomp(db[name1]).lower()).splitlines()
       textinfo2 = fixSpaces(dbdecomp(db[name2]).lower()).splitlines()
     except:
+      print(traceback.format_exc())
       dberror = "Error with loading data"
     if dberror != "Error with loading data":
+      
       old_list = makeList(textinfo1, tier_limits, rankNames)
       new_list = makeList(textinfo2, tier_limits, rankNames)
 
@@ -2048,7 +2051,7 @@ async def on_message(message):
             await message.channel.send("Something is wrong")
     if message.content.startswith("!datecompare"):
       contentArray = message.content.lower().split(" ")
-      if len(contentArray != 3):
+      if len(contentArray) != 3:
         await message.channel.send("Sorry your dates are wrong. Format:\n!datecompae 2021-06-13 2021-06-14")
       else:
         date1 = "SMART"+contentArray[1]
