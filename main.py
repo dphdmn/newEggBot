@@ -1411,6 +1411,7 @@ async def on_message(message):
       try:
         getLeaderboard()
         await makeTmpSend("smartboard.txt", db["smartboard.txt"], "Check this: https://eggserver.dphdmntranquilc.repl.co/\nProbably updated! Try !getpb command: ", message.channel)
+        db["lastupdate"] = perf_counter()
       except:
         print(traceback.format_exc())
         await message.channel.send("Sorry, something is wrong")
@@ -1591,7 +1592,8 @@ async def on_message(message):
                 )
                 bad = True
             if not bad:
-                await message.channel.send(outputString)
+                dif = "\nTime since last !update: " + str(int(((perf_counter() - int(db["lastupdate"]))/60))) + " minutes"
+                await message.channel.send(outputString + dif)
         except:
             await message.channel.send(
                 "Please specify the puzzle size, for example: !getpb dphdmn 4x4"
