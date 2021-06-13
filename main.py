@@ -279,18 +279,50 @@ def getLeaderboard():
     myhtml+="</div>\n"
     myhtml+="</div>\n"
   myhtml+="</main>"
-  db["leaderboard.txt"] = string
-  db["smartboard.txt"] = smartstring
-  db["prettylb.txt"] = y.get_string()
-  db["egg.html"] = myhtml
+  updatedate = str(datetime.datetime.today().strftime('%Y-%m-%d'))
+  db["leaderboard.txt"] = string #only for getPB command, should be fixed and removed
+  db["smartboard.txt"] = smartstring #main format for compare
+  db["prettylb.txt"] = y.get_string() #90% useless thing for !getlb - txt format lb
+  db["egg.html"] = myhtml #lb that is using on website
+  db["HTML" + updatedate] = myhtml
   updatehtml()
 
+def getAllHTML():
+  matches = db.prefix("HTML")
+  print("ALL DATES")
+  print(matches)
+  myhtmlshots = []
+  for i in matches:
+    mydate = i.replace("HTML", "")
+    myhtmlshots.append({"date": mydate, "htmlinfo": db[i]})
+  myhtmlshots.sort(key=lambda x: datetime.datetime.strptime(x["date"], '%Y-%m-%d'))
+  myhtmlshots.reverse()
+  return myhtmlshots
+
 def updatehtml():
-   f = open("templates/index.html", "w+")    
-   f.write(db["header.html"])
-   f.write(db["egg.html"])
-   f.write(db["footer.html"])
-   f.close()
+  allhtml = getAllHTML() 
+  egginfo = ""
+  egginfo += "<div class=\"tab\">\n"
+  #headers 
+  for e, i in enumerate(allhtml):
+    mydate = i["date"]
+    if e == 0:
+      egginfo += "<button class=\"tablinks\" id=\"defaultOpen\" onclick=\"openCity(event, \'" + mydate + "\')\">" + mydate + "</button>\n"
+    else:
+      egginfo += "<button class=\"tablinks\" onclick=\"openCity(event, \'" + mydate + "\')\">" + mydate + "</button>\n" 
+  egginfo += "<div>\n"
+  #content
+  for i in allhtml:
+    myinfo = i["htmlinfo"]
+    mydate = i["date"]
+    egginfo += "<div id=\"" + mydate + "\" class=\"tabcontent\">\n"
+    egginfo += myinfo
+    egginfo += "</div>\n"
+  f = open("templates/index.html", "w+")    
+  f.write(db["header.html"])
+  f.write(egginfo)
+  f.write(db["footer.html"])
+  f.close()
 
 #___________GIF_MAKER
 def clearImages():
@@ -1148,7 +1180,7 @@ def getProbText(f1, f2, pzlName, nscr):
 #                + berv
 #            )
 #        out += "```"
-    out += "\n\nCheck this: https://egg.dphdmn.repl.co"
+    out += "\n\nCheck this: https://dphdmn.github.io/15puzzleprob/"
     return out
 
 
@@ -1410,7 +1442,7 @@ async def on_message(message):
       await message.channel.send("Wait for it!")
       try:
         getLeaderboard()
-        await makeTmpSend("smartboard.txt", db["smartboard.txt"], "Check this: https://eggserver.dphdmntranquilc.repl.co/\nProbably updated! Try !getpb command: ", message.channel)
+        await makeTmpSend("smartboard.txt", db["smartboard.txt"], "Check this: https://egg.dphdmn.repl.co\nProbably updated! Try !getpb command: ", message.channel)
         db["lastupdate"] = perf_counter()
       except:
         print(traceback.format_exc())
