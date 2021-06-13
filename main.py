@@ -1462,7 +1462,7 @@ async def on_message(message):
       try:
         getLeaderboard()
         await makeTmpSend("smartboard.txt", db["smartboard.txt"], "Check this: https://egg.dphdmn.repl.co\nProbably updated! Try !getpb command: ", message.channel)
-        db["lastupdate"] = perf_counter()
+        db["lastupdate"] = datetime.datetime.now().timestamp()
       except:
         print(traceback.format_exc())
         await message.channel.send("Sorry, something is wrong")
@@ -1643,7 +1643,7 @@ async def on_message(message):
                 )
                 bad = True
             if not bad:
-                dif = "\nTime since last !update: " + str(int(((perf_counter() - int(db["lastupdate"]))/60))) + " minutes"
+                dif = "\nTime since last !update: " + str(int((datetime.datetime.now().timestamp() - (db["lastupdate"]))/60)) + " minutes"
                 await message.channel.send(outputString + dif)
         except:
             await message.channel.send(
@@ -2049,6 +2049,13 @@ async def on_message(message):
             os.remove("img_lemon.jpg")
         except:
             await message.channel.send("Something is wrong")
+    if message.content.startswith("!savecmp"):   
+      if message.author.guild_permissions.administrator:
+       today = str(datetime.datetime.today().strftime('%Y-%m-%d'))
+       db["SMARTanon"] = db["SMART"+today]
+       await message.channel.send("Saved to anon!")
+      else:
+        await message.channel.send("Sorry, you are not admin")
     if message.content.startswith("!datecompare"):
       contentArray = message.content.lower().split(" ")
       if len(contentArray) != 3:
