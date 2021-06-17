@@ -2116,7 +2116,11 @@ async def on_message(message):
     if message.content.startswith("!goodm"):
         try:
             scramble = message.content[7:]
-            goodmoves = getGoodMoves(scramble, 4)
+            if len(scramble) == 37:
+                size = 4
+            elif len(scramble) == 17:
+                size = 3
+            goodmoves = getGoodMoves(scramble, size)
             await message.channel.send("Your scramble:\n"+scramble+"\nGood moves for your scramble: " + ' or '.join(goodmoves))
         except:
             print(traceback.format_exc())
