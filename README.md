@@ -21,8 +21,9 @@ PB/ranks-related commands
 - !datecompare [date1] [date2] - compare two states of leaderboard (!datecompare 2021-06-14 2021-06-13)
 
 Solver-related commands:
-- !solve [scramble] - solve some 4x4 scramble
-- !eggsolve [scramble] - solve 4x4 scramble and find all possible optimal solutions
+- !solve [scramble] - solve some 4x4 or 3x3 scramble
+- !eggsolve [scramble] - solve 4x4 or 3x3 scramble and find all possible optimal solutions
+- !goodm [scramble] - find good moves for some 3x3 or 4x4 scramble
 - !video [scramble] - like !solve but also get a video
 - !getreal - returns real scramble (moves) and draws a picture of it
 - !movesgame - find a good moves for a random scramble game
