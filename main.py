@@ -25,8 +25,13 @@ import glob
 import zlib
 from replit import db
 
-solver = solver.Solver()
-solver.start()
+solvers = {
+    3: solver.Solver(3),
+    4: solver.Solver(4)
+}
+
+solvers[3].start()
+solvers[4].start()
 
 client = discord.Client()
 print('\n'.join(db.keys()))
@@ -546,8 +551,8 @@ def getReverse(move):
     return "U"
   return None
 
-def getGoodMoves(scramble):
-    return [x[0] for x in solver.solveGood(scramble)]
+def getGoodMoves(scramble, size):
+    return [x[0] for x in solvers[size].solveGood(scramble)]
 
 def bannedmove(blank, move):
   if move == "R":
@@ -602,7 +607,7 @@ def analyse(scramble, solution):
       if lastopt !="" and user_end_len==predicted_opt_end_len:
         opt = lastopt[1:]
       else:
-        opt = solver.solveOne(i)
+        opt = solvers[4].solveOne(i)
       lastopt=opt
       optimals.append(opt)
       optl.append(len(opt))
@@ -682,17 +687,6 @@ def analyse(scramble, solution):
   
   return log
 # _______________________________________________________________
-
-# ______________8 optimal solver____________
-def solve8(scramble):
-    searchfile = open("all_solutions.txt", "r")
-    for line in searchfile:
-        if scramble in line:
-            searchfile.close()
-            return line
-    searchfile.close()
-    return "That does not look like a scramble to me, example of a valid scramble: 0 7 8/2 3 6/4 1 5"
-
 
 # _____________compare tables___________________
 
@@ -1441,7 +1435,7 @@ async def on_message(message):
           else:
             await message.channel.send("Starting daily FMC, please wait!")
             scramble = scrambler.getScramble(4)
-            solution = solver.solveOne(scramble)
+            solution = solvers[4].solveOne(scramble)
             sollen = str(len(solution))
             outString = scramble + "\n" + solution + "\n" + sollen
             db["daily_status.txt"] = outString
@@ -1472,7 +1466,7 @@ async def on_message(message):
     if message.content.startswith("!getreal"):
       scramble = scrambler.getScramble(4)
       await message.channel.send("Please wait! I am slow, use ben's scrambler instead: http://benwh.000webhostapp.com/software/15poprs/index.html")
-      solution = solver.solveOne(scramble)
+      solution = solvers[4].solveOne(scramble)
       rever = solvereverse(solution)
       mypuz, blank = create_puz()
       out = "DDDRUURDDRUUULLL" + rever
@@ -2113,7 +2107,7 @@ async def on_message(message):
         picture = discord.File(f)
         await message.channel.send("Find good move at this scramble: \n" + scramble + "\nYou will get answer in few seconds", file=picture)
       os.remove("scramble.png")
-      goodmoves = getGoodMoves(scramble)
+      goodmoves = getGoodMoves(scramble, 4)
       goodmovesmessage=""
       for j in ["R","U","L","D"]:
         if j in goodmoves:
@@ -2124,7 +2118,7 @@ async def on_message(message):
     if message.content.startswith("!goodm"):
       try:
         scramble = message.content[7:]
-        goodmoves = getGoodMoves(scramble)
+        goodmoves = getGoodMoves(scramble, 4)
         await message.channel.send("Your scramble:\n"+scramble+"\nGood moves for your scramble: " + ' or '.join(goodmoves))
       except:
         print(traceback.format_exc())
@@ -2138,7 +2132,7 @@ async def on_message(message):
       else:
         try:
           a = perf_counter()
-          solutions = solver.solveAll(scramble)
+          solutions = solvers[4].solveAll(scramble)
           b = perf_counter()
           string = ""
           string += "Time: " + str(round((b - a), 3)) + "\n"
@@ -2155,8 +2149,13 @@ async def on_message(message):
 
             scramble = message.content[7:]
             if len(scramble) == 37:
+                size = 4
+            elif len(scramble) == 17:
+                size = 3
+
+            if size == 4 or (size == 3 and solve):
                 a = perf_counter()
-                solution = solver.solveOne(scramble)
+                solution = solvers[size].solveOne(scramble)
                 b = perf_counter()
 
                 outm = "Solution for: " + scramble + "\n"
@@ -2175,13 +2174,10 @@ async def on_message(message):
                         picture = discord.File(f)
                         await message.channel.send("Solution for " + scramble + "\nOptimal: " + str(len(solution)) + " moves", file=picture)
                     os.remove("movie.webm")
-            elif solve:
-                if len(scramble) == 17:
-                    await message.channel.send(solve8(scramble).replace(", ", "\n"))
-                else:
-                    await message.channel.send(
-                        "Sorry, something is wrong with your scramble"
-                    )
+            else:
+                await message.channel.send(
+                    "Sorry, something is wrong with your scramble"
+                )
         except Exception as e:
             await message.channel.send("Something is wrong\n```" + str(e) + "```")
     if message.content.startswith("!help"):

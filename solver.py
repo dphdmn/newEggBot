@@ -1,11 +1,11 @@
 import subprocess
 
 class Solver:
-    def __init__(self):
-        pass
+    def __init__(self, size):
+        self.size = size
 
     def start(self):
-        self.process = subprocess.Popen("./solver", stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
+        self.process = subprocess.Popen(f"./solver{self.size}", stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
 
     def stop(self):
         self.process.terminate()
