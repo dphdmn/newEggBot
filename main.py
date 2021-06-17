@@ -25,19 +25,24 @@ import glob
 import zlib
 from replit import db
 
-solver = solver.Solver()
-solver.start()
+solvers = {
+    3: solver.Solver(3),
+    4: solver.Solver(4)
+}
+
+solvers[3].start()
+solvers[4].start()
 
 client = discord.Client()
 print('\n'.join(db.keys()))
 async def makeTmpSend(filename, filedata, messagewith, msgchn):
-  f = open(filename, "w+")    
-  f.write(filedata)
-  f.close()
-  with open(filename, "rb") as f:
-    myfile = discord.File(f)
-    await msgchn.send(messagewith, file=myfile)
-  os.remove(filename)
+    f = open(filename, "w+")
+    f.write(filedata)
+    f.close()
+    with open(filename, "rb") as f:
+        myfile = discord.File(f)
+        await msgchn.send(messagewith, file=myfile)
+    os.remove(filename)
 
 def readFilenormal(name):
     with open(name, "r") as file:
@@ -45,329 +50,326 @@ def readFilenormal(name):
     return mystr
 
 def addConstants():
-  for filename in glob.glob('Constant_Files/*.*'):
-    print(filename[15:])
-    text = readFilenormal(filename)
-    db[filename[15:]] = text
+    for filename in glob.glob('Constant_Files/*.*'):
+        print(filename[15:])
+        text = readFilenormal(filename)
+        db[filename[15:]] = text
 
 addConstants()
 
 
 def solvereverse(words):
-  words = words.replace("R3", "RRR")
-  words = words.replace("R2", "RR")
-  words = words.replace("L3", "LLL")
-  words = words.replace("L2", "LL")
-  words = words.replace("U3", "UUU")
-  words = words.replace("U2", "UU")
-  words = words.replace("D3", "DDD")
-  words = words.replace("D2", "DD")
-  words = words.replace("R", "_")
-  words = words.replace("L", "R")
-  words = words.replace("_", "L")
-  words = words.replace("U", "_")
-  words = words.replace("D", "U")
-  words = words.replace("_", "D")
-  words = words[::-1]
-  return words
+    words = words.replace("R3", "RRR")
+    words = words.replace("R2", "RR")
+    words = words.replace("L3", "LLL")
+    words = words.replace("L2", "LL")
+    words = words.replace("U3", "UUU")
+    words = words.replace("U2", "UU")
+    words = words.replace("D3", "DDD")
+    words = words.replace("D2", "DD")
+    words = words.replace("R", "_")
+    words = words.replace("L", "R")
+    words = words.replace("_", "L")
+    words = words.replace("U", "_")
+    words = words.replace("D", "U")
+    words = words.replace("_", "D")
+    words = words[::-1]
+    return words
 
 #_______________________________Auto leaderboard
 
 def getLeaderboard():
-  my_secret = os.environ['slidysim']
-  r = requests.post(my_secret, data = {'width':'-1',
-'height':'-1',
-'solvetype':'any',
-'displaytype':'Standard',
-'avglen':'-1',
-'pbtype':'time',
-'sortby':'time',
-'controls':'km',
-'user':'',
-'solvedata':0,
-'version':'28.3'})
+    my_secret = os.environ['slidysim']
+    r = requests.post(my_secret, data = {
+        'width':'-1',
+        'height':'-1',
+        'solvetype':'any',
+        'displaytype':'Standard',
+        'avglen':'-1',
+        'pbtype':'time',
+        'sortby':'time',
+        'controls':'km',
+        'user':'',
+        'solvedata':0,
+        'version':'28.3'
+    })
 
-  data = r.text.split("<br>")
-  data = data[1:-1]
-  solvesdata = []
- #goodPuzzles=["3x3","4x4","5x5","6x6","7x7","8x8","9x9","10x10"]
- # goodModes=["Standard","2-N relay", "Marathon 10", "Marathon 42"]
-  catNames = [
-    ["3x3-ao5", "Standard", "3x3", "5"],
-    ["3x3-ao12","Standard", "3x3", "12"],
-    ["3x3-ao50","Standard", "3x3", "50"],
-    ["3x3-ao100","Standard", "3x3", "100"],
-    ["3x3-x10","Marathon 10","3x3", "1"],
-    ["3x3-x42","Marathon 42","3x3", "1"],
-    ["4x4-sin","Standard", "4x4", "1"],
-    ["4x4-ao5","Standard", "4x4", "5"],
-    ["4x4-ao12","Standard", "4x4", "12"],
-    ["4x4-ao50","Standard", "4x4", "50"],
-    ["4x4-ao100","Standard", "4x4", "100"],
-    ["4x4-x10","Marathon 10","4x4", "1"],
-    ["4x4-x42","Marathon 42","4x4", "1"],
-    ["4x4-rel","2-N relay","4x4", "1"],
-    ["5x5-sin","Standard", "5x5", "1"],
-    ["5x5-ao5","Standard", "5x5", "5"],
-    ["5x5-ao12","Standard", "5x5", "12"],
-    ["5x5-ao50","Standard", "5x5", "50"],
-    ["5x5-rel","2-N relay","5x5", "1"],
-    ["6x6-sin","Standard", "6x6", "1"],
-    ["6x6-ao5","Standard", "6x6", "5"],
-    ["6x6-ao12","Standard", "6x6", "12"],
-    ["6x6-rel","2-N relay","6x6", "1"],
-    ["7x7-sin","Standard", "7x7", "1"],
-    ["7x7-ao5","Standard", "7x7", "5"],
-    ["7x7-rel","2-N relay","7x7", "1"],
-    ["8x8-sin","Standard", "8x8", "1"],
-    ["8x8-ao5","Standard", "8x8", "5"],
-    ["9x9-sin","Standard", "9x9", "1"],
-    ["10x10-sin","Standard", "10x10", "1"],
+    data = r.text.split("<br>")
+    data = data[1:-1]
+    solvesdata = []
+    catNames = [
+        ["3x3-ao5", "Standard", "3x3", "5"],
+        ["3x3-ao12","Standard", "3x3", "12"],
+        ["3x3-ao50","Standard", "3x3", "50"],
+        ["3x3-ao100","Standard", "3x3", "100"],
+        ["3x3-x10","Marathon 10","3x3", "1"],
+        ["3x3-x42","Marathon 42","3x3", "1"],
+        ["4x4-sin","Standard", "4x4", "1"],
+        ["4x4-ao5","Standard", "4x4", "5"],
+        ["4x4-ao12","Standard", "4x4", "12"],
+        ["4x4-ao50","Standard", "4x4", "50"],
+        ["4x4-ao100","Standard", "4x4", "100"],
+        ["4x4-x10","Marathon 10","4x4", "1"],
+        ["4x4-x42","Marathon 42","4x4", "1"],
+        ["4x4-rel","2-N relay","4x4", "1"],
+        ["5x5-sin","Standard", "5x5", "1"],
+        ["5x5-ao5","Standard", "5x5", "5"],
+        ["5x5-ao12","Standard", "5x5", "12"],
+        ["5x5-ao50","Standard", "5x5", "50"],
+        ["5x5-rel","2-N relay","5x5", "1"],
+        ["6x6-sin","Standard", "6x6", "1"],
+        ["6x6-ao5","Standard", "6x6", "5"],
+        ["6x6-ao12","Standard", "6x6", "12"],
+        ["6x6-rel","2-N relay","6x6", "1"],
+        ["7x7-sin","Standard", "7x7", "1"],
+        ["7x7-ao5","Standard", "7x7", "5"],
+        ["7x7-rel","2-N relay","7x7", "1"],
+        ["8x8-sin","Standard", "8x8", "1"],
+        ["8x8-ao5","Standard", "8x8", "5"],
+        ["9x9-sin","Standard", "9x9", "1"],
+        ["10x10-sin","Standard", "10x10", "1"],
     ]
-  namelist=[]
-  for i in data:
-    ilist = i.split(",")
-    puzzle=str(ilist[0]) + "x" + str(ilist[1])
-    mode = ilist[2]
-    name = ilist[4].upper()
-    solvetime = str(format((int(ilist[5]))/1000, '.3f'))
-    avgType = str(ilist[8])
-    category = ""
-    for cat in catNames:
-      if cat[1]==mode and cat[2] == puzzle and cat[3] == avgType:
-        category = cat[0]
-    if category != "":
-      if name not in namelist:
-        namelist.append(name)
-      solvesdata.append({
-        "Cat" : category,
-        "Name": name,
-        "Time": solvetime,
-        }
-    )
-  reqstring = db["tiers.txt"].splitlines()
-  req=[]
-  tier_cost = db["tier_cost.txt"].lower().split("\t")
-  for id, item in enumerate(tier_cost):
-    tier_cost[id] = int(item)
-  tier_limits = db["tier_limits.txt"].lower().split("\t")
-  for id, item in enumerate(tier_limits):
-    tier_limits[id] = int(item)   
-  id = 0
-  tierNames=["Unranked"]
-  for i in reqstring:
-    i = i.split("\t")
-    tierNames.append(i[0])
-    req.append({"Tiercost":tier_cost[id],"Tierlimit":tier_limits[id], "Scores": i[1:], "TierID":id+1})
-    id += 1
-  req.reverse()
-  #print(namelist)
-  userData = []
-  for name in namelist:
-    scoresRow=[]
-    userCatsolves = [name]
-    power=0
-    for catid, cat in enumerate(catNames):
-      category = cat[0]
-      solves=[]
-      for solve in solvesdata:
-        if solve["Cat"] == category and solve["Name"] == name:
-          solves.append(float(solve["Time"]))
-      if len(solves) == 0:
-        userCatsolves.append("N/A")
-        scoresRow.append(0)
-      else:
-        userscoretime=round(min(solves),3)
-        userCatsolves.append(str(format(userscoretime,'.3f')))
-        myscoreid=0
-        for reqdata in req:
-          scoresValues=reqdata["Scores"]          
-          if userscoretime < float(scoresValues[catid]):
-            power+=int(reqdata["Tiercost"])
-            myscoreid=reqdata["TierID"]
-            #if name == "dphdmn":
-            #  print(int(reqdata["Tiercost"]), power)
-            break
-        scoresRow.append(myscoreid) 
-    userCatsolves.append(str(power))
-    tierID=0
-    for id,i in enumerate(tier_limits):
-      if power>=int(i):
-        tierID=id+1
-    userCatsolves.append(tierNames[tierID])
-    userCatsolves.extend(scoresRow)
-    userData.append(userCatsolves)
-    #print(userCatsolves)
-  string = ""
-  userData.sort(key=lambda x: int(x[31]))
-  userData.reverse()
-  smartstring = ""
-  y = PrettyTable()
-  y.field_names = ["Name","Place","Power","Tier","3x3 ao5","3x3 ao12","3x3 ao50","3x3 ao100","3x3 x10", "3x3 x42", "4x4 single", "4x4 ao5", "4x4 ao12", "4x4 ao50", "4x4 ao100", "4x4 x10", "4x4 x42", "4x4 relay", "5x5 single", "5x5 ao5", "5x5 ao12", "5x5 ao50", "5x5 relay", "6x6 single", "6x6 ao5", "6x6 ao12", "6x6 relay", "7x7 single", "7x7 ao5", "7x7 relay", "8x8 single", "8x8 ao5", "9x9 single", "10x10 single"]
-  headers = ["3x3 ao5","3x3 ao12","3x3 ao50","3x3 ao100","3x3 x10", "3x3 x42", "4x4 single", "4x4 ao5", "4x4 ao12", "4x4 ao50", "4x4 ao100", "4x4 x10", "4x4 x42", "4x4 relay", "5x5 single", "5x5 ao5", "5x5 ao12", "5x5 ao50", "5x5 relay", "6x6 single", "6x6 ao5", "6x6 ao12", "6x6 relay", "7x7 single", "7x7 ao5", "7x7 relay", "8x8 single", "8x8 ao5", "9x9 single", "10x10 single"]
-  rows=[]
-  scoresbase=33
-  for num,i in enumerate(userData):
-    row=[]
-    #print("doing")
-    #print(str(i))
-    string+='\t'.join(str(x) for x in i)+"\n"
-    row.append(i[0])
-    row.append(str(num+1))
-    row.append(i[31])
-    row.append(i[32])
-    smartstring += i[0] + "\t" + str(num+1) +"\t" + i[31] + "\t"
-    for j in range(len(catNames)):
-      smartstring += i[j+1] + "\t"
-      row.append(''.join([i[j+1]]))
-    smartstring += "\n"
-    rows.append(row)
-  y.add_rows(rows)  
-  tierNames.reverse()
-  myhtml="<main class=\"st_viewport\">"
-  for id, tier in enumerate(tierNames):
-    if tier != "Unranked":
-      myreqdata = req[id]
-    reqscoreslist=myreqdata["Scores"]
-    myhtml+="<div class=\"st_wrap_table\" data-table_id=\"" + str(id+1)+"\">\n"
-    myhtml+="<header class=\"st_table_header\">\n"
-    myhtml+="<h2>"
-    myhtml+= tier
-    myhtml+="</h2>\n"
-    myhtml+="<div class=\"st_row\">\n"
-    myhtml+="<div class=\"st_column _name\"></div>\n"
-    myhtml+="<div class=\"st_column _place\">"+str(myreqdata["Tiercost"])+"</div>\n"
-    myhtml+="<div class=\"st_column _power\">"+str(myreqdata["Tierlimit"])+"</div>\n"
-    for e,_ in enumerate(headers):
-      myhtml+="<div class=\"st_column _score\">"+ str(reqscoreslist[e]) +"</div>\n"
-    myhtml+="</div>\n"
-    myhtml+="<div class=\"st_row\">\n"
-    myhtml+="<div class=\"st_column _name\">Name</div>\n"
-    myhtml+="<div class=\"st_column _place\">Place</div>\n"
-    myhtml+="<div class=\"st_column _power\">Power</div>\n"
-    for i in headers:
-      myhtml+="<div class=\"st_column _score\">"+ i +"</div>\n"
-    myhtml+="</div>\n"
-    myhtml+="</header>\n"
-
-    myhtml+="<div class=\"st_table\">\n"
-    for personid, person in enumerate(rows):
-      dataRow = userData[personid]
-      if person[3] == tier:
-        userTierID = 12-int(tierNames.index(tier))
+    namelist=[]
+    for i in data:
+        ilist = i.split(",")
+        puzzle=str(ilist[0]) + "x" + str(ilist[1])
+        mode = ilist[2]
+        name = ilist[4].upper()
+        solvetime = str(format((int(ilist[5]))/1000, '.3f'))
+        avgType = str(ilist[8])
+        category = ""
+        for cat in catNames:
+            if cat[1]==mode and cat[2] == puzzle and cat[3] == avgType:
+                category = cat[0]
+        if category != "":
+            if name not in namelist:
+                namelist.append(name)
+            solvesdata.append({
+                "Cat" : category,
+                "Name": name,
+                "Time": solvetime,
+            })
+    reqstring = db["tiers.txt"].splitlines()
+    req=[]
+    tier_cost = db["tier_cost.txt"].lower().split("\t")
+    for id, item in enumerate(tier_cost):
+        tier_cost[id] = int(item)
+    tier_limits = db["tier_limits.txt"].lower().split("\t")
+    for id, item in enumerate(tier_limits):
+        tier_limits[id] = int(item)
+    id = 0
+    tierNames=["Unranked"]
+    for i in reqstring:
+        i = i.split("\t")
+        tierNames.append(i[0])
+        req.append({"Tiercost":tier_cost[id],"Tierlimit":tier_limits[id], "Scores": i[1:], "TierID":id+1})
+        id += 1
+    req.reverse()
+    #print(namelist)
+    userData = []
+    for name in namelist:
+        scoresRow=[]
+        userCatsolves = [name]
+        power=0
+        for catid, cat in enumerate(catNames):
+            category = cat[0]
+            solves=[]
+            for solve in solvesdata:
+                if solve["Cat"] == category and solve["Name"] == name:
+                    solves.append(float(solve["Time"]))
+            if len(solves) == 0:
+                userCatsolves.append("N/A")
+                scoresRow.append(0)
+            else:
+                userscoretime=round(min(solves),3)
+                userCatsolves.append(str(format(userscoretime,'.3f')))
+                myscoreid=0
+                for reqdata in req:
+                    scoresValues=reqdata["Scores"]
+                    if userscoretime < float(scoresValues[catid]):
+                        power+=int(reqdata["Tiercost"])
+                        myscoreid=reqdata["TierID"]
+                        #if name == "dphdmn":
+                        #  print(int(reqdata["Tiercost"]), power)
+                        break
+                scoresRow.append(myscoreid)
+        userCatsolves.append(str(power))
+        tierID=0
+        for id,i in enumerate(tier_limits):
+            if power>=int(i):
+                tierID=id+1
+        userCatsolves.append(tierNames[tierID])
+        userCatsolves.extend(scoresRow)
+        userData.append(userCatsolves)
+        #print(userCatsolves)
+    string = ""
+    userData.sort(key=lambda x: int(x[31]))
+    userData.reverse()
+    smartstring = ""
+    y = PrettyTable()
+    y.field_names = ["Name","Place","Power","Tier","3x3 ao5","3x3 ao12","3x3 ao50","3x3 ao100","3x3 x10", "3x3 x42", "4x4 single", "4x4 ao5", "4x4 ao12", "4x4 ao50", "4x4 ao100", "4x4 x10", "4x4 x42", "4x4 relay", "5x5 single", "5x5 ao5", "5x5 ao12", "5x5 ao50", "5x5 relay", "6x6 single", "6x6 ao5", "6x6 ao12", "6x6 relay", "7x7 single", "7x7 ao5", "7x7 relay", "8x8 single", "8x8 ao5", "9x9 single", "10x10 single"]
+    headers = ["3x3 ao5","3x3 ao12","3x3 ao50","3x3 ao100","3x3 x10", "3x3 x42", "4x4 single", "4x4 ao5", "4x4 ao12", "4x4 ao50", "4x4 ao100", "4x4 x10", "4x4 x42", "4x4 relay", "5x5 single", "5x5 ao5", "5x5 ao12", "5x5 ao50", "5x5 relay", "6x6 single", "6x6 ao5", "6x6 ao12", "6x6 relay", "7x7 single", "7x7 ao5", "7x7 relay", "8x8 single", "8x8 ao5", "9x9 single", "10x10 single"]
+    rows=[]
+    scoresbase=33
+    for num,i in enumerate(userData):
+        row=[]
+        #print("doing")
+        #print(str(i))
+        string+='\t'.join(str(x) for x in i)+"\n"
+        row.append(i[0])
+        row.append(str(num+1))
+        row.append(i[31])
+        row.append(i[32])
+        smartstring += i[0] + "\t" + str(num+1) +"\t" + i[31] + "\t"
+        for j in range(len(catNames)):
+            smartstring += i[j+1] + "\t"
+            row.append(''.join([i[j+1]]))
+        smartstring += "\n"
+        rows.append(row)
+    y.add_rows(rows)
+    tierNames.reverse()
+    myhtml="<main class=\"st_viewport\">"
+    for id, tier in enumerate(tierNames):
+        if tier != "Unranked":
+            myreqdata = req[id]
+        reqscoreslist=myreqdata["Scores"]
+        myhtml+="<div class=\"st_wrap_table\" data-table_id=\"" + str(id+1)+"\">\n"
+        myhtml+="<header class=\"st_table_header\">\n"
+        myhtml+="<h2>"
+        myhtml+= tier
+        myhtml+="</h2>\n"
         myhtml+="<div class=\"st_row\">\n"
-        myhtml+="<div class=\"st_column _name\">"+person[0]+"</div>\n"
-        myhtml+="<div class=\"st_column _place\">"+str(person[1])+"</div>\n"
-        myhtml+="<div class=\"st_column _power\">"+str(person[2])+"</div>\n"
-        for idsmall,_ in enumerate(headers):
-          #print(scoresbase+idsmall)
-          #print (dataRow)
-          #print("last id: "+str((len(dataRow)-1)))
-          scoreTierID = int(dataRow[scoresbase+idsmall])
-          if scoreTierID > userTierID:
-            colorID = 3
-          elif scoreTierID == userTierID-1:
-            colorID = 1
-          elif scoreTierID == userTierID:
-            colorID = 0
-          else:
-            colorID = 2
-          score = str(person[idsmall+4])
-          if score == "N/A":
-            score = ""
-          myhtml+="<div class=\"st_column _score\" color-id=\"" + str(colorID)+"\">"+ score +"</div>\n"
+        myhtml+="<div class=\"st_column _name\"></div>\n"
+        myhtml+="<div class=\"st_column _place\">"+str(myreqdata["Tiercost"])+"</div>\n"
+        myhtml+="<div class=\"st_column _power\">"+str(myreqdata["Tierlimit"])+"</div>\n"
+        for e,_ in enumerate(headers):
+            myhtml+="<div class=\"st_column _score\">"+ str(reqscoreslist[e]) +"</div>\n"
         myhtml+="</div>\n"
-    myhtml+="</div>\n"
-    myhtml+="</div>\n"
-  myhtml+="</main>"
-  updatedate = str(datetime.datetime.today().strftime('%Y-%m-%d'))
-  #updatedate = "2021-06-14"
-  db["leaderboard.txt"] = string #only for getPB command, should be fixed and removed
-  db["smartboard.txt"] = smartstring #main format for compare
-  db["prettylb.txt"] = y.get_string() #90% useless thing for !getlb - txt format lb
-  
-  db["egg.html"] = myhtml #lb that is using on website
+        myhtml+="<div class=\"st_row\">\n"
+        myhtml+="<div class=\"st_column _name\">Name</div>\n"
+        myhtml+="<div class=\"st_column _place\">Place</div>\n"
+        myhtml+="<div class=\"st_column _power\">Power</div>\n"
+        for i in headers:
+            myhtml+="<div class=\"st_column _score\">"+ i +"</div>\n"
+        myhtml+="</div>\n"
+        myhtml+="</header>\n"
 
-  db["HTML" + updatedate] = dbcomp(myhtml)
-  db["SMART" + updatedate] = dbcomp(smartstring)
-  updatehtml()
+        myhtml+="<div class=\"st_table\">\n"
+        for personid, person in enumerate(rows):
+            dataRow = userData[personid]
+            if person[3] == tier:
+                userTierID = 12-int(tierNames.index(tier))
+                myhtml+="<div class=\"st_row\">\n"
+                myhtml+="<div class=\"st_column _name\">"+person[0]+"</div>\n"
+                myhtml+="<div class=\"st_column _place\">"+str(person[1])+"</div>\n"
+                myhtml+="<div class=\"st_column _power\">"+str(person[2])+"</div>\n"
+                for idsmall,_ in enumerate(headers):
+                    #print(scoresbase+idsmall)
+                    #print (dataRow)
+                    #print("last id: "+str((len(dataRow)-1)))
+                    scoreTierID = int(dataRow[scoresbase+idsmall])
+                    if scoreTierID > userTierID:
+                        colorID = 3
+                    elif scoreTierID == userTierID-1:
+                        colorID = 1
+                    elif scoreTierID == userTierID:
+                        colorID = 0
+                    else:
+                        colorID = 2
+                    score = str(person[idsmall+4])
+                    if score == "N/A":
+                        score = ""
+                    myhtml+="<div class=\"st_column _score\" color-id=\"" + str(colorID)+"\">"+ score +"</div>\n"
+                myhtml+="</div>\n"
+        myhtml+="</div>\n"
+        myhtml+="</div>\n"
+    myhtml+="</main>"
+    updatedate = str(datetime.datetime.today().strftime('%Y-%m-%d'))
+    #updatedate = "2021-06-14"
+    db["leaderboard.txt"] = string #only for getPB command, should be fixed and removed
+    db["smartboard.txt"] = smartstring #main format for compare
+    db["prettylb.txt"] = y.get_string() #90% useless thing for !getlb - txt format lb
+    db["egg.html"] = myhtml #lb that is using on website
+    db["HTML" + updatedate] = dbcomp(myhtml)
+    db["SMART" + updatedate] = dbcomp(smartstring)
+    updatehtml()
 
 def dbcomp(string):
-  return zlib.compress(string.encode("utf-8")).hex()
+    return zlib.compress(string.encode("utf-8")).hex()
 
 def dbdecomp(compthingy):
-  return zlib.decompress(bytes.fromhex(compthingy)).decode("utf-8")
+    return zlib.decompress(bytes.fromhex(compthingy)).decode("utf-8")
 
 def getAllHTML():
-  matches = db.prefix("HTML")
-  print("ALL DATES")
-  print(matches)
-  myhtmlshots = []
-  for i in matches:
-    mydate = i.replace("HTML", "")
-    myhtmlshots.append({"date": mydate, "htmlinfo": dbdecomp(db[i])})
-  myhtmlshots.sort(key=lambda x: datetime.datetime.strptime(x["date"], '%Y-%m-%d'))
-  myhtmlshots.reverse()
-  return myhtmlshots
+    matches = db.prefix("HTML")
+    print("ALL DATES")
+    print(matches)
+    myhtmlshots = []
+    for i in matches:
+        mydate = i.replace("HTML", "")
+        myhtmlshots.append({"date": mydate, "htmlinfo": dbdecomp(db[i])})
+    myhtmlshots.sort(key=lambda x: datetime.datetime.strptime(x["date"], '%Y-%m-%d'))
+    myhtmlshots.reverse()
+    return myhtmlshots
 
 def updatehtml():
-  allhtml = getAllHTML() 
-  egginfo = ""
-  egginfo += "<div class=\"tab\">\n"
-  #headers 
-  for e, i in enumerate(allhtml):
-    mydate = i["date"]
-    if e == 0:
-      egginfo += "<button class=\"tablinks\" id=\"defaultOpen\" onclick=\"openCity(event, \'" + mydate + "\')\">" + mydate + "</button>\n"
-    else:
-      egginfo += "<button class=\"tablinks\" onclick=\"openCity(event, \'" + mydate + "\')\">" + mydate + "</button>\n" 
-  egginfo += "<div>\n"
-  #content
-  for i in allhtml:
-    myinfo = i["htmlinfo"]
-    mydate = i["date"]
-    egginfo += "<div id=\"" + mydate + "\" class=\"tabcontent\">\n"
-    egginfo += myinfo
-    egginfo += "</div>\n"
-  f = open("templates/index.html", "w+")    
-  f.write(db["header.html"])
-  f.write(egginfo)
-  f.write(db["footer.html"])
-  f.close()
+    allhtml = getAllHTML()
+    egginfo = ""
+    egginfo += "<div class=\"tab\">\n"
+    #headers
+    for e, i in enumerate(allhtml):
+        mydate = i["date"]
+        if e == 0:
+            egginfo += "<button class=\"tablinks\" id=\"defaultOpen\" onclick=\"openCity(event, \'" + mydate + "\')\">" + mydate + "</button>\n"
+        else:
+            egginfo += "<button class=\"tablinks\" onclick=\"openCity(event, \'" + mydate + "\')\">" + mydate + "</button>\n"
+    egginfo += "<div>\n"
+    #content
+    for i in allhtml:
+        myinfo = i["htmlinfo"]
+        mydate = i["date"]
+        egginfo += "<div id=\"" + mydate + "\" class=\"tabcontent\">\n"
+        egginfo += myinfo
+        egginfo += "</div>\n"
+    f = open("templates/index.html", "w+")
+    f.write(db["header.html"])
+    f.write(egginfo)
+    f.write(db["footer.html"])
+    f.close()
 
 #___________GIF_MAKER
 def clearImages():
-  folder = 'images'
-  for filename in os.listdir(folder):
-    file_path = os.path.join(folder, filename)
-    try:
-      if os.path.isfile(file_path) or os.path.islink(file_path):
-        os.unlink(file_path)
-      elif os.path.isdir(file_path):
-        shutil.rmtree(file_path)
-    except Exception as e:
-        print('Failed to delete %s. Reason: %s' % (file_path, e))
+    folder = 'images'
+    for filename in os.listdir(folder):
+        file_path = os.path.join(folder, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)
+        except Exception as e:
+            print('Failed to delete %s. Reason: %s' % (file_path, e))
 
 def makeGif(scramble,solution,tps):
-  clearImages()
-  makeImages(scramble,solution)
-  img_array = []
-  for filename in glob.glob('images/*.png'):
-    img = cv2.imread(filename)
-    height, width, layers = img.shape
-    size = (width,height)
-    img_array.append(img)
-  out = cv2.VideoWriter('movie.webm',cv2.VideoWriter_fourcc(*'VP90'), tps, size)
-  for i in range(len(img_array)):
-    out.write(img_array[i])
-  out.release()
-  clearImages()
+    clearImages()
+    makeImages(scramble,solution)
+    img_array = []
+    for filename in glob.glob('images/*.png'):
+        img = cv2.imread(filename)
+        height, width, layers = img.shape
+        size = (width,height)
+        img_array.append(img)
+    out = cv2.VideoWriter('movie.webm',cv2.VideoWriter_fourcc(*'VP90'), tps, size)
+    for i in range(len(img_array)):
+        out.write(img_array[i])
+    out.release()
+    clearImages()
 
 def makeImages(scramble,solution):
-  states = getStates(scramble, solution)
-  for n, scr in enumerate(states):
-    img = drawPuzzle(scr)
-    img.save("images/" + str(n).zfill(5) + ".png", 'PNG')
+    states = getStates(scramble, solution)
+    for n, scr in enumerate(states):
+        img = drawPuzzle(scr)
+        img.save("images/" + str(n).zfill(5) + ".png", 'PNG')
 
 #________________________________SCRAMBLE DRAWER
 
@@ -536,163 +538,149 @@ def getStates(scramble, solution):
     return list
     # return '\n'.join(list)
 def getReverse(move):
-  if move == "R":
-    return "L"
-  if move =="L":
-    return "R"
-  if move =="U":
-    return "D"
-  if move =="D":
-    return "U"
-  return None
+    if move == "R":
+        return "L"
+    if move =="L":
+        return "R"
+    if move =="U":
+        return "D"
+    if move =="D":
+        return "U"
+    return None
 
-def getGoodMoves(scramble):
-    return [x[0] for x in solver.solveGood(scramble)]
+def getGoodMoves(scramble, size):
+    return [x[0] for x in solvers[size].solveGood(scramble)]
 
 def bannedmove(blank, move):
-  if move == "R":
-    return blank in [0,4,8,12]
-  if move == "L":
-    return blank in [3,7,11,15]
-  if move == "D":
-    return blank in [0,1,2,3]
-  if move == "U":
-    return blank in [12,13,14,15]
+    if move == "R":
+        return blank in [0,4,8,12]
+    if move == "L":
+        return blank in [3,7,11,15]
+    if move == "D":
+        return blank in [0,1,2,3]
+    if move == "U":
+        return blank in [12,13,14,15]
 
 def getLegalmoves(blank):
-  list=[]
-  if not bannedmove(blank,"R"):
-    list.append("R")
-  if not bannedmove(blank,"U"):
-    list.append("U")
-  if not bannedmove(blank,"L"):
-    list.append("L")
-  if not bannedmove(blank,"D"):
-    list.append("D") 
-  return list
+    list=[]
+    if not bannedmove(blank,"R"):
+        list.append("R")
+    if not bannedmove(blank,"U"):
+        list.append("U")
+    if not bannedmove(blank,"L"):
+        list.append("L")
+    if not bannedmove(blank,"D"):
+        list.append("D")
+    return list
 
 def get4state(scramble):
-  list = [] 
-  puzzle, blank = createScrambled(scramble)
-  legalmoves=getLegalmoves(blank)
-  print("legal moves" + str(legalmoves))
-  for i in legalmoves:
+    list = []
     puzzle, blank = createScrambled(scramble)
-    puz, _ =  move(puzzle, blank, i)
-    list.append((i, toScramble(puz)))
-
-  return list  
+    legalmoves=getLegalmoves(blank)
+    print("legal moves" + str(legalmoves))
+    for i in legalmoves:
+        puzzle, blank = createScrambled(scramble)
+        puz, _ =  move(puzzle, blank, i)
+        list.append((i, toScramble(puz)))
+    return list
 
 def isReverse(a, b):
-  return getReverse(a) == b
+    return getReverse(a) == b
 
 def analyse(scramble, solution):
-  solution = solution.upper()
-  states = getStates(scramble,solution)
-  if states[len(states)-1] == "1 2 3 4/5 6 7 8/9 10 11 12/13 14 15 0":
-    optimals = []
-    optl = []
-    userlen=len(solution)
-    #print('\n'.join(states))
-    lastopt=""
-    for id,i in enumerate(states):
-      print(i)
-      user_end_len=userlen-id
-      predicted_opt_end_len=len(lastopt)-1
-      if lastopt !="" and user_end_len==predicted_opt_end_len:
-        opt = lastopt[1:]
-      else:
-        opt = solver.solveOne(i)
-      lastopt=opt
-      optimals.append(opt)
-      optl.append(len(opt))
-    log = "Analysing " + scramble + "\n"
-    log += "Your solution " + solution + " [" + str(userlen) + "]\n"
-    dif = userlen-optl[0]
-    log += "Your solution is [" + str(dif) + "] away from optimal\n"
-    log += "Optimal: " + optimals[0] + " [" + str(optl[0]) + "]\n"
-    x = PrettyTable()
-    x.field_names = ["Move", "State", "Fail", "Your Before","Your Ending","Opt_Ending", "Your_with_Optimal_ending"]
-    myrows=[]
-    wrongmoves = []
-    lasti = -1
-    for id, move in enumerate(solution):
-      movesdone=id+1
-      userlen -= 1
-      if userlen != -1:
-        row = []
-        #dif =  userlen - optl[movesdone]
-        optdif = abs(optl[movesdone-1] - optl[movesdone] - 1)
-        row.append(move)
-        row.append(states[movesdone])
-        #row.append(str(dif))
-        if optdif == 0:
-          row.append(" ")
-          if len(myrows) > 1 and len(wrongmoves) > 0:
-            lastrow=myrows[len(myrows)-2]
-            movebeforerow=myrows[len(myrows)-1]
-            prev=wrongmoves[len(wrongmoves)-1]
-            #print(str(lastrow[1]==prev[1]) + str(movesdone)+str(lastrow)+str(prev))
-            if isReverse(move,movebeforerow[0]) and lastrow[1]==prev[1]:
-              prev[3]="!"+prev[3]
-        else:
-          wrong= []
-          wrong.append(movesdone)
-          wrong.append(states[movesdone-1])
-          wrong.append(solution[:movesdone-1])
-          if movesdone-1 == lasti:
-            prev=wrongmoves[len(wrongmoves)-1]
-            prev[3]="!"+prev[3]
-          wrong.append(move)
-          lasti=movesdone
-          opt=optimals[movesdone-1]
-          wrong.append(opt[:1])
-          wrong.append(solution[movesdone-1:])
-          wrong.append(opt)
-          wrong.append(solution[:movesdone-1] + opt)
-          row.append(str(optdif))
-          wrongmoves.append(wrong)
-        your = solution[:movesdone]
-        yourend= solution[movesdone:]
-        after = optimals[movesdone]
-        full=your+after
-        if len(your)>10:
-          your = your[:10] + "..."
-        if len(yourend)>10:
-          yourend = yourend[:10] + "..."
-        if len(after)>10:
-          after = after[:10] + "..."
-        row.append(your)
-        row.append(yourend + "[" + str(len(solution[movesdone:])) + "]")
-        row.append(after + "[" + str(len(optimals[movesdone])) + "]")
-        row.append(full)
-        myrows.append(row)
-    x.add_rows(myrows)
+    solution = solution.upper()
+    states = getStates(scramble,solution)
+    if states[len(states)-1] == "1 2 3 4/5 6 7 8/9 10 11 12/13 14 15 0":
+        optimals = []
+        optl = []
+        userlen=len(solution)
+        #print('\n'.join(states))
+        lastopt=""
+        for id,i in enumerate(states):
+            print(i)
+            user_end_len=userlen-id
+            predicted_opt_end_len=len(lastopt)-1
+            if lastopt !="" and user_end_len==predicted_opt_end_len:
+                opt = lastopt[1:]
+            else:
+                opt = solvers[4].solveOne(i)
+            lastopt=opt
+            optimals.append(opt)
+            optl.append(len(opt))
+        log = "Analysing " + scramble + "\n"
+        log += "Your solution " + solution + " [" + str(userlen) + "]\n"
+        dif = userlen-optl[0]
+        log += "Your solution is [" + str(dif) + "] away from optimal\n"
+        log += "Optimal: " + optimals[0] + " [" + str(optl[0]) + "]\n"
+        x = PrettyTable()
+        x.field_names = ["Move", "State", "Fail", "Your Before","Your Ending","Opt_Ending", "Your_with_Optimal_ending"]
+        myrows=[]
+        wrongmoves = []
+        lasti = -1
+        for id, move in enumerate(solution):
+            movesdone=id+1
+            userlen -= 1
+            if userlen != -1:
+                row = []
+                #dif =  userlen - optl[movesdone]
+                optdif = abs(optl[movesdone-1] - optl[movesdone] - 1)
+                row.append(move)
+                row.append(states[movesdone])
+                #row.append(str(dif))
+                if optdif == 0:
+                    row.append(" ")
+                    if len(myrows) > 1 and len(wrongmoves) > 0:
+                        lastrow=myrows[len(myrows)-2]
+                        movebeforerow=myrows[len(myrows)-1]
+                        prev=wrongmoves[len(wrongmoves)-1]
+                        #print(str(lastrow[1]==prev[1]) + str(movesdone)+str(lastrow)+str(prev))
+                        if isReverse(move,movebeforerow[0]) and lastrow[1]==prev[1]:
+                            prev[3]="!"+prev[3]
+                else:
+                    wrong= []
+                    wrong.append(movesdone)
+                    wrong.append(states[movesdone-1])
+                    wrong.append(solution[:movesdone-1])
+                    if movesdone-1 == lasti:
+                        prev=wrongmoves[len(wrongmoves)-1]
+                        prev[3]="!"+prev[3]
+                    wrong.append(move)
+                    lasti=movesdone
+                    opt=optimals[movesdone-1]
+                    wrong.append(opt[:1])
+                    wrong.append(solution[movesdone-1:])
+                    wrong.append(opt)
+                    wrong.append(solution[:movesdone-1] + opt)
+                    row.append(str(optdif))
+                    wrongmoves.append(wrong)
+                your = solution[:movesdone]
+                yourend= solution[movesdone:]
+                after = optimals[movesdone]
+                full=your+after
+                if len(your)>10:
+                    your = your[:10] + "..."
+                if len(yourend)>10:
+                    yourend = yourend[:10] + "..."
+                if len(after)>10:
+                    after = after[:10] + "..."
+                row.append(your)
+                row.append(yourend + "[" + str(len(solution[movesdone:])) + "]")
+                row.append(after + "[" + str(len(optimals[movesdone])) + "]")
+                row.append(full)
+                myrows.append(row)
+        x.add_rows(myrows)
 
-    y = PrettyTable()
-    y.field_names = ["N","State","Setup","Move","Better","Your ending","Better ending","Your+opt"]
-    y.add_rows(wrongmoves)
-    if len(wrongmoves)>0:
-      log+="Wrong moves:\n"
-      log+=y.get_string() + "\n\n"
-  else:
-    log = "Something is wrong with your solution"
- # log+="Full log:\n"
- # log+=x.get_string()
-  
-  return log
+        y = PrettyTable()
+        y.field_names = ["N","State","Setup","Move","Better","Your ending","Better ending","Your+opt"]
+        y.add_rows(wrongmoves)
+        if len(wrongmoves)>0:
+            log+="Wrong moves:\n"
+            log+=y.get_string() + "\n\n"
+    else:
+        log = "Something is wrong with your solution"
+
+    return log
 # _______________________________________________________________
-
-# ______________8 optimal solver____________
-def solve8(scramble):
-    searchfile = open("all_solutions.txt", "r")
-    for line in searchfile:
-        if scramble in line:
-            searchfile.close()
-            return line
-    searchfile.close()
-    return "That does not look like a scramble to me, example of a valid scramble: 0 7 8/2 3 6/4 1 5"
-
 
 # _____________compare tables___________________
 
@@ -714,24 +702,22 @@ def makeList(string, tierL, rankNames):
     for i in string:
         i = i.split("\t")
         try:
-          power = int(i[2])
+            power = int(i[2])
         except:
-          print(i)
+            print(i)
         rankN = 0
         for j in tierL:
             if power > j:
                 rankN += 1
         if "".join(i[3:]).upper() != "N/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/A":
-            list.append(
-                {
-                    "Name": i[0],
-                    "Place": i[1],
-                    "Power": i[2],
-                    "Rank": rankNames[rankN],
-                    "rankID": rankN,
-                    "Scores": i[3:],
-                }
-            )
+            list.append({
+                "Name": i[0],
+                "Place": i[1],
+                "Power": i[2],
+                "Rank": rankNames[rankN],
+                "rankID": rankN,
+                "Scores": i[3:],
+            })
     return list
 
 
@@ -809,98 +795,97 @@ def comparelist(name1, name2):
     for id, item in enumerate(tier_limits):
         tier_limits[id] = int(item)
     try:
-      dberror = "none"
-      textinfo1 = fixSpaces(dbdecomp(db[name1]).lower()).splitlines()
-      textinfo2 = fixSpaces(dbdecomp(db[name2]).lower()).splitlines()
+        dberror = "none"
+        textinfo1 = fixSpaces(dbdecomp(db[name1]).lower()).splitlines()
+        textinfo2 = fixSpaces(dbdecomp(db[name2]).lower()).splitlines()
     except:
-      print(traceback.format_exc())
-      dberror = "Error with loading data"
+        print(traceback.format_exc())
+        dberror = "Error with loading data"
     if dberror != "Error with loading data":
-      
-      old_list = makeList(textinfo1, tier_limits, rankNames)
-      new_list = makeList(textinfo2, tier_limits, rankNames)
+        old_list = makeList(textinfo1, tier_limits, rankNames)
+        new_list = makeList(textinfo2, tier_limits, rankNames)
 
-      log = ""
+        log = ""
 
-      list_of_lists = []
-      #superid=0
-      for item_new in new_list:
-          item_old = next(
-              (item for item in old_list if item["Name"] == item_new["Name"]), None
-          )
-          name = item_new["Name"]
-          if item_old == None:
-              mylist = []
-              mylist.append(name)
-              mylist.append("[#" + item_new["Place"] + "]")
-              mylist.append(item_new["Rank"])
-              mylist.append("-")
-              mylist.append("New player")
-              mylist.append("Welcome!")
-              list_of_lists.append(mylist)
-          else:
-              # if int(item_old["Power"]) < int(item_new["Power"]):
-              if "".join(item_old["Scores"]).upper() != "".join(item_new["Scores"]).upper() and ("".join(item_old["Scores"]).upper()+"N/A") != "".join(item_new["Scores"]).upper():
-                  #  print(item_new["Name"]+''.join(item_old["Scores"]))
-                  # print(''.join(item_new["Scores"]))
-                  #print("".join(item_old["Scores"]).upper())
-                  #print("".join(item_new["Scores"]).upper())
-                  mylist = []
-                  if int(item_old["Place"]) > int(item_new["Place"]):
-                      mylist.append(name)
-                      mylist.append(
-                          "[#" + item_old["Place"] + " -> #" + item_new["Place"] + "]"
-                      )
-                  else:
-                      mylist.append(name)
-                      mylist.append("[#" + item_new["Place"] + "]")
+        list_of_lists = []
+        #superid=0
+        for item_new in new_list:
+            item_old = next(
+                (item for item in old_list if item["Name"] == item_new["Name"]), None
+            )
+            name = item_new["Name"]
+            if item_old == None:
+                mylist = []
+                mylist.append(name)
+                mylist.append("[#" + item_new["Place"] + "]")
+                mylist.append(item_new["Rank"])
+                mylist.append("-")
+                mylist.append("New player")
+                mylist.append("Welcome!")
+                list_of_lists.append(mylist)
+            else:
+                # if int(item_old["Power"]) < int(item_new["Power"]):
+                if "".join(item_old["Scores"]).upper() != "".join(item_new["Scores"]).upper() and ("".join(item_old["Scores"]).upper()+"N/A") != "".join(item_new["Scores"]).upper():
+                    #  print(item_new["Name"]+''.join(item_old["Scores"]))
+                    # print(''.join(item_new["Scores"]))
+                    # print("".join(item_old["Scores"]).upper())
+                    # print("".join(item_new["Scores"]).upper())
+                    mylist = []
+                    if int(item_old["Place"]) > int(item_new["Place"]):
+                        mylist.append(name)
+                        mylist.append(
+                            "[#" + item_old["Place"] + " -> #" + item_new["Place"] + "]"
+                        )
+                    else:
+                        mylist.append(name)
+                        mylist.append("[#" + item_new["Place"] + "]")
 
-                  if item_old["Rank"] != item_new["Rank"]:
-                      mylist.append("[New Tier: " + item_new["Rank"] + "!]")
-                  else:
-                      mylist.append("===" + item_new["Rank"] + "===")
-                  mylist.extend(
-                      getScores(
-                          req,
-                          item_old["Scores"],
-                          item_new["Scores"],
-                          catNames,
-                          item_new["rankID"],
-                      ).split()
-                  )
-                  if item_new["Rank"] == "{UNRANKED}":
-                      mylist.append(" ")
-                      mylist.append(" ")
-                      mylist.append("Nice pbs!")
-                      mylist.append("Good luck")
-                      mylist.append("With beginner scores")
-                      mylist.append("Next time :)")
-                  #mylist[0] = mylist[0] + str(superid)
-                  #superid += 1
-                  list_of_lists.append(mylist)
-      maxDepth = 0
-      maxColumns = len(list_of_lists)
+                    if item_old["Rank"] != item_new["Rank"]:
+                        mylist.append("[New Tier: " + item_new["Rank"] + "!]")
+                    else:
+                        mylist.append("===" + item_new["Rank"] + "===")
+                    mylist.extend(
+                        getScores(
+                            req,
+                            item_old["Scores"],
+                            item_new["Scores"],
+                            catNames,
+                            item_new["rankID"],
+                        ).split()
+                    )
+                    if item_new["Rank"] == "{UNRANKED}":
+                        mylist.append(" ")
+                        mylist.append(" ")
+                        mylist.append("Nice pbs!")
+                        mylist.append("Good luck")
+                        mylist.append("With beginner scores")
+                        mylist.append("Next time :)")
+                    #mylist[0] = mylist[0] + str(superid)
+                    #superid += 1
+                    list_of_lists.append(mylist)
+        maxDepth = 0
+        maxColumns = len(list_of_lists)
 
-      tableRows = []
-      for i in list_of_lists:
-          l = len(i)
-          if l > maxDepth:
-              maxDepth = l
-      for j in range(maxDepth):
-          myrow = []
-          for i in range(maxColumns):
-              i_list = list_of_lists[i]
-              if len(i_list) > j:
-                  myrow.append(i_list[j])
-              else:
-                  myrow.append("_")
-          tableRows.append(myrow)
-      x = PrettyTable()
-      x.field_names = tableRows[0]
-      x.add_rows(tableRows[1:])
-      return x.get_string().replace("_", " ")
+        tableRows = []
+        for i in list_of_lists:
+            l = len(i)
+            if l > maxDepth:
+                maxDepth = l
+        for j in range(maxDepth):
+            myrow = []
+            for i in range(maxColumns):
+                i_list = list_of_lists[i]
+                if len(i_list) > j:
+                    myrow.append(i_list[j])
+                else:
+                    myrow.append("_")
+            tableRows.append(myrow)
+        x = PrettyTable()
+        x.field_names = tableRows[0]
+        x.add_rows(tableRows[1:])
+        return x.get_string().replace("_", " ")
     else:
-      return dberror
+        return dberror
 
 
 # _______________processing commands in threads with timeout________________________
@@ -1238,84 +1223,85 @@ def editP(rp):
 
 #_________________daily fmc
 def getFMCstatus():
-  try:
-    status = db["daily_status.txt"]
-    return "CLOSED" in status #true if you can start
-  except:
-    return True
-  
+    try:
+        status = db["daily_status.txt"]
+        return "CLOSED" in status #true if you can start
+    except:
+        return True
+
 
 
 def checkSol(scramble, solution):
-  result = False
-  try:
-    st = getStates(scramble,solution)
-    #print(scramble, solution, st)
-    result = (st[len(st)-1] == "1 2 3 4/5 6 7 8/9 10 11 12/13 14 15 0")
-  except:
     result = False
-  return result
+    try:
+        st = getStates(scramble,solution)
+        #print(scramble, solution, st)
+        result = (st[len(st)-1] == "1 2 3 4/5 6 7 8/9 10 11 12/13 14 15 0")
+    except:
+        result = False
+    return result
 
 
 def getDailyStats():
-  return db["daily_status.txt"].splitlines()
+    return db["daily_status.txt"].splitlines()
 
 
 def fixSolution(solution):
-  words = solution
-  words = words.replace("R3", "RRR")
-  words = words.replace("R2", "RR")
-  words = words.replace("L3", "LLL")
-  words = words.replace("L2", "LL")
-  words = words.replace("U3", "UUU")
-  words = words.replace("U2", "UU")
-  words = words.replace("D3", "DDD")
-  words = words.replace("D2", "DD")
-  return words
+    words = solution
+    words = words.replace("R3", "RRR")
+    words = words.replace("R2", "RR")
+    words = words.replace("L3", "LLL")
+    words = words.replace("L2", "LL")
+    words = words.replace("U3", "UUU")
+    words = words.replace("U2", "UU")
+    words = words.replace("D3", "DDD")
+    words = words.replace("D2", "DD")
+    return words
 
 def rewriteFile(file, text):
-  f = open(file, "w+")    
-  f.write(text)
-  f.close()
+    f = open(file, "w+")
+    f.write(text)
+    f.close()
 
 def removeResult(name):
-  text = db["daily_log.txt"].splitlines()
-  newtext = ""
-  name = name + "\t"
-  for i in text:
-    if not (name in i):
-      newtext+= i + "\n"
-  db["daily_log.txt"] = newtext
+    text = db["daily_log.txt"].splitlines()
+    newtext = ""
+    name = name + "\t"
+    for i in text:
+        if not (name in i):
+          newtext+= i + "\n"
+    db["daily_log.txt"] = newtext
 
 
 def readLog():
-  try:
-    text = db["daily_log.txt"].splitlines()
-  except:
-    text = ""
-    db["daily_log.txt"] = ""
-    print("DAILY LOG IS EMPTY ERROR")
-  logdata = []
-  for i in text:
-    rowlist = i.split("\t")
-    logdata.append({"Name":rowlist[0],"Solution": rowlist[1], "Len": rowlist[2]})
-  return logdata
+    try:
+        text = db["daily_log.txt"].splitlines()
+    except:
+        text = ""
+        db["daily_log.txt"] = ""
+        print("DAILY LOG IS EMPTY ERROR")
+    logdata = []
+    for i in text:
+        rowlist = i.split("\t")
+        logdata.append({"Name":rowlist[0],"Solution": rowlist[1], "Len": rowlist[2]})
+    return logdata
 
 
 def addFMCResult(name, solution):
-  text = name + "\t" + solution + "\t" + str(len(solution)) + "\n"
-  appendDB("daily_log.txt", text)
-  rewriteFile("daily_backup.txt", db["daily_log.txt"])
+    text = name + "\t" + solution + "\t" + str(len(solution)) + "\n"
+    appendDB("daily_log.txt", text)
+    rewriteFile("daily_backup.txt", db["daily_log.txt"])
 
 def appendDB(key, text):
-  dbtext = db[key]
-  dbtext += text
-  db[key] = dbtext
+    dbtext = db[key]
+    dbtext += text
+    db[key] = dbtext
 
 def appendFile(file, text):
-  f = open(file, 'a')
-  f.write(text)
-  f.close()  
+    f = open(file, 'a')
+    f.write(text)
+    f.close()
+
 #____________________________discord started
 @client.event
 async def on_ready():
@@ -1340,174 +1326,174 @@ async def on_message(message):
                 msg += shit + " "
             spam.start(message.channel, msg[:2000])
     if message.content.startswith("!daily_scramble"):
-      if getFMCstatus():
-          await message.channel.send("No FMC challange is going on")
-      else:
-        stats = getDailyStats()
-        out = "Current FMC scramble: " + stats[0] + "\nMoves: " + stats[2]
-        await message.channel.send(out)
-    if message.content.startswith("!daily_close"):
-      if not message.author.guild_permissions.administrator:
-          await message.channel.send("Sorry you are not FMC manager.")
-      else:
         if getFMCstatus():
-          await message.channel.send("No FMC challange to close! Use !daily_open.")
+            await message.channel.send("No FMC challange is going on")
         else:
           stats = getDailyStats()
-          log = readLog()
-          db["daily_status.txt"] = "CLOSED"
-          db["daily_log.txt"] = ""
-          scramble = stats[0]
-          solution = stats[1]
-          leng = stats[2]
-          out = "FMC results!\n"
-          out += "Scramble was: " + scramble + "\n"
-          out += "Optimal solution: " + solution + "\n"
-          out += "Optimal moves: " + leng + "\n"
-          out += "Results:\n"
-          rowarray = []
-          rowheaders = ["Player", "Moves", "To optimal", "Solution"]
-          for i in log:
-            row = []
-            row.append(i["Name"])
-            row.append(i["Len"])
-            row.append(str(int(i["Len"])-int(leng)))
-            row.append(i["Solution"])
-            rowarray.append(row)
-          if len(rowarray)>0:
-            rowarray.sort(key=lambda x: int(x[1]))
-          y = PrettyTable()
-          y.field_names = rowheaders
-          y.add_rows(rowarray)
-          rewriteFile("FMC_results.txt",y.get_string())
-          with open("FMC_results.txt", "rb") as f:
-            txt = discord.File(f)
-            if len(rowarray) == 0:
-              await message.channel.send(out + "\nNo one joined :(")
-            else:
-              await message.channel.send(out, file=txt)
-          os.remove("FMC_results.txt")
-          makeGif(scramble, solution, 10)
-          with open("movie.webm", "rb") as f:
-            picture = discord.File(f)
-            await message.channel.send("Optimal solution for last FMC competition:\n" + scramble +"\n"+solution+"\n"+leng, file=picture)
-          os.remove("movie.webm")
-    if message.content.startswith("!submit"):
-      if getFMCstatus():
-        await message.channel.send("Sorry, there is no FMC competition now.")
-      else:  
-        name = message.author.name
-        contentArray = message.content.lower().split(" ")
-        await message.delete()
-        if len(contentArray) != 2:
-          await message.channel.send("Sorry, " + name + ", i can't get your solution")
+          out = "Current FMC scramble: " + stats[0] + "\nMoves: " + stats[2]
+          await message.channel.send(out)
+    if message.content.startswith("!daily_close"):
+        if not message.author.guild_permissions.administrator:
+            await message.channel.send("Sorry you are not FMC manager.")
         else:
-          solution = contentArray[1].upper()
-          solution = solution.replace("|","")
-          solution = fixSolution(solution)
-          scramble = getDailyStats()[0]
-          lenstr = "||[" + str(len(solution)) + "]|| "
-          if not checkSol(scramble, solution):
-            await message.channel.send("Sorry, " + name + ", your solution is not working.")
-          else:
-            log = readLog()
-            item_old = next((item for item in log if item["Name"] == name), None)
-            if item_old == None:
-              addFMCResult(name, solution)
-              channel2 = client.get_channel(852636984475516928)
-              with open("daily_backup.txt", "rb") as f:
-                txt = discord.File(f)
-                await channel2.send("Backup", file=txt)
-              os.remove("daily_backup.txt")
-              await message.channel.send(lenstr + "Your solution added, " + name)
+            if getFMCstatus():
+                await message.channel.send("No FMC challange to close! Use !daily_open.")
             else:
-              if int(item_old["Len"]) <= len(solution):
-                await message.channel.send(lenstr+ "You already have a better or same solution in the list, " + name + " (You have ||" + item_old["Len"]+ "||)")
-              else:
-                removeResult(name)
-                addFMCResult(name, solution)
-                channel2 = client.get_channel(852636984475516928)
-                with open("daily_backup.txt", "rb") as f:
-                  txt = discord.File(f)
-                  await channel2.send("Backup", file=txt)
-                os.remove("daily_backup.txt")  
-                await message.channel.send("||" + item_old["Len"] + "||->" + lenstr + "Your solution updated, " + name)
+                stats = getDailyStats()
+                log = readLog()
+                db["daily_status.txt"] = "CLOSED"
+                db["daily_log.txt"] = ""
+                scramble = stats[0]
+                solution = stats[1]
+                leng = stats[2]
+                out = "FMC results!\n"
+                out += "Scramble was: " + scramble + "\n"
+                out += "Optimal solution: " + solution + "\n"
+                out += "Optimal moves: " + leng + "\n"
+                out += "Results:\n"
+                rowarray = []
+                rowheaders = ["Player", "Moves", "To optimal", "Solution"]
+                for i in log:
+                    row = []
+                    row.append(i["Name"])
+                    row.append(i["Len"])
+                    row.append(str(int(i["Len"])-int(leng)))
+                    row.append(i["Solution"])
+                    rowarray.append(row)
+                if len(rowarray)>0:
+                    rowarray.sort(key=lambda x: int(x[1]))
+                y = PrettyTable()
+                y.field_names = rowheaders
+                y.add_rows(rowarray)
+                rewriteFile("FMC_results.txt",y.get_string())
+                with open("FMC_results.txt", "rb") as f:
+                    txt = discord.File(f)
+                    if len(rowarray) == 0:
+                        await message.channel.send(out + "\nNo one joined :(")
+                    else:
+                        await message.channel.send(out, file=txt)
+                os.remove("FMC_results.txt")
+                makeGif(scramble, solution, 10)
+                with open("movie.webm", "rb") as f:
+                    picture = discord.File(f)
+                    await message.channel.send("Optimal solution for last FMC competition:\n" + scramble +"\n"+solution+"\n"+leng, file=picture)
+                os.remove("movie.webm")
+    if message.content.startswith("!submit"):
+        if getFMCstatus():
+            await message.channel.send("Sorry, there is no FMC competition now.")
+        else:
+            name = message.author.name
+            contentArray = message.content.lower().split(" ")
+            await message.delete()
+            if len(contentArray) != 2:
+                await message.channel.send("Sorry, " + name + ", i can't get your solution")
+            else:
+                solution = contentArray[1].upper()
+                solution = solution.replace("|","")
+                solution = fixSolution(solution)
+                scramble = getDailyStats()[0]
+                lenstr = "||[" + str(len(solution)) + "]|| "
+                if not checkSol(scramble, solution):
+                    await message.channel.send("Sorry, " + name + ", your solution is not working.")
+                else:
+                    log = readLog()
+                    item_old = next((item for item in log if item["Name"] == name), None)
+                    if item_old == None:
+                        addFMCResult(name, solution)
+                        channel2 = client.get_channel(852636984475516928)
+                        with open("daily_backup.txt", "rb") as f:
+                            txt = discord.File(f)
+                            await channel2.send("Backup", file=txt)
+                        os.remove("daily_backup.txt")
+                        await message.channel.send(lenstr + "Your solution added, " + name)
+                    else:
+                        if int(item_old["Len"]) <= len(solution):
+                            await message.channel.send(lenstr+ "You already have a better or same solution in the list, " + name + " (You have ||" + item_old["Len"]+ "||)")
+                        else:
+                            removeResult(name)
+                            addFMCResult(name, solution)
+                            channel2 = client.get_channel(852636984475516928)
+                            with open("daily_backup.txt", "rb") as f:
+                                txt = discord.File(f)
+                                await channel2.send("Backup", file=txt)
+                            os.remove("daily_backup.txt")
+                            await message.channel.send("||" + item_old["Len"] + "||->" + lenstr + "Your solution updated, " + name)
     if message.content.startswith("!daily_open"):
         if not message.author.guild_permissions.administrator:
-          await message.channel.send("Sorry you are not FMC manager.")
+            await message.channel.send("Sorry you are not FMC manager.")
         else:
-          if not getFMCstatus():
-            await message.channel.send("Please use !daily_close to close current session first.")
-          else:
-            await message.channel.send("Starting daily FMC, please wait!")
-            scramble = scrambler.getScramble(4)
-            solution = solver.solveOne(scramble)
-            sollen = str(len(solution))
-            outString = scramble + "\n" + solution + "\n" + sollen
-            db["daily_status.txt"] = outString
-            img = drawPuzzle(scramble)
-            img.save('scramble.png', 'PNG')
-            mess = "Daily FMC scramble: " + scramble + "\n"
-            mess += "Optimal solution length: " + sollen + "\n"
-            mess += "Use **!submit** command to submit solutions (You can submit multiple times!), for example:\n"
-            mess += "!submit LULD3RU2LD2LUR2UL2D2RU2RLULDR3UL2D2R2U2L2DLDRU2LDRURDL2DR2U2L2DRULDR2ULDLU\n"
-            with open("scramble.png", "rb") as f:
-              picture = discord.File(f)
-              await message.channel.send(mess, file=picture) 
-            os.remove("scramble.png")     
+            if not getFMCstatus():
+                await message.channel.send("Please use !daily_close to close current session first.")
+            else:
+                await message.channel.send("Starting daily FMC, please wait!")
+                scramble = scrambler.getScramble(4)
+                solution = solvers[4].solveOne(scramble)
+                sollen = str(len(solution))
+                outString = scramble + "\n" + solution + "\n" + sollen
+                db["daily_status.txt"] = outString
+                img = drawPuzzle(scramble)
+                img.save('scramble.png', 'PNG')
+                mess = "Daily FMC scramble: " + scramble + "\n"
+                mess += "Optimal solution length: " + sollen + "\n"
+                mess += "Use **!submit** command to submit solutions (You can submit multiple times!), for example:\n"
+                mess += "!submit LULD3RU2LD2LUR2UL2D2RU2RLULDR3UL2D2R2U2L2DLDRU2LDRURDL2DR2U2L2DRULDR2ULDLU\n"
+                with open("scramble.png", "rb") as f:
+                    picture = discord.File(f)
+                    await message.channel.send(mess, file=picture)
+                os.remove("scramble.png")
     if message.content.startswith("!getlb"):
-      await makeTmpSend("prettylb.txt", db["prettylb.txt"], "Leaderboard for ranks: ", message.channel)
+        await makeTmpSend("prettylb.txt", db["prettylb.txt"], "Leaderboard for ranks: ", message.channel)
     if message.content.startswith("!update"):
-      await message.channel.send("Wait for it!")
-      try:
-        getLeaderboard()
-        await makeTmpSend("smartboard.txt", db["smartboard.txt"], "Check this: https://egg.dphdmn.repl.co\nProbably updated! Try !getpb command: ", message.channel)
-        db["lastupdate"] = datetime.datetime.now().timestamp()
-      except:
-        print(traceback.format_exc())
-        await message.channel.send("Sorry, something is wrong")
+        await message.channel.send("Wait for it!")
+        try:
+            getLeaderboard()
+            await makeTmpSend("smartboard.txt", db["smartboard.txt"], "Check this: https://egg.dphdmn.repl.co\nProbably updated! Try !getpb command: ", message.channel)
+            db["lastupdate"] = datetime.datetime.now().timestamp()
+        except:
+            print(traceback.format_exc())
+            await message.channel.send("Sorry, something is wrong")
     if message.content.startswith("!stop"):
         if message.author.guild_permissions.administrator:
             spam.cancel()
     if message.content.startswith("!getreal"):
-      scramble = scrambler.getScramble(4)
-      await message.channel.send("Please wait! I am slow, use ben's scrambler instead: http://benwh.000webhostapp.com/software/15poprs/index.html")
-      solution = solver.solveOne(scramble)
-      rever = solvereverse(solution)
-      mypuz, blank = create_puz()
-      out = "DDDRUURDDRUUULLL" + rever
-      mypuz, _ = doMoves(mypuz, blank, out)
-      out = " ".join(list(out))
-      out = out.replace("D D D", "D3")
-      out = out.replace("D D", "D2")
-      out = out.replace("L L L", "L3")
-      out = out.replace("L L", "L2")
-      out = out.replace("U U U", "U3")
-      out = out.replace("U U", "U2")
-      out = out.replace("R R R", "R3")
-      out = out.replace("R R", "R2")
-      scr=toScramble(mypuz)
-      img = drawPuzzle(scr)
-      img.save('scramble.png', 'PNG')
-      with open("scramble.png", "rb") as f:
-        picture = discord.File(f)
-        await message.channel.send("Your scramble: \n" + out + "\n" +scr, file=picture)
-      os.remove("scramble.png")
-    if message.content.startswith("!getscramble"):
-      contentArray = message.content.lower().split(" ")
-      n = 4
-      if len(contentArray)>1:
-        n = int(contentArray[1])
-      scramble = scrambler.getScramble(n)
-      if n == 4:
-        img = drawPuzzle(scramble)
+        scramble = scrambler.getScramble(4)
+        await message.channel.send("Please wait! I am slow, use ben's scrambler instead: http://benwh.000webhostapp.com/software/15poprs/index.html")
+        solution = solvers[4].solveOne(scramble)
+        rever = solvereverse(solution)
+        mypuz, blank = create_puz()
+        out = "DDDRUURDDRUUULLL" + rever
+        mypuz, _ = doMoves(mypuz, blank, out)
+        out = " ".join(list(out))
+        out = out.replace("D D D", "D3")
+        out = out.replace("D D", "D2")
+        out = out.replace("L L L", "L3")
+        out = out.replace("L L", "L2")
+        out = out.replace("U U U", "U3")
+        out = out.replace("U U", "U2")
+        out = out.replace("R R R", "R3")
+        out = out.replace("R R", "R2")
+        scr=toScramble(mypuz)
+        img = drawPuzzle(scr)
         img.save('scramble.png', 'PNG')
         with open("scramble.png", "rb") as f:
-          picture = discord.File(f)
-          await message.channel.send("Your random 4x4 scramble: \n" + scramble, file=picture)
+            picture = discord.File(f)
+            await message.channel.send("Your scramble: \n" + out + "\n" +scr, file=picture)
         os.remove("scramble.png")
-      else: 
-        await message.channel.send("Random scramble for " + str(n) + "x" + str(n) + " puzzle\n" + scramble)
+    if message.content.startswith("!getscramble"):
+        contentArray = message.content.lower().split(" ")
+        n = 4
+        if len(contentArray)>1:
+            n = int(contentArray[1])
+        scramble = scrambler.getScramble(n)
+        if n == 4:
+            img = drawPuzzle(scramble)
+            img.save('scramble.png', 'PNG')
+            with open("scramble.png", "rb") as f:
+                picture = discord.File(f)
+                await message.channel.send("Your random 4x4 scramble: \n" + scramble, file=picture)
+            os.remove("scramble.png")
+        else:
+            await message.channel.send("Random scramble for " + str(n) + "x" + str(n) + " puzzle\n" + scramble)
     if message.content.startswith("!getwr"):
         try:
             fp = urllib.request.urlopen(
@@ -1551,15 +1537,15 @@ async def on_message(message):
                 )
             else:
                 if len(my_string) > 1950:
-                  f = open("wrsby.txt", "w+")
-                  f.write(my_string)
-                  f.close()
-                  with open("wrsby.txt", "rb") as f:
-                    txt = discord.File(f)
-                    await message.channel.send("WR list: ", file=txt)
-                  os.remove("wrsby.txt")
+                    f = open("wrsby.txt", "w+")
+                    f.write(my_string)
+                    f.close()
+                    with open("wrsby.txt", "rb") as f:
+                        txt = discord.File(f)
+                        await message.channel.send("WR list: ", file=txt)
+                    os.remove("wrsby.txt")
                 else:
-                  await message.channel.send("```" + my_string + "```")
+                    await message.channel.send("```" + my_string + "```")
         except:
             await message.channel.send(
                 "Something is wrong\n```" + traceback.format_exc() + "```"
@@ -1650,72 +1636,71 @@ async def on_message(message):
                 "Please specify the puzzle size, for example: !getpb dphdmn 4x4"
             )
     if message.content.startswith("!animate"):
-      try:
-        contentArray = message.content.split("\n")
-        await message.channel.send("Working on it! It may take some time, please wait")
-        scramble = contentArray[1]
-        solution = contentArray[2]
-        if len(contentArray) == 4:
-          tps = float(contentArray[3])
-        else:
-          tps = 10
-        words = solution
-        words = words.replace("R3", "RRR")
-        words = words.replace("R2", "RR")
-        words = words.replace("L3", "LLL")
-        words = words.replace("L2", "LL")
-        words = words.replace("U3", "UUU")
-        words = words.replace("U2", "UU")
-        words = words.replace("D3", "DDD")
-        words = words.replace("D2", "DD")
-        solution = words
-        makeGif(scramble,solution, tps)
-        with open("movie.webm", "rb") as f:
-          picture = discord.File(f)
-          await message.channel.send("Solution for " + scramble + " by " + message.author.mention + "\n" + str(len(solution)) + " moves (May not be optimal)\nTPS (playback): "+str(tps) +"\nTime (playback): "+ str(round(len(solution)/tps,3)) , file=picture)
-        os.remove("movie.webm")
-      except Exception as e:
-        #print(e)
-        print(traceback.print_exc())
-        await message.channel.send("Sorry, something is wrong")
+        try:
+            contentArray = message.content.split("\n")
+            await message.channel.send("Working on it! It may take some time, please wait")
+            scramble = contentArray[1]
+            solution = contentArray[2]
+            if len(contentArray) == 4:
+                tps = float(contentArray[3])
+            else:
+                tps = 10
+            words = solution
+            words = words.replace("R3", "RRR")
+            words = words.replace("R2", "RR")
+            words = words.replace("L3", "LLL")
+            words = words.replace("L2", "LL")
+            words = words.replace("U3", "UUU")
+            words = words.replace("U2", "UU")
+            words = words.replace("D3", "DDD")
+            words = words.replace("D2", "DD")
+            solution = words
+            makeGif(scramble,solution, tps)
+            with open("movie.webm", "rb") as f:
+                picture = discord.File(f)
+                await message.channel.send("Solution for " + scramble + " by " + message.author.mention + "\n" + str(len(solution)) + " moves (May not be optimal)\nTPS (playback): "+str(tps) +"\nTime (playback): "+ str(round(len(solution)/tps,3)) , file=picture)
+            os.remove("movie.webm")
+        except Exception as e:
+            print(traceback.print_exc())
+            await message.channel.send("Sorry, something is wrong")
     if message.content.startswith("!analyse"):
         await message.channel.send("Working on it!")
         try:
-          contentArray = message.content.split("\n")
-          scramble = contentArray[1]
-          solution = contentArray[2]
-          words = solution
-          words = words.replace("R3", "RRR")
-          words = words.replace("R2", "RR")
-          words = words.replace("L3", "LLL")
-          words = words.replace("L2", "LL")
-          words = words.replace("U3", "UUU")
-          words = words.replace("U2", "UU")
-          words = words.replace("D3", "DDD")
-          words = words.replace("D2", "DD")
-          solution = words
-          out = analyse(scramble, solution)
+            contentArray = message.content.split("\n")
+            scramble = contentArray[1]
+            solution = contentArray[2]
+            words = solution
+            words = words.replace("R3", "RRR")
+            words = words.replace("R2", "RR")
+            words = words.replace("L3", "LLL")
+            words = words.replace("L2", "LL")
+            words = words.replace("U3", "UUU")
+            words = words.replace("U2", "UU")
+            words = words.replace("D3", "DDD")
+            words = words.replace("D2", "DD")
+            solution = words
+            out = analyse(scramble, solution)
         except Exception as e:
-          out="Something is wrong with your inputs"
-          print(str(e))
+            out="Something is wrong with your inputs"
+            print(str(e))
         f = open("anal.txt", "w+")
         f.write(out)
         f.close()
         with open("anal.txt", "rb") as f:
-          txt = discord.File(f)
-          await message.channel.send("Your analysis: ", file=txt)
+            txt = discord.File(f)
+            await message.channel.send("Your analysis: ", file=txt)
         os.remove("anal.txt")
     if message.content.startswith("!draw"):
-      try:
-        scramble=message.content[6:]
-        img = drawPuzzle(scramble)
-        img.save('scramble.png', 'PNG')
-        with open("scramble.png", "rb") as f:
-          picture = discord.File(f)
-          await message.channel.send("Your scramble: ", file=picture)
-        os.remove("scramble.png")
-      except:
-        await message.channel.send("Something is wrong, sorry")
+        try:
+            scramble=message.content[6:]
+            img = drawPuzzle(scramble)
+            img.save('scramble.png', 'PNG')
+            with open("scramble.png", "rb") as f:
+                picture = discord.File(f)
+                await message.channel.send("Your scramble: ", file=picture)
+            os.remove("scramble.png")
+        except:
+            await message.channel.send("Something is wrong, sorry")
     if message.content.startswith("!getreq"):
         mystr = db["tiers.txt"].lower()
         # print(mystr)
@@ -1898,7 +1883,6 @@ async def on_message(message):
                         + examples
                     )
                     await message.channel.send(examples)
-            # getProbText(f1, f2, pzlName, nscr)
         except:
             await message.channel.send(
                 "Something is wrong\n```" + traceback.format_exc() + "```"
@@ -2049,28 +2033,28 @@ async def on_message(message):
             os.remove("img_lemon.jpg")
         except:
             await message.channel.send("Something is wrong")
-    if message.content.startswith("!savecmp"):   
-      if message.author.guild_permissions.administrator:
-       today = str(datetime.datetime.today().strftime('%Y-%m-%d'))
-       db["SMARTanon"] = db["SMART"+today]
-       await message.channel.send("Saved to anon!")
-      else:
-        await message.channel.send("Sorry, you are not admin")
+    if message.content.startswith("!savecmp"):
+        if message.author.guild_permissions.administrator:
+            today = str(datetime.datetime.today().strftime('%Y-%m-%d'))
+            db["SMARTanon"] = db["SMART"+today]
+            await message.channel.send("Saved to anon!")
+        else:
+            await message.channel.send("Sorry, you are not admin")
     if message.content.startswith("!datecompare"):
-      contentArray = message.content.lower().split(" ")
-      if len(contentArray) != 3:
-        await message.channel.send("Sorry your dates are wrong. Format:\n!datecompae 2021-06-13 2021-06-14")
-      else:
-        date1 = "SMART"+contentArray[1]
-        date2 = "SMART"+contentArray[2]
-        out = comparelist(date1, date2)
-        f = open("compare.txt", "w+")
-        f.write(out)
-        f.close()
-        with open("compare.txt", "rb") as f:
-          txt = discord.File(f)
-          await message.channel.send("Your cmp: ", file=txt)
-        os.remove("compare.txt")
+        contentArray = message.content.lower().split(" ")
+        if len(contentArray) != 3:
+            await message.channel.send("Sorry your dates are wrong. Format:\n!datecompae 2021-06-13 2021-06-14")
+        else:
+            date1 = "SMART"+contentArray[1]
+            date2 = "SMART"+contentArray[2]
+            out = comparelist(date1, date2)
+            f = open("compare.txt", "w+")
+            f.write(out)
+            f.close()
+            with open("compare.txt", "rb") as f:
+                txt = discord.File(f)
+                await message.channel.send("Your cmp: ", file=txt)
+            os.remove("compare.txt")
     if message.content.startswith("!compare"):
         out = comparelist("file1.txt", "file2.txt")
         if len(out) > 1900:
@@ -2106,48 +2090,55 @@ async def on_message(message):
             db["file2.txt"] = dbcomp(text)
             await message.channel.send("Probably updated")
     if message.content.startswith("!movesgame"):
-      scramble = scrambler.getScramble(4)
-      img = drawPuzzle(scramble)
-      img.save('scramble.png', 'PNG')
-      with open("scramble.png", "rb") as f:
-        picture = discord.File(f)
-        await message.channel.send("Find good move at this scramble: \n" + scramble + "\nYou will get answer in few seconds", file=picture)
-      os.remove("scramble.png")
-      goodmoves = getGoodMoves(scramble)
-      goodmovesmessage=""
-      for j in ["R","U","L","D"]:
-        if j in goodmoves:
-          goodmovesmessage+= "**"+j+"**" +" \tis \t**OK!**\t move\n"
-        else:
-          goodmovesmessage+= ""+j+"" +" \tis \tbad\t move\n"
-      await message.channel.send("\n" + "||" + goodmovesmessage + "||")
+        scramble = scrambler.getScramble(4)
+        img = drawPuzzle(scramble)
+        img.save('scramble.png', 'PNG')
+        with open("scramble.png", "rb") as f:
+            picture = discord.File(f)
+            await message.channel.send("Find good move at this scramble: \n" + scramble + "\nYou will get answer in few seconds", file=picture)
+        os.remove("scramble.png")
+        goodmoves = getGoodMoves(scramble, 4)
+        goodmovesmessage=""
+        for j in ["R","U","L","D"]:
+            if j in goodmoves:
+                goodmovesmessage+= "**"+j+"**" +" \tis \t**OK!**\t move\n"
+            else:
+                goodmovesmessage+= ""+j+"" +" \tis \tbad\t move\n"
+        await message.channel.send("\n" + "||" + goodmovesmessage + "||")
     if message.content.startswith("!goodm"):
-      try:
-        scramble = message.content[7:]
-        goodmoves = getGoodMoves(scramble)
-        await message.channel.send("Your scramble:\n"+scramble+"\nGood moves for your scramble: " + ' or '.join(goodmoves))
-      except:
-        print(traceback.format_exc())
-        await message.channel.send("Sorry, something is wrong")
-    if message.content.startswith("!eggsolve"):
-      scramble = message.content[10:]
-      print(scramble)
-      if len(scramble) != 37:
-        print(len(scramble))
-        await message.channel.send("Your scramble is wrong.")
-      else:
         try:
-          a = perf_counter()
-          solutions = solver.solveAll(scramble)
-          b = perf_counter()
-          string = ""
-          string += "Time: " + str(round((b - a), 3)) + "\n"
-          string += "Amount of solutions: " + str(len(solutions)) + "\n"
-          string += "Len: " + str(len(solutions[0])) + "\n"
-          string += '\n'.join(solutions)
-          await makeTmpSend("Solutions.txt", string, "All solutions for scramble " + scramble, message.channel)
+            scramble = message.content[7:]
+            if len(scramble) == 37:
+                size = 4
+            elif len(scramble) == 17:
+                size = 3
+            goodmoves = getGoodMoves(scramble, size)
+            await message.channel.send("Your scramble:\n"+scramble+"\nGood moves for your scramble: " + ' or '.join(goodmoves))
         except:
-          await message.channel.send("Sorry, can't solve it.")
+            print(traceback.format_exc())
+            await message.channel.send("Sorry, something is wrong")
+    if message.content.startswith("!eggsolve"):
+        scramble = message.content[10:]
+        if len(scramble) == 37:
+            size = 4
+        elif len(scramble) == 17:
+            size = 3
+        if size == 3 or size == 4:
+            try:
+                a = perf_counter()
+                solutions = solvers[size].solveAll(scramble)
+                b = perf_counter()
+                string = ""
+                string += "Time: " + str(round((b - a), 3)) + "\n"
+                string += "Amount of solutions: " + str(len(solutions)) + "\n"
+                string += "Len: " + str(len(solutions[0])) + "\n"
+                string += '\n'.join(solutions)
+                await makeTmpSend("Solutions.txt", string, "All solutions for scramble " + scramble, message.channel)
+            except:
+                await message.channel.send("Sorry, can't solve it.")
+        else:
+            print(len(scramble))
+            await message.channel.send("Your scramble is wrong.")
     if message.content.startswith("!solve") or message.content.startswith("!video"):
         try:
             solve = message.content.startswith("!solve")
@@ -2155,8 +2146,13 @@ async def on_message(message):
 
             scramble = message.content[7:]
             if len(scramble) == 37:
+                size = 4
+            elif len(scramble) == 17:
+                size = 3
+
+            if size == 4 or (size == 3 and solve):
                 a = perf_counter()
-                solution = solver.solveOne(scramble)
+                solution = solvers[size].solveOne(scramble)
                 b = perf_counter()
 
                 outm = "Solution for: " + scramble + "\n"
@@ -2175,13 +2171,10 @@ async def on_message(message):
                         picture = discord.File(f)
                         await message.channel.send("Solution for " + scramble + "\nOptimal: " + str(len(solution)) + " moves", file=picture)
                     os.remove("movie.webm")
-            elif solve:
-                if len(scramble) == 17:
-                    await message.channel.send(solve8(scramble).replace(", ", "\n"))
-                else:
-                    await message.channel.send(
-                        "Sorry, something is wrong with your scramble"
-                    )
+            else:
+                await message.channel.send(
+                    "Sorry, something is wrong with your scramble"
+                )
         except Exception as e:
             await message.channel.send("Something is wrong\n```" + str(e) + "```")
     if message.content.startswith("!help"):
