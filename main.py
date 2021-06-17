@@ -36,13 +36,13 @@ solvers[4].start()
 client = discord.Client()
 print('\n'.join(db.keys()))
 async def makeTmpSend(filename, filedata, messagewith, msgchn):
-  f = open(filename, "w+")    
-  f.write(filedata)
-  f.close()
-  with open(filename, "rb") as f:
-    myfile = discord.File(f)
-    await msgchn.send(messagewith, file=myfile)
-  os.remove(filename)
+    f = open(filename, "w+")
+    f.write(filedata)
+    f.close()
+    with open(filename, "rb") as f:
+        myfile = discord.File(f)
+        await msgchn.send(messagewith, file=myfile)
+    os.remove(filename)
 
 def readFilenormal(name):
     with open(name, "r") as file:
@@ -50,329 +50,326 @@ def readFilenormal(name):
     return mystr
 
 def addConstants():
-  for filename in glob.glob('Constant_Files/*.*'):
-    print(filename[15:])
-    text = readFilenormal(filename)
-    db[filename[15:]] = text
+    for filename in glob.glob('Constant_Files/*.*'):
+        print(filename[15:])
+        text = readFilenormal(filename)
+        db[filename[15:]] = text
 
 addConstants()
 
 
 def solvereverse(words):
-  words = words.replace("R3", "RRR")
-  words = words.replace("R2", "RR")
-  words = words.replace("L3", "LLL")
-  words = words.replace("L2", "LL")
-  words = words.replace("U3", "UUU")
-  words = words.replace("U2", "UU")
-  words = words.replace("D3", "DDD")
-  words = words.replace("D2", "DD")
-  words = words.replace("R", "_")
-  words = words.replace("L", "R")
-  words = words.replace("_", "L")
-  words = words.replace("U", "_")
-  words = words.replace("D", "U")
-  words = words.replace("_", "D")
-  words = words[::-1]
-  return words
+    words = words.replace("R3", "RRR")
+    words = words.replace("R2", "RR")
+    words = words.replace("L3", "LLL")
+    words = words.replace("L2", "LL")
+    words = words.replace("U3", "UUU")
+    words = words.replace("U2", "UU")
+    words = words.replace("D3", "DDD")
+    words = words.replace("D2", "DD")
+    words = words.replace("R", "_")
+    words = words.replace("L", "R")
+    words = words.replace("_", "L")
+    words = words.replace("U", "_")
+    words = words.replace("D", "U")
+    words = words.replace("_", "D")
+    words = words[::-1]
+    return words
 
 #_______________________________Auto leaderboard
 
 def getLeaderboard():
-  my_secret = os.environ['slidysim']
-  r = requests.post(my_secret, data = {'width':'-1',
-'height':'-1',
-'solvetype':'any',
-'displaytype':'Standard',
-'avglen':'-1',
-'pbtype':'time',
-'sortby':'time',
-'controls':'km',
-'user':'',
-'solvedata':0,
-'version':'28.3'})
+    my_secret = os.environ['slidysim']
+    r = requests.post(my_secret, data = {
+        'width':'-1',
+        'height':'-1',
+        'solvetype':'any',
+        'displaytype':'Standard',
+        'avglen':'-1',
+        'pbtype':'time',
+        'sortby':'time',
+        'controls':'km',
+        'user':'',
+        'solvedata':0,
+        'version':'28.3'
+    })
 
-  data = r.text.split("<br>")
-  data = data[1:-1]
-  solvesdata = []
- #goodPuzzles=["3x3","4x4","5x5","6x6","7x7","8x8","9x9","10x10"]
- # goodModes=["Standard","2-N relay", "Marathon 10", "Marathon 42"]
-  catNames = [
-    ["3x3-ao5", "Standard", "3x3", "5"],
-    ["3x3-ao12","Standard", "3x3", "12"],
-    ["3x3-ao50","Standard", "3x3", "50"],
-    ["3x3-ao100","Standard", "3x3", "100"],
-    ["3x3-x10","Marathon 10","3x3", "1"],
-    ["3x3-x42","Marathon 42","3x3", "1"],
-    ["4x4-sin","Standard", "4x4", "1"],
-    ["4x4-ao5","Standard", "4x4", "5"],
-    ["4x4-ao12","Standard", "4x4", "12"],
-    ["4x4-ao50","Standard", "4x4", "50"],
-    ["4x4-ao100","Standard", "4x4", "100"],
-    ["4x4-x10","Marathon 10","4x4", "1"],
-    ["4x4-x42","Marathon 42","4x4", "1"],
-    ["4x4-rel","2-N relay","4x4", "1"],
-    ["5x5-sin","Standard", "5x5", "1"],
-    ["5x5-ao5","Standard", "5x5", "5"],
-    ["5x5-ao12","Standard", "5x5", "12"],
-    ["5x5-ao50","Standard", "5x5", "50"],
-    ["5x5-rel","2-N relay","5x5", "1"],
-    ["6x6-sin","Standard", "6x6", "1"],
-    ["6x6-ao5","Standard", "6x6", "5"],
-    ["6x6-ao12","Standard", "6x6", "12"],
-    ["6x6-rel","2-N relay","6x6", "1"],
-    ["7x7-sin","Standard", "7x7", "1"],
-    ["7x7-ao5","Standard", "7x7", "5"],
-    ["7x7-rel","2-N relay","7x7", "1"],
-    ["8x8-sin","Standard", "8x8", "1"],
-    ["8x8-ao5","Standard", "8x8", "5"],
-    ["9x9-sin","Standard", "9x9", "1"],
-    ["10x10-sin","Standard", "10x10", "1"],
+    data = r.text.split("<br>")
+    data = data[1:-1]
+    solvesdata = []
+    catNames = [
+        ["3x3-ao5", "Standard", "3x3", "5"],
+        ["3x3-ao12","Standard", "3x3", "12"],
+        ["3x3-ao50","Standard", "3x3", "50"],
+        ["3x3-ao100","Standard", "3x3", "100"],
+        ["3x3-x10","Marathon 10","3x3", "1"],
+        ["3x3-x42","Marathon 42","3x3", "1"],
+        ["4x4-sin","Standard", "4x4", "1"],
+        ["4x4-ao5","Standard", "4x4", "5"],
+        ["4x4-ao12","Standard", "4x4", "12"],
+        ["4x4-ao50","Standard", "4x4", "50"],
+        ["4x4-ao100","Standard", "4x4", "100"],
+        ["4x4-x10","Marathon 10","4x4", "1"],
+        ["4x4-x42","Marathon 42","4x4", "1"],
+        ["4x4-rel","2-N relay","4x4", "1"],
+        ["5x5-sin","Standard", "5x5", "1"],
+        ["5x5-ao5","Standard", "5x5", "5"],
+        ["5x5-ao12","Standard", "5x5", "12"],
+        ["5x5-ao50","Standard", "5x5", "50"],
+        ["5x5-rel","2-N relay","5x5", "1"],
+        ["6x6-sin","Standard", "6x6", "1"],
+        ["6x6-ao5","Standard", "6x6", "5"],
+        ["6x6-ao12","Standard", "6x6", "12"],
+        ["6x6-rel","2-N relay","6x6", "1"],
+        ["7x7-sin","Standard", "7x7", "1"],
+        ["7x7-ao5","Standard", "7x7", "5"],
+        ["7x7-rel","2-N relay","7x7", "1"],
+        ["8x8-sin","Standard", "8x8", "1"],
+        ["8x8-ao5","Standard", "8x8", "5"],
+        ["9x9-sin","Standard", "9x9", "1"],
+        ["10x10-sin","Standard", "10x10", "1"],
     ]
-  namelist=[]
-  for i in data:
-    ilist = i.split(",")
-    puzzle=str(ilist[0]) + "x" + str(ilist[1])
-    mode = ilist[2]
-    name = ilist[4].upper()
-    solvetime = str(format((int(ilist[5]))/1000, '.3f'))
-    avgType = str(ilist[8])
-    category = ""
-    for cat in catNames:
-      if cat[1]==mode and cat[2] == puzzle and cat[3] == avgType:
-        category = cat[0]
-    if category != "":
-      if name not in namelist:
-        namelist.append(name)
-      solvesdata.append({
-        "Cat" : category,
-        "Name": name,
-        "Time": solvetime,
-        }
-    )
-  reqstring = db["tiers.txt"].splitlines()
-  req=[]
-  tier_cost = db["tier_cost.txt"].lower().split("\t")
-  for id, item in enumerate(tier_cost):
-    tier_cost[id] = int(item)
-  tier_limits = db["tier_limits.txt"].lower().split("\t")
-  for id, item in enumerate(tier_limits):
-    tier_limits[id] = int(item)   
-  id = 0
-  tierNames=["Unranked"]
-  for i in reqstring:
-    i = i.split("\t")
-    tierNames.append(i[0])
-    req.append({"Tiercost":tier_cost[id],"Tierlimit":tier_limits[id], "Scores": i[1:], "TierID":id+1})
-    id += 1
-  req.reverse()
-  #print(namelist)
-  userData = []
-  for name in namelist:
-    scoresRow=[]
-    userCatsolves = [name]
-    power=0
-    for catid, cat in enumerate(catNames):
-      category = cat[0]
-      solves=[]
-      for solve in solvesdata:
-        if solve["Cat"] == category and solve["Name"] == name:
-          solves.append(float(solve["Time"]))
-      if len(solves) == 0:
-        userCatsolves.append("N/A")
-        scoresRow.append(0)
-      else:
-        userscoretime=round(min(solves),3)
-        userCatsolves.append(str(format(userscoretime,'.3f')))
-        myscoreid=0
-        for reqdata in req:
-          scoresValues=reqdata["Scores"]          
-          if userscoretime < float(scoresValues[catid]):
-            power+=int(reqdata["Tiercost"])
-            myscoreid=reqdata["TierID"]
-            #if name == "dphdmn":
-            #  print(int(reqdata["Tiercost"]), power)
-            break
-        scoresRow.append(myscoreid) 
-    userCatsolves.append(str(power))
-    tierID=0
-    for id,i in enumerate(tier_limits):
-      if power>=int(i):
-        tierID=id+1
-    userCatsolves.append(tierNames[tierID])
-    userCatsolves.extend(scoresRow)
-    userData.append(userCatsolves)
-    #print(userCatsolves)
-  string = ""
-  userData.sort(key=lambda x: int(x[31]))
-  userData.reverse()
-  smartstring = ""
-  y = PrettyTable()
-  y.field_names = ["Name","Place","Power","Tier","3x3 ao5","3x3 ao12","3x3 ao50","3x3 ao100","3x3 x10", "3x3 x42", "4x4 single", "4x4 ao5", "4x4 ao12", "4x4 ao50", "4x4 ao100", "4x4 x10", "4x4 x42", "4x4 relay", "5x5 single", "5x5 ao5", "5x5 ao12", "5x5 ao50", "5x5 relay", "6x6 single", "6x6 ao5", "6x6 ao12", "6x6 relay", "7x7 single", "7x7 ao5", "7x7 relay", "8x8 single", "8x8 ao5", "9x9 single", "10x10 single"]
-  headers = ["3x3 ao5","3x3 ao12","3x3 ao50","3x3 ao100","3x3 x10", "3x3 x42", "4x4 single", "4x4 ao5", "4x4 ao12", "4x4 ao50", "4x4 ao100", "4x4 x10", "4x4 x42", "4x4 relay", "5x5 single", "5x5 ao5", "5x5 ao12", "5x5 ao50", "5x5 relay", "6x6 single", "6x6 ao5", "6x6 ao12", "6x6 relay", "7x7 single", "7x7 ao5", "7x7 relay", "8x8 single", "8x8 ao5", "9x9 single", "10x10 single"]
-  rows=[]
-  scoresbase=33
-  for num,i in enumerate(userData):
-    row=[]
-    #print("doing")
-    #print(str(i))
-    string+='\t'.join(str(x) for x in i)+"\n"
-    row.append(i[0])
-    row.append(str(num+1))
-    row.append(i[31])
-    row.append(i[32])
-    smartstring += i[0] + "\t" + str(num+1) +"\t" + i[31] + "\t"
-    for j in range(len(catNames)):
-      smartstring += i[j+1] + "\t"
-      row.append(''.join([i[j+1]]))
-    smartstring += "\n"
-    rows.append(row)
-  y.add_rows(rows)  
-  tierNames.reverse()
-  myhtml="<main class=\"st_viewport\">"
-  for id, tier in enumerate(tierNames):
-    if tier != "Unranked":
-      myreqdata = req[id]
-    reqscoreslist=myreqdata["Scores"]
-    myhtml+="<div class=\"st_wrap_table\" data-table_id=\"" + str(id+1)+"\">\n"
-    myhtml+="<header class=\"st_table_header\">\n"
-    myhtml+="<h2>"
-    myhtml+= tier
-    myhtml+="</h2>\n"
-    myhtml+="<div class=\"st_row\">\n"
-    myhtml+="<div class=\"st_column _name\"></div>\n"
-    myhtml+="<div class=\"st_column _place\">"+str(myreqdata["Tiercost"])+"</div>\n"
-    myhtml+="<div class=\"st_column _power\">"+str(myreqdata["Tierlimit"])+"</div>\n"
-    for e,_ in enumerate(headers):
-      myhtml+="<div class=\"st_column _score\">"+ str(reqscoreslist[e]) +"</div>\n"
-    myhtml+="</div>\n"
-    myhtml+="<div class=\"st_row\">\n"
-    myhtml+="<div class=\"st_column _name\">Name</div>\n"
-    myhtml+="<div class=\"st_column _place\">Place</div>\n"
-    myhtml+="<div class=\"st_column _power\">Power</div>\n"
-    for i in headers:
-      myhtml+="<div class=\"st_column _score\">"+ i +"</div>\n"
-    myhtml+="</div>\n"
-    myhtml+="</header>\n"
-
-    myhtml+="<div class=\"st_table\">\n"
-    for personid, person in enumerate(rows):
-      dataRow = userData[personid]
-      if person[3] == tier:
-        userTierID = 12-int(tierNames.index(tier))
+    namelist=[]
+    for i in data:
+        ilist = i.split(",")
+        puzzle=str(ilist[0]) + "x" + str(ilist[1])
+        mode = ilist[2]
+        name = ilist[4].upper()
+        solvetime = str(format((int(ilist[5]))/1000, '.3f'))
+        avgType = str(ilist[8])
+        category = ""
+        for cat in catNames:
+            if cat[1]==mode and cat[2] == puzzle and cat[3] == avgType:
+                category = cat[0]
+        if category != "":
+            if name not in namelist:
+                namelist.append(name)
+            solvesdata.append({
+                "Cat" : category,
+                "Name": name,
+                "Time": solvetime,
+            })
+    reqstring = db["tiers.txt"].splitlines()
+    req=[]
+    tier_cost = db["tier_cost.txt"].lower().split("\t")
+    for id, item in enumerate(tier_cost):
+        tier_cost[id] = int(item)
+    tier_limits = db["tier_limits.txt"].lower().split("\t")
+    for id, item in enumerate(tier_limits):
+        tier_limits[id] = int(item)
+    id = 0
+    tierNames=["Unranked"]
+    for i in reqstring:
+        i = i.split("\t")
+        tierNames.append(i[0])
+        req.append({"Tiercost":tier_cost[id],"Tierlimit":tier_limits[id], "Scores": i[1:], "TierID":id+1})
+        id += 1
+    req.reverse()
+    #print(namelist)
+    userData = []
+    for name in namelist:
+        scoresRow=[]
+        userCatsolves = [name]
+        power=0
+        for catid, cat in enumerate(catNames):
+            category = cat[0]
+            solves=[]
+            for solve in solvesdata:
+                if solve["Cat"] == category and solve["Name"] == name:
+                    solves.append(float(solve["Time"]))
+            if len(solves) == 0:
+                userCatsolves.append("N/A")
+                scoresRow.append(0)
+            else:
+                userscoretime=round(min(solves),3)
+                userCatsolves.append(str(format(userscoretime,'.3f')))
+                myscoreid=0
+                for reqdata in req:
+                    scoresValues=reqdata["Scores"]
+                    if userscoretime < float(scoresValues[catid]):
+                        power+=int(reqdata["Tiercost"])
+                        myscoreid=reqdata["TierID"]
+                        #if name == "dphdmn":
+                        #  print(int(reqdata["Tiercost"]), power)
+                        break
+                scoresRow.append(myscoreid)
+        userCatsolves.append(str(power))
+        tierID=0
+        for id,i in enumerate(tier_limits):
+            if power>=int(i):
+                tierID=id+1
+        userCatsolves.append(tierNames[tierID])
+        userCatsolves.extend(scoresRow)
+        userData.append(userCatsolves)
+        #print(userCatsolves)
+    string = ""
+    userData.sort(key=lambda x: int(x[31]))
+    userData.reverse()
+    smartstring = ""
+    y = PrettyTable()
+    y.field_names = ["Name","Place","Power","Tier","3x3 ao5","3x3 ao12","3x3 ao50","3x3 ao100","3x3 x10", "3x3 x42", "4x4 single", "4x4 ao5", "4x4 ao12", "4x4 ao50", "4x4 ao100", "4x4 x10", "4x4 x42", "4x4 relay", "5x5 single", "5x5 ao5", "5x5 ao12", "5x5 ao50", "5x5 relay", "6x6 single", "6x6 ao5", "6x6 ao12", "6x6 relay", "7x7 single", "7x7 ao5", "7x7 relay", "8x8 single", "8x8 ao5", "9x9 single", "10x10 single"]
+    headers = ["3x3 ao5","3x3 ao12","3x3 ao50","3x3 ao100","3x3 x10", "3x3 x42", "4x4 single", "4x4 ao5", "4x4 ao12", "4x4 ao50", "4x4 ao100", "4x4 x10", "4x4 x42", "4x4 relay", "5x5 single", "5x5 ao5", "5x5 ao12", "5x5 ao50", "5x5 relay", "6x6 single", "6x6 ao5", "6x6 ao12", "6x6 relay", "7x7 single", "7x7 ao5", "7x7 relay", "8x8 single", "8x8 ao5", "9x9 single", "10x10 single"]
+    rows=[]
+    scoresbase=33
+    for num,i in enumerate(userData):
+        row=[]
+        #print("doing")
+        #print(str(i))
+        string+='\t'.join(str(x) for x in i)+"\n"
+        row.append(i[0])
+        row.append(str(num+1))
+        row.append(i[31])
+        row.append(i[32])
+        smartstring += i[0] + "\t" + str(num+1) +"\t" + i[31] + "\t"
+        for j in range(len(catNames)):
+            smartstring += i[j+1] + "\t"
+            row.append(''.join([i[j+1]]))
+        smartstring += "\n"
+        rows.append(row)
+    y.add_rows(rows)
+    tierNames.reverse()
+    myhtml="<main class=\"st_viewport\">"
+    for id, tier in enumerate(tierNames):
+        if tier != "Unranked":
+            myreqdata = req[id]
+        reqscoreslist=myreqdata["Scores"]
+        myhtml+="<div class=\"st_wrap_table\" data-table_id=\"" + str(id+1)+"\">\n"
+        myhtml+="<header class=\"st_table_header\">\n"
+        myhtml+="<h2>"
+        myhtml+= tier
+        myhtml+="</h2>\n"
         myhtml+="<div class=\"st_row\">\n"
-        myhtml+="<div class=\"st_column _name\">"+person[0]+"</div>\n"
-        myhtml+="<div class=\"st_column _place\">"+str(person[1])+"</div>\n"
-        myhtml+="<div class=\"st_column _power\">"+str(person[2])+"</div>\n"
-        for idsmall,_ in enumerate(headers):
-          #print(scoresbase+idsmall)
-          #print (dataRow)
-          #print("last id: "+str((len(dataRow)-1)))
-          scoreTierID = int(dataRow[scoresbase+idsmall])
-          if scoreTierID > userTierID:
-            colorID = 3
-          elif scoreTierID == userTierID-1:
-            colorID = 1
-          elif scoreTierID == userTierID:
-            colorID = 0
-          else:
-            colorID = 2
-          score = str(person[idsmall+4])
-          if score == "N/A":
-            score = ""
-          myhtml+="<div class=\"st_column _score\" color-id=\"" + str(colorID)+"\">"+ score +"</div>\n"
+        myhtml+="<div class=\"st_column _name\"></div>\n"
+        myhtml+="<div class=\"st_column _place\">"+str(myreqdata["Tiercost"])+"</div>\n"
+        myhtml+="<div class=\"st_column _power\">"+str(myreqdata["Tierlimit"])+"</div>\n"
+        for e,_ in enumerate(headers):
+            myhtml+="<div class=\"st_column _score\">"+ str(reqscoreslist[e]) +"</div>\n"
         myhtml+="</div>\n"
-    myhtml+="</div>\n"
-    myhtml+="</div>\n"
-  myhtml+="</main>"
-  updatedate = str(datetime.datetime.today().strftime('%Y-%m-%d'))
-  #updatedate = "2021-06-14"
-  db["leaderboard.txt"] = string #only for getPB command, should be fixed and removed
-  db["smartboard.txt"] = smartstring #main format for compare
-  db["prettylb.txt"] = y.get_string() #90% useless thing for !getlb - txt format lb
-  
-  db["egg.html"] = myhtml #lb that is using on website
+        myhtml+="<div class=\"st_row\">\n"
+        myhtml+="<div class=\"st_column _name\">Name</div>\n"
+        myhtml+="<div class=\"st_column _place\">Place</div>\n"
+        myhtml+="<div class=\"st_column _power\">Power</div>\n"
+        for i in headers:
+            myhtml+="<div class=\"st_column _score\">"+ i +"</div>\n"
+        myhtml+="</div>\n"
+        myhtml+="</header>\n"
 
-  db["HTML" + updatedate] = dbcomp(myhtml)
-  db["SMART" + updatedate] = dbcomp(smartstring)
-  updatehtml()
+        myhtml+="<div class=\"st_table\">\n"
+        for personid, person in enumerate(rows):
+            dataRow = userData[personid]
+            if person[3] == tier:
+                userTierID = 12-int(tierNames.index(tier))
+                myhtml+="<div class=\"st_row\">\n"
+                myhtml+="<div class=\"st_column _name\">"+person[0]+"</div>\n"
+                myhtml+="<div class=\"st_column _place\">"+str(person[1])+"</div>\n"
+                myhtml+="<div class=\"st_column _power\">"+str(person[2])+"</div>\n"
+                for idsmall,_ in enumerate(headers):
+                    #print(scoresbase+idsmall)
+                    #print (dataRow)
+                    #print("last id: "+str((len(dataRow)-1)))
+                    scoreTierID = int(dataRow[scoresbase+idsmall])
+                    if scoreTierID > userTierID:
+                        colorID = 3
+                    elif scoreTierID == userTierID-1:
+                        colorID = 1
+                    elif scoreTierID == userTierID:
+                        colorID = 0
+                    else:
+                        colorID = 2
+                    score = str(person[idsmall+4])
+                    if score == "N/A":
+                        score = ""
+                    myhtml+="<div class=\"st_column _score\" color-id=\"" + str(colorID)+"\">"+ score +"</div>\n"
+                myhtml+="</div>\n"
+        myhtml+="</div>\n"
+        myhtml+="</div>\n"
+    myhtml+="</main>"
+    updatedate = str(datetime.datetime.today().strftime('%Y-%m-%d'))
+    #updatedate = "2021-06-14"
+    db["leaderboard.txt"] = string #only for getPB command, should be fixed and removed
+    db["smartboard.txt"] = smartstring #main format for compare
+    db["prettylb.txt"] = y.get_string() #90% useless thing for !getlb - txt format lb
+    db["egg.html"] = myhtml #lb that is using on website
+    db["HTML" + updatedate] = dbcomp(myhtml)
+    db["SMART" + updatedate] = dbcomp(smartstring)
+    updatehtml()
 
 def dbcomp(string):
-  return zlib.compress(string.encode("utf-8")).hex()
+    return zlib.compress(string.encode("utf-8")).hex()
 
 def dbdecomp(compthingy):
-  return zlib.decompress(bytes.fromhex(compthingy)).decode("utf-8")
+    return zlib.decompress(bytes.fromhex(compthingy)).decode("utf-8")
 
 def getAllHTML():
-  matches = db.prefix("HTML")
-  print("ALL DATES")
-  print(matches)
-  myhtmlshots = []
-  for i in matches:
-    mydate = i.replace("HTML", "")
-    myhtmlshots.append({"date": mydate, "htmlinfo": dbdecomp(db[i])})
-  myhtmlshots.sort(key=lambda x: datetime.datetime.strptime(x["date"], '%Y-%m-%d'))
-  myhtmlshots.reverse()
-  return myhtmlshots
+    matches = db.prefix("HTML")
+    print("ALL DATES")
+    print(matches)
+    myhtmlshots = []
+    for i in matches:
+        mydate = i.replace("HTML", "")
+        myhtmlshots.append({"date": mydate, "htmlinfo": dbdecomp(db[i])})
+    myhtmlshots.sort(key=lambda x: datetime.datetime.strptime(x["date"], '%Y-%m-%d'))
+    myhtmlshots.reverse()
+    return myhtmlshots
 
 def updatehtml():
-  allhtml = getAllHTML() 
-  egginfo = ""
-  egginfo += "<div class=\"tab\">\n"
-  #headers 
-  for e, i in enumerate(allhtml):
-    mydate = i["date"]
-    if e == 0:
-      egginfo += "<button class=\"tablinks\" id=\"defaultOpen\" onclick=\"openCity(event, \'" + mydate + "\')\">" + mydate + "</button>\n"
-    else:
-      egginfo += "<button class=\"tablinks\" onclick=\"openCity(event, \'" + mydate + "\')\">" + mydate + "</button>\n" 
-  egginfo += "<div>\n"
-  #content
-  for i in allhtml:
-    myinfo = i["htmlinfo"]
-    mydate = i["date"]
-    egginfo += "<div id=\"" + mydate + "\" class=\"tabcontent\">\n"
-    egginfo += myinfo
-    egginfo += "</div>\n"
-  f = open("templates/index.html", "w+")    
-  f.write(db["header.html"])
-  f.write(egginfo)
-  f.write(db["footer.html"])
-  f.close()
+    allhtml = getAllHTML()
+    egginfo = ""
+    egginfo += "<div class=\"tab\">\n"
+    #headers
+    for e, i in enumerate(allhtml):
+        mydate = i["date"]
+        if e == 0:
+            egginfo += "<button class=\"tablinks\" id=\"defaultOpen\" onclick=\"openCity(event, \'" + mydate + "\')\">" + mydate + "</button>\n"
+        else:
+            egginfo += "<button class=\"tablinks\" onclick=\"openCity(event, \'" + mydate + "\')\">" + mydate + "</button>\n"
+    egginfo += "<div>\n"
+    #content
+    for i in allhtml:
+        myinfo = i["htmlinfo"]
+        mydate = i["date"]
+        egginfo += "<div id=\"" + mydate + "\" class=\"tabcontent\">\n"
+        egginfo += myinfo
+        egginfo += "</div>\n"
+    f = open("templates/index.html", "w+")
+    f.write(db["header.html"])
+    f.write(egginfo)
+    f.write(db["footer.html"])
+    f.close()
 
 #___________GIF_MAKER
 def clearImages():
-  folder = 'images'
-  for filename in os.listdir(folder):
-    file_path = os.path.join(folder, filename)
-    try:
-      if os.path.isfile(file_path) or os.path.islink(file_path):
-        os.unlink(file_path)
-      elif os.path.isdir(file_path):
-        shutil.rmtree(file_path)
-    except Exception as e:
-        print('Failed to delete %s. Reason: %s' % (file_path, e))
+    folder = 'images'
+    for filename in os.listdir(folder):
+        file_path = os.path.join(folder, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)
+        except Exception as e:
+            print('Failed to delete %s. Reason: %s' % (file_path, e))
 
 def makeGif(scramble,solution,tps):
-  clearImages()
-  makeImages(scramble,solution)
-  img_array = []
-  for filename in glob.glob('images/*.png'):
-    img = cv2.imread(filename)
-    height, width, layers = img.shape
-    size = (width,height)
-    img_array.append(img)
-  out = cv2.VideoWriter('movie.webm',cv2.VideoWriter_fourcc(*'VP90'), tps, size)
-  for i in range(len(img_array)):
-    out.write(img_array[i])
-  out.release()
-  clearImages()
+    clearImages()
+    makeImages(scramble,solution)
+    img_array = []
+    for filename in glob.glob('images/*.png'):
+        img = cv2.imread(filename)
+        height, width, layers = img.shape
+        size = (width,height)
+        img_array.append(img)
+    out = cv2.VideoWriter('movie.webm',cv2.VideoWriter_fourcc(*'VP90'), tps, size)
+    for i in range(len(img_array)):
+        out.write(img_array[i])
+    out.release()
+    clearImages()
 
 def makeImages(scramble,solution):
-  states = getStates(scramble, solution)
-  for n, scr in enumerate(states):
-    img = drawPuzzle(scr)
-    img.save("images/" + str(n).zfill(5) + ".png", 'PNG')
+    states = getStates(scramble, solution)
+    for n, scr in enumerate(states):
+        img = drawPuzzle(scr)
+        img.save("images/" + str(n).zfill(5) + ".png", 'PNG')
 
 #________________________________SCRAMBLE DRAWER
 
@@ -573,11 +570,11 @@ def getLegalmoves(blank):
   if not bannedmove(blank,"L"):
     list.append("L")
   if not bannedmove(blank,"D"):
-    list.append("D") 
+    list.append("D")
   return list
 
 def get4state(scramble):
-  list = [] 
+  list = []
   puzzle, blank = createScrambled(scramble)
   legalmoves=getLegalmoves(blank)
   print("legal moves" + str(legalmoves))
@@ -586,7 +583,7 @@ def get4state(scramble):
     puz, _ =  move(puzzle, blank, i)
     list.append((i, toScramble(puz)))
 
-  return list  
+  return list
 
 def isReverse(a, b):
   return getReverse(a) == b
@@ -684,7 +681,7 @@ def analyse(scramble, solution):
     log = "Something is wrong with your solution"
  # log+="Full log:\n"
  # log+=x.get_string()
-  
+
   return log
 # _______________________________________________________________
 
@@ -810,7 +807,7 @@ def comparelist(name1, name2):
       print(traceback.format_exc())
       dberror = "Error with loading data"
     if dberror != "Error with loading data":
-      
+
       old_list = makeList(textinfo1, tier_limits, rankNames)
       new_list = makeList(textinfo2, tier_limits, rankNames)
 
@@ -1237,7 +1234,7 @@ def getFMCstatus():
     return "CLOSED" in status #true if you can start
   except:
     return True
-  
+
 
 
 def checkSol(scramble, solution):
@@ -1268,7 +1265,7 @@ def fixSolution(solution):
   return words
 
 def rewriteFile(file, text):
-  f = open(file, "w+")    
+  f = open(file, "w+")
   f.write(text)
   f.close()
 
@@ -1309,7 +1306,7 @@ def appendDB(key, text):
 def appendFile(file, text):
   f = open(file, 'a')
   f.write(text)
-  f.close()  
+  f.close()
 #____________________________discord started
 @client.event
 async def on_ready():
@@ -1389,7 +1386,7 @@ async def on_message(message):
     if message.content.startswith("!submit"):
       if getFMCstatus():
         await message.channel.send("Sorry, there is no FMC competition now.")
-      else:  
+      else:
         name = message.author.name
         contentArray = message.content.lower().split(" ")
         await message.delete()
@@ -1424,7 +1421,7 @@ async def on_message(message):
                 with open("daily_backup.txt", "rb") as f:
                   txt = discord.File(f)
                   await channel2.send("Backup", file=txt)
-                os.remove("daily_backup.txt")  
+                os.remove("daily_backup.txt")
                 await message.channel.send("||" + item_old["Len"] + "||->" + lenstr + "Your solution updated, " + name)
     if message.content.startswith("!daily_open"):
         if not message.author.guild_permissions.administrator:
@@ -2041,7 +2038,7 @@ async def on_message(message):
             os.remove("img_lemon.jpg")
         except:
             await message.channel.send("Something is wrong")
-    if message.content.startswith("!savecmp"):   
+    if message.content.startswith("!savecmp"):
         if message.author.guild_permissions.administrator:
             today = str(datetime.datetime.today().strftime('%Y-%m-%d'))
             db["SMARTanon"] = db["SMART"+today]
