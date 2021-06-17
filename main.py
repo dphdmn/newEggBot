@@ -538,151 +538,148 @@ def getStates(scramble, solution):
     return list
     # return '\n'.join(list)
 def getReverse(move):
-  if move == "R":
-    return "L"
-  if move =="L":
-    return "R"
-  if move =="U":
-    return "D"
-  if move =="D":
-    return "U"
-  return None
+    if move == "R":
+        return "L"
+    if move =="L":
+        return "R"
+    if move =="U":
+        return "D"
+    if move =="D":
+        return "U"
+    return None
 
 def getGoodMoves(scramble, size):
     return [x[0] for x in solvers[size].solveGood(scramble)]
 
 def bannedmove(blank, move):
-  if move == "R":
-    return blank in [0,4,8,12]
-  if move == "L":
-    return blank in [3,7,11,15]
-  if move == "D":
-    return blank in [0,1,2,3]
-  if move == "U":
-    return blank in [12,13,14,15]
+    if move == "R":
+        return blank in [0,4,8,12]
+    if move == "L":
+        return blank in [3,7,11,15]
+    if move == "D":
+        return blank in [0,1,2,3]
+    if move == "U":
+        return blank in [12,13,14,15]
 
 def getLegalmoves(blank):
-  list=[]
-  if not bannedmove(blank,"R"):
-    list.append("R")
-  if not bannedmove(blank,"U"):
-    list.append("U")
-  if not bannedmove(blank,"L"):
-    list.append("L")
-  if not bannedmove(blank,"D"):
-    list.append("D")
-  return list
+    list=[]
+    if not bannedmove(blank,"R"):
+        list.append("R")
+    if not bannedmove(blank,"U"):
+        list.append("U")
+    if not bannedmove(blank,"L"):
+        list.append("L")
+    if not bannedmove(blank,"D"):
+        list.append("D")
+    return list
 
 def get4state(scramble):
-  list = []
-  puzzle, blank = createScrambled(scramble)
-  legalmoves=getLegalmoves(blank)
-  print("legal moves" + str(legalmoves))
-  for i in legalmoves:
+    list = []
     puzzle, blank = createScrambled(scramble)
-    puz, _ =  move(puzzle, blank, i)
-    list.append((i, toScramble(puz)))
-
-  return list
+    legalmoves=getLegalmoves(blank)
+    print("legal moves" + str(legalmoves))
+    for i in legalmoves:
+        puzzle, blank = createScrambled(scramble)
+        puz, _ =  move(puzzle, blank, i)
+        list.append((i, toScramble(puz)))
+    return list
 
 def isReverse(a, b):
-  return getReverse(a) == b
+    return getReverse(a) == b
 
 def analyse(scramble, solution):
-  solution = solution.upper()
-  states = getStates(scramble,solution)
-  if states[len(states)-1] == "1 2 3 4/5 6 7 8/9 10 11 12/13 14 15 0":
-    optimals = []
-    optl = []
-    userlen=len(solution)
-    #print('\n'.join(states))
-    lastopt=""
-    for id,i in enumerate(states):
-      print(i)
-      user_end_len=userlen-id
-      predicted_opt_end_len=len(lastopt)-1
-      if lastopt !="" and user_end_len==predicted_opt_end_len:
-        opt = lastopt[1:]
-      else:
-        opt = solvers[4].solveOne(i)
-      lastopt=opt
-      optimals.append(opt)
-      optl.append(len(opt))
-    log = "Analysing " + scramble + "\n"
-    log += "Your solution " + solution + " [" + str(userlen) + "]\n"
-    dif = userlen-optl[0]
-    log += "Your solution is [" + str(dif) + "] away from optimal\n"
-    log += "Optimal: " + optimals[0] + " [" + str(optl[0]) + "]\n"
-    x = PrettyTable()
-    x.field_names = ["Move", "State", "Fail", "Your Before","Your Ending","Opt_Ending", "Your_with_Optimal_ending"]
-    myrows=[]
-    wrongmoves = []
-    lasti = -1
-    for id, move in enumerate(solution):
-      movesdone=id+1
-      userlen -= 1
-      if userlen != -1:
-        row = []
-        #dif =  userlen - optl[movesdone]
-        optdif = abs(optl[movesdone-1] - optl[movesdone] - 1)
-        row.append(move)
-        row.append(states[movesdone])
-        #row.append(str(dif))
-        if optdif == 0:
-          row.append(" ")
-          if len(myrows) > 1 and len(wrongmoves) > 0:
-            lastrow=myrows[len(myrows)-2]
-            movebeforerow=myrows[len(myrows)-1]
-            prev=wrongmoves[len(wrongmoves)-1]
-            #print(str(lastrow[1]==prev[1]) + str(movesdone)+str(lastrow)+str(prev))
-            if isReverse(move,movebeforerow[0]) and lastrow[1]==prev[1]:
-              prev[3]="!"+prev[3]
-        else:
-          wrong= []
-          wrong.append(movesdone)
-          wrong.append(states[movesdone-1])
-          wrong.append(solution[:movesdone-1])
-          if movesdone-1 == lasti:
-            prev=wrongmoves[len(wrongmoves)-1]
-            prev[3]="!"+prev[3]
-          wrong.append(move)
-          lasti=movesdone
-          opt=optimals[movesdone-1]
-          wrong.append(opt[:1])
-          wrong.append(solution[movesdone-1:])
-          wrong.append(opt)
-          wrong.append(solution[:movesdone-1] + opt)
-          row.append(str(optdif))
-          wrongmoves.append(wrong)
-        your = solution[:movesdone]
-        yourend= solution[movesdone:]
-        after = optimals[movesdone]
-        full=your+after
-        if len(your)>10:
-          your = your[:10] + "..."
-        if len(yourend)>10:
-          yourend = yourend[:10] + "..."
-        if len(after)>10:
-          after = after[:10] + "..."
-        row.append(your)
-        row.append(yourend + "[" + str(len(solution[movesdone:])) + "]")
-        row.append(after + "[" + str(len(optimals[movesdone])) + "]")
-        row.append(full)
-        myrows.append(row)
-    x.add_rows(myrows)
+    solution = solution.upper()
+    states = getStates(scramble,solution)
+    if states[len(states)-1] == "1 2 3 4/5 6 7 8/9 10 11 12/13 14 15 0":
+        optimals = []
+        optl = []
+        userlen=len(solution)
+        #print('\n'.join(states))
+        lastopt=""
+        for id,i in enumerate(states):
+            print(i)
+            user_end_len=userlen-id
+            predicted_opt_end_len=len(lastopt)-1
+            if lastopt !="" and user_end_len==predicted_opt_end_len:
+                opt = lastopt[1:]
+            else:
+                opt = solvers[4].solveOne(i)
+            lastopt=opt
+            optimals.append(opt)
+            optl.append(len(opt))
+        log = "Analysing " + scramble + "\n"
+        log += "Your solution " + solution + " [" + str(userlen) + "]\n"
+        dif = userlen-optl[0]
+        log += "Your solution is [" + str(dif) + "] away from optimal\n"
+        log += "Optimal: " + optimals[0] + " [" + str(optl[0]) + "]\n"
+        x = PrettyTable()
+        x.field_names = ["Move", "State", "Fail", "Your Before","Your Ending","Opt_Ending", "Your_with_Optimal_ending"]
+        myrows=[]
+        wrongmoves = []
+        lasti = -1
+        for id, move in enumerate(solution):
+            movesdone=id+1
+            userlen -= 1
+            if userlen != -1:
+                row = []
+                #dif =  userlen - optl[movesdone]
+                optdif = abs(optl[movesdone-1] - optl[movesdone] - 1)
+                row.append(move)
+                row.append(states[movesdone])
+                #row.append(str(dif))
+                if optdif == 0:
+                    row.append(" ")
+                    if len(myrows) > 1 and len(wrongmoves) > 0:
+                        lastrow=myrows[len(myrows)-2]
+                        movebeforerow=myrows[len(myrows)-1]
+                        prev=wrongmoves[len(wrongmoves)-1]
+                        #print(str(lastrow[1]==prev[1]) + str(movesdone)+str(lastrow)+str(prev))
+                        if isReverse(move,movebeforerow[0]) and lastrow[1]==prev[1]:
+                            prev[3]="!"+prev[3]
+                else:
+                    wrong= []
+                    wrong.append(movesdone)
+                    wrong.append(states[movesdone-1])
+                    wrong.append(solution[:movesdone-1])
+                    if movesdone-1 == lasti:
+                        prev=wrongmoves[len(wrongmoves)-1]
+                        prev[3]="!"+prev[3]
+                    wrong.append(move)
+                    lasti=movesdone
+                    opt=optimals[movesdone-1]
+                    wrong.append(opt[:1])
+                    wrong.append(solution[movesdone-1:])
+                    wrong.append(opt)
+                    wrong.append(solution[:movesdone-1] + opt)
+                    row.append(str(optdif))
+                    wrongmoves.append(wrong)
+                your = solution[:movesdone]
+                yourend= solution[movesdone:]
+                after = optimals[movesdone]
+                full=your+after
+                if len(your)>10:
+                    your = your[:10] + "..."
+                if len(yourend)>10:
+                    yourend = yourend[:10] + "..."
+                if len(after)>10:
+                    after = after[:10] + "..."
+                row.append(your)
+                row.append(yourend + "[" + str(len(solution[movesdone:])) + "]")
+                row.append(after + "[" + str(len(optimals[movesdone])) + "]")
+                row.append(full)
+                myrows.append(row)
+        x.add_rows(myrows)
 
-    y = PrettyTable()
-    y.field_names = ["N","State","Setup","Move","Better","Your ending","Better ending","Your+opt"]
-    y.add_rows(wrongmoves)
-    if len(wrongmoves)>0:
-      log+="Wrong moves:\n"
-      log+=y.get_string() + "\n\n"
-  else:
-    log = "Something is wrong with your solution"
- # log+="Full log:\n"
- # log+=x.get_string()
+        y = PrettyTable()
+        y.field_names = ["N","State","Setup","Move","Better","Your ending","Better ending","Your+opt"]
+        y.add_rows(wrongmoves)
+        if len(wrongmoves)>0:
+            log+="Wrong moves:\n"
+            log+=y.get_string() + "\n\n"
+    else:
+        log = "Something is wrong with your solution"
 
-  return log
+    return log
 # _______________________________________________________________
 
 # _____________compare tables___________________
@@ -705,24 +702,22 @@ def makeList(string, tierL, rankNames):
     for i in string:
         i = i.split("\t")
         try:
-          power = int(i[2])
+            power = int(i[2])
         except:
-          print(i)
+            print(i)
         rankN = 0
         for j in tierL:
             if power > j:
                 rankN += 1
         if "".join(i[3:]).upper() != "N/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/AN/A":
-            list.append(
-                {
-                    "Name": i[0],
-                    "Place": i[1],
-                    "Power": i[2],
-                    "Rank": rankNames[rankN],
-                    "rankID": rankN,
-                    "Scores": i[3:],
-                }
-            )
+            list.append({
+                "Name": i[0],
+                "Place": i[1],
+                "Power": i[2],
+                "Rank": rankNames[rankN],
+                "rankID": rankN,
+                "Scores": i[3:],
+            })
     return list
 
 
@@ -800,98 +795,97 @@ def comparelist(name1, name2):
     for id, item in enumerate(tier_limits):
         tier_limits[id] = int(item)
     try:
-      dberror = "none"
-      textinfo1 = fixSpaces(dbdecomp(db[name1]).lower()).splitlines()
-      textinfo2 = fixSpaces(dbdecomp(db[name2]).lower()).splitlines()
+        dberror = "none"
+        textinfo1 = fixSpaces(dbdecomp(db[name1]).lower()).splitlines()
+        textinfo2 = fixSpaces(dbdecomp(db[name2]).lower()).splitlines()
     except:
-      print(traceback.format_exc())
-      dberror = "Error with loading data"
+        print(traceback.format_exc())
+        dberror = "Error with loading data"
     if dberror != "Error with loading data":
+        old_list = makeList(textinfo1, tier_limits, rankNames)
+        new_list = makeList(textinfo2, tier_limits, rankNames)
 
-      old_list = makeList(textinfo1, tier_limits, rankNames)
-      new_list = makeList(textinfo2, tier_limits, rankNames)
+        log = ""
 
-      log = ""
+        list_of_lists = []
+        #superid=0
+        for item_new in new_list:
+            item_old = next(
+                (item for item in old_list if item["Name"] == item_new["Name"]), None
+            )
+            name = item_new["Name"]
+            if item_old == None:
+                mylist = []
+                mylist.append(name)
+                mylist.append("[#" + item_new["Place"] + "]")
+                mylist.append(item_new["Rank"])
+                mylist.append("-")
+                mylist.append("New player")
+                mylist.append("Welcome!")
+                list_of_lists.append(mylist)
+            else:
+                # if int(item_old["Power"]) < int(item_new["Power"]):
+                if "".join(item_old["Scores"]).upper() != "".join(item_new["Scores"]).upper() and ("".join(item_old["Scores"]).upper()+"N/A") != "".join(item_new["Scores"]).upper():
+                    #  print(item_new["Name"]+''.join(item_old["Scores"]))
+                    # print(''.join(item_new["Scores"]))
+                    # print("".join(item_old["Scores"]).upper())
+                    # print("".join(item_new["Scores"]).upper())
+                    mylist = []
+                    if int(item_old["Place"]) > int(item_new["Place"]):
+                        mylist.append(name)
+                        mylist.append(
+                            "[#" + item_old["Place"] + " -> #" + item_new["Place"] + "]"
+                        )
+                    else:
+                        mylist.append(name)
+                        mylist.append("[#" + item_new["Place"] + "]")
 
-      list_of_lists = []
-      #superid=0
-      for item_new in new_list:
-          item_old = next(
-              (item for item in old_list if item["Name"] == item_new["Name"]), None
-          )
-          name = item_new["Name"]
-          if item_old == None:
-              mylist = []
-              mylist.append(name)
-              mylist.append("[#" + item_new["Place"] + "]")
-              mylist.append(item_new["Rank"])
-              mylist.append("-")
-              mylist.append("New player")
-              mylist.append("Welcome!")
-              list_of_lists.append(mylist)
-          else:
-              # if int(item_old["Power"]) < int(item_new["Power"]):
-              if "".join(item_old["Scores"]).upper() != "".join(item_new["Scores"]).upper() and ("".join(item_old["Scores"]).upper()+"N/A") != "".join(item_new["Scores"]).upper():
-                  #  print(item_new["Name"]+''.join(item_old["Scores"]))
-                  # print(''.join(item_new["Scores"]))
-                  #print("".join(item_old["Scores"]).upper())
-                  #print("".join(item_new["Scores"]).upper())
-                  mylist = []
-                  if int(item_old["Place"]) > int(item_new["Place"]):
-                      mylist.append(name)
-                      mylist.append(
-                          "[#" + item_old["Place"] + " -> #" + item_new["Place"] + "]"
-                      )
-                  else:
-                      mylist.append(name)
-                      mylist.append("[#" + item_new["Place"] + "]")
+                    if item_old["Rank"] != item_new["Rank"]:
+                        mylist.append("[New Tier: " + item_new["Rank"] + "!]")
+                    else:
+                        mylist.append("===" + item_new["Rank"] + "===")
+                    mylist.extend(
+                        getScores(
+                            req,
+                            item_old["Scores"],
+                            item_new["Scores"],
+                            catNames,
+                            item_new["rankID"],
+                        ).split()
+                    )
+                    if item_new["Rank"] == "{UNRANKED}":
+                        mylist.append(" ")
+                        mylist.append(" ")
+                        mylist.append("Nice pbs!")
+                        mylist.append("Good luck")
+                        mylist.append("With beginner scores")
+                        mylist.append("Next time :)")
+                    #mylist[0] = mylist[0] + str(superid)
+                    #superid += 1
+                    list_of_lists.append(mylist)
+        maxDepth = 0
+        maxColumns = len(list_of_lists)
 
-                  if item_old["Rank"] != item_new["Rank"]:
-                      mylist.append("[New Tier: " + item_new["Rank"] + "!]")
-                  else:
-                      mylist.append("===" + item_new["Rank"] + "===")
-                  mylist.extend(
-                      getScores(
-                          req,
-                          item_old["Scores"],
-                          item_new["Scores"],
-                          catNames,
-                          item_new["rankID"],
-                      ).split()
-                  )
-                  if item_new["Rank"] == "{UNRANKED}":
-                      mylist.append(" ")
-                      mylist.append(" ")
-                      mylist.append("Nice pbs!")
-                      mylist.append("Good luck")
-                      mylist.append("With beginner scores")
-                      mylist.append("Next time :)")
-                  #mylist[0] = mylist[0] + str(superid)
-                  #superid += 1
-                  list_of_lists.append(mylist)
-      maxDepth = 0
-      maxColumns = len(list_of_lists)
-
-      tableRows = []
-      for i in list_of_lists:
-          l = len(i)
-          if l > maxDepth:
-              maxDepth = l
-      for j in range(maxDepth):
-          myrow = []
-          for i in range(maxColumns):
-              i_list = list_of_lists[i]
-              if len(i_list) > j:
-                  myrow.append(i_list[j])
-              else:
-                  myrow.append("_")
-          tableRows.append(myrow)
-      x = PrettyTable()
-      x.field_names = tableRows[0]
-      x.add_rows(tableRows[1:])
-      return x.get_string().replace("_", " ")
+        tableRows = []
+        for i in list_of_lists:
+            l = len(i)
+            if l > maxDepth:
+                maxDepth = l
+        for j in range(maxDepth):
+            myrow = []
+            for i in range(maxColumns):
+                i_list = list_of_lists[i]
+                if len(i_list) > j:
+                    myrow.append(i_list[j])
+                else:
+                    myrow.append("_")
+            tableRows.append(myrow)
+        x = PrettyTable()
+        x.field_names = tableRows[0]
+        x.add_rows(tableRows[1:])
+        return x.get_string().replace("_", " ")
     else:
-      return dberror
+        return dberror
 
 
 # _______________processing commands in threads with timeout________________________
