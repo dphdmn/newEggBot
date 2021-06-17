@@ -1223,84 +1223,85 @@ def editP(rp):
 
 #_________________daily fmc
 def getFMCstatus():
-  try:
-    status = db["daily_status.txt"]
-    return "CLOSED" in status #true if you can start
-  except:
-    return True
+    try:
+        status = db["daily_status.txt"]
+        return "CLOSED" in status #true if you can start
+    except:
+        return True
 
 
 
 def checkSol(scramble, solution):
-  result = False
-  try:
-    st = getStates(scramble,solution)
-    #print(scramble, solution, st)
-    result = (st[len(st)-1] == "1 2 3 4/5 6 7 8/9 10 11 12/13 14 15 0")
-  except:
     result = False
-  return result
+    try:
+        st = getStates(scramble,solution)
+        #print(scramble, solution, st)
+        result = (st[len(st)-1] == "1 2 3 4/5 6 7 8/9 10 11 12/13 14 15 0")
+    except:
+        result = False
+    return result
 
 
 def getDailyStats():
-  return db["daily_status.txt"].splitlines()
+    return db["daily_status.txt"].splitlines()
 
 
 def fixSolution(solution):
-  words = solution
-  words = words.replace("R3", "RRR")
-  words = words.replace("R2", "RR")
-  words = words.replace("L3", "LLL")
-  words = words.replace("L2", "LL")
-  words = words.replace("U3", "UUU")
-  words = words.replace("U2", "UU")
-  words = words.replace("D3", "DDD")
-  words = words.replace("D2", "DD")
-  return words
+    words = solution
+    words = words.replace("R3", "RRR")
+    words = words.replace("R2", "RR")
+    words = words.replace("L3", "LLL")
+    words = words.replace("L2", "LL")
+    words = words.replace("U3", "UUU")
+    words = words.replace("U2", "UU")
+    words = words.replace("D3", "DDD")
+    words = words.replace("D2", "DD")
+    return words
 
 def rewriteFile(file, text):
-  f = open(file, "w+")
-  f.write(text)
-  f.close()
+    f = open(file, "w+")
+    f.write(text)
+    f.close()
 
 def removeResult(name):
-  text = db["daily_log.txt"].splitlines()
-  newtext = ""
-  name = name + "\t"
-  for i in text:
-    if not (name in i):
-      newtext+= i + "\n"
-  db["daily_log.txt"] = newtext
+    text = db["daily_log.txt"].splitlines()
+    newtext = ""
+    name = name + "\t"
+    for i in text:
+        if not (name in i):
+          newtext+= i + "\n"
+    db["daily_log.txt"] = newtext
 
 
 def readLog():
-  try:
-    text = db["daily_log.txt"].splitlines()
-  except:
-    text = ""
-    db["daily_log.txt"] = ""
-    print("DAILY LOG IS EMPTY ERROR")
-  logdata = []
-  for i in text:
-    rowlist = i.split("\t")
-    logdata.append({"Name":rowlist[0],"Solution": rowlist[1], "Len": rowlist[2]})
-  return logdata
+    try:
+        text = db["daily_log.txt"].splitlines()
+    except:
+        text = ""
+        db["daily_log.txt"] = ""
+        print("DAILY LOG IS EMPTY ERROR")
+    logdata = []
+    for i in text:
+        rowlist = i.split("\t")
+        logdata.append({"Name":rowlist[0],"Solution": rowlist[1], "Len": rowlist[2]})
+    return logdata
 
 
 def addFMCResult(name, solution):
-  text = name + "\t" + solution + "\t" + str(len(solution)) + "\n"
-  appendDB("daily_log.txt", text)
-  rewriteFile("daily_backup.txt", db["daily_log.txt"])
+    text = name + "\t" + solution + "\t" + str(len(solution)) + "\n"
+    appendDB("daily_log.txt", text)
+    rewriteFile("daily_backup.txt", db["daily_log.txt"])
 
 def appendDB(key, text):
-  dbtext = db[key]
-  dbtext += text
-  db[key] = dbtext
+    dbtext = db[key]
+    dbtext += text
+    db[key] = dbtext
 
 def appendFile(file, text):
-  f = open(file, 'a')
-  f.write(text)
-  f.close()
+    f = open(file, 'a')
+    f.write(text)
+    f.close()
+
 #____________________________discord started
 @client.event
 async def on_ready():
@@ -1325,98 +1326,98 @@ async def on_message(message):
                 msg += shit + " "
             spam.start(message.channel, msg[:2000])
     if message.content.startswith("!daily_scramble"):
-      if getFMCstatus():
-          await message.channel.send("No FMC challange is going on")
-      else:
-        stats = getDailyStats()
-        out = "Current FMC scramble: " + stats[0] + "\nMoves: " + stats[2]
-        await message.channel.send(out)
-    if message.content.startswith("!daily_close"):
-      if not message.author.guild_permissions.administrator:
-          await message.channel.send("Sorry you are not FMC manager.")
-      else:
         if getFMCstatus():
-          await message.channel.send("No FMC challange to close! Use !daily_open.")
+            await message.channel.send("No FMC challange is going on")
         else:
           stats = getDailyStats()
-          log = readLog()
-          db["daily_status.txt"] = "CLOSED"
-          db["daily_log.txt"] = ""
-          scramble = stats[0]
-          solution = stats[1]
-          leng = stats[2]
-          out = "FMC results!\n"
-          out += "Scramble was: " + scramble + "\n"
-          out += "Optimal solution: " + solution + "\n"
-          out += "Optimal moves: " + leng + "\n"
-          out += "Results:\n"
-          rowarray = []
-          rowheaders = ["Player", "Moves", "To optimal", "Solution"]
-          for i in log:
-            row = []
-            row.append(i["Name"])
-            row.append(i["Len"])
-            row.append(str(int(i["Len"])-int(leng)))
-            row.append(i["Solution"])
-            rowarray.append(row)
-          if len(rowarray)>0:
-            rowarray.sort(key=lambda x: int(x[1]))
-          y = PrettyTable()
-          y.field_names = rowheaders
-          y.add_rows(rowarray)
-          rewriteFile("FMC_results.txt",y.get_string())
-          with open("FMC_results.txt", "rb") as f:
-            txt = discord.File(f)
-            if len(rowarray) == 0:
-              await message.channel.send(out + "\nNo one joined :(")
-            else:
-              await message.channel.send(out, file=txt)
-          os.remove("FMC_results.txt")
-          makeGif(scramble, solution, 10)
-          with open("movie.webm", "rb") as f:
-            picture = discord.File(f)
-            await message.channel.send("Optimal solution for last FMC competition:\n" + scramble +"\n"+solution+"\n"+leng, file=picture)
-          os.remove("movie.webm")
-    if message.content.startswith("!submit"):
-      if getFMCstatus():
-        await message.channel.send("Sorry, there is no FMC competition now.")
-      else:
-        name = message.author.name
-        contentArray = message.content.lower().split(" ")
-        await message.delete()
-        if len(contentArray) != 2:
-          await message.channel.send("Sorry, " + name + ", i can't get your solution")
+          out = "Current FMC scramble: " + stats[0] + "\nMoves: " + stats[2]
+          await message.channel.send(out)
+    if message.content.startswith("!daily_close"):
+        if not message.author.guild_permissions.administrator:
+            await message.channel.send("Sorry you are not FMC manager.")
         else:
-          solution = contentArray[1].upper()
-          solution = solution.replace("|","")
-          solution = fixSolution(solution)
-          scramble = getDailyStats()[0]
-          lenstr = "||[" + str(len(solution)) + "]|| "
-          if not checkSol(scramble, solution):
-            await message.channel.send("Sorry, " + name + ", your solution is not working.")
-          else:
-            log = readLog()
-            item_old = next((item for item in log if item["Name"] == name), None)
-            if item_old == None:
-              addFMCResult(name, solution)
-              channel2 = client.get_channel(852636984475516928)
-              with open("daily_backup.txt", "rb") as f:
-                txt = discord.File(f)
-                await channel2.send("Backup", file=txt)
-              os.remove("daily_backup.txt")
-              await message.channel.send(lenstr + "Your solution added, " + name)
+            if getFMCstatus():
+                await message.channel.send("No FMC challange to close! Use !daily_open.")
             else:
-              if int(item_old["Len"]) <= len(solution):
-                await message.channel.send(lenstr+ "You already have a better or same solution in the list, " + name + " (You have ||" + item_old["Len"]+ "||)")
-              else:
-                removeResult(name)
-                addFMCResult(name, solution)
-                channel2 = client.get_channel(852636984475516928)
-                with open("daily_backup.txt", "rb") as f:
-                  txt = discord.File(f)
-                  await channel2.send("Backup", file=txt)
-                os.remove("daily_backup.txt")
-                await message.channel.send("||" + item_old["Len"] + "||->" + lenstr + "Your solution updated, " + name)
+                stats = getDailyStats()
+                log = readLog()
+                db["daily_status.txt"] = "CLOSED"
+                db["daily_log.txt"] = ""
+                scramble = stats[0]
+                solution = stats[1]
+                leng = stats[2]
+                out = "FMC results!\n"
+                out += "Scramble was: " + scramble + "\n"
+                out += "Optimal solution: " + solution + "\n"
+                out += "Optimal moves: " + leng + "\n"
+                out += "Results:\n"
+                rowarray = []
+                rowheaders = ["Player", "Moves", "To optimal", "Solution"]
+                for i in log:
+                    row = []
+                    row.append(i["Name"])
+                    row.append(i["Len"])
+                    row.append(str(int(i["Len"])-int(leng)))
+                    row.append(i["Solution"])
+                    rowarray.append(row)
+                if len(rowarray)>0:
+                    rowarray.sort(key=lambda x: int(x[1]))
+                y = PrettyTable()
+                y.field_names = rowheaders
+                y.add_rows(rowarray)
+                rewriteFile("FMC_results.txt",y.get_string())
+                with open("FMC_results.txt", "rb") as f:
+                    txt = discord.File(f)
+                    if len(rowarray) == 0:
+                        await message.channel.send(out + "\nNo one joined :(")
+                    else:
+                        await message.channel.send(out, file=txt)
+                os.remove("FMC_results.txt")
+                makeGif(scramble, solution, 10)
+                with open("movie.webm", "rb") as f:
+                    picture = discord.File(f)
+                    await message.channel.send("Optimal solution for last FMC competition:\n" + scramble +"\n"+solution+"\n"+leng, file=picture)
+                os.remove("movie.webm")
+    if message.content.startswith("!submit"):
+        if getFMCstatus():
+            await message.channel.send("Sorry, there is no FMC competition now.")
+        else:
+            name = message.author.name
+            contentArray = message.content.lower().split(" ")
+            await message.delete()
+            if len(contentArray) != 2:
+                await message.channel.send("Sorry, " + name + ", i can't get your solution")
+            else:
+                solution = contentArray[1].upper()
+                solution = solution.replace("|","")
+                solution = fixSolution(solution)
+                scramble = getDailyStats()[0]
+                lenstr = "||[" + str(len(solution)) + "]|| "
+                if not checkSol(scramble, solution):
+                    await message.channel.send("Sorry, " + name + ", your solution is not working.")
+                else:
+                    log = readLog()
+                    item_old = next((item for item in log if item["Name"] == name), None)
+                    if item_old == None:
+                        addFMCResult(name, solution)
+                        channel2 = client.get_channel(852636984475516928)
+                        with open("daily_backup.txt", "rb") as f:
+                            txt = discord.File(f)
+                            await channel2.send("Backup", file=txt)
+                        os.remove("daily_backup.txt")
+                        await message.channel.send(lenstr + "Your solution added, " + name)
+                    else:
+                        if int(item_old["Len"]) <= len(solution):
+                            await message.channel.send(lenstr+ "You already have a better or same solution in the list, " + name + " (You have ||" + item_old["Len"]+ "||)")
+                        else:
+                            removeResult(name)
+                            addFMCResult(name, solution)
+                            channel2 = client.get_channel(852636984475516928)
+                            with open("daily_backup.txt", "rb") as f:
+                                txt = discord.File(f)
+                                await channel2.send("Backup", file=txt)
+                            os.remove("daily_backup.txt")
+                            await message.channel.send("||" + item_old["Len"] + "||->" + lenstr + "Your solution updated, " + name)
     if message.content.startswith("!daily_open"):
         if not message.author.guild_permissions.administrator:
             await message.channel.send("Sorry you are not FMC manager.")
