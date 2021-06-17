@@ -2095,7 +2095,7 @@ async def on_message(message):
         img.save('scramble.png', 'PNG')
         with open("scramble.png", "rb") as f:
             picture = discord.File(f)
-            await message.channel.send("Find good move at this scramble: \n" + scramble + "\nYou will get answer in few seconds", file=picture)
+            await message.channel.send("Check this: https://dphdmn.github.io/movesgame/\nFind good move at this scramble: \n" + scramble + "\nYou will get answer in few seconds", file=picture)
         os.remove("scramble.png")
         goodmoves = getGoodMoves(scramble, 4)
         goodmovesmessage=""
