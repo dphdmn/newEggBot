@@ -1428,80 +1428,80 @@ async def on_message(message):
                 await message.channel.send("||" + item_old["Len"] + "||->" + lenstr + "Your solution updated, " + name)
     if message.content.startswith("!daily_open"):
         if not message.author.guild_permissions.administrator:
-          await message.channel.send("Sorry you are not FMC manager.")
+            await message.channel.send("Sorry you are not FMC manager.")
         else:
-          if not getFMCstatus():
-            await message.channel.send("Please use !daily_close to close current session first.")
-          else:
-            await message.channel.send("Starting daily FMC, please wait!")
-            scramble = scrambler.getScramble(4)
-            solution = solvers[4].solveOne(scramble)
-            sollen = str(len(solution))
-            outString = scramble + "\n" + solution + "\n" + sollen
-            db["daily_status.txt"] = outString
-            img = drawPuzzle(scramble)
-            img.save('scramble.png', 'PNG')
-            mess = "Daily FMC scramble: " + scramble + "\n"
-            mess += "Optimal solution length: " + sollen + "\n"
-            mess += "Use **!submit** command to submit solutions (You can submit multiple times!), for example:\n"
-            mess += "!submit LULD3RU2LD2LUR2UL2D2RU2RLULDR3UL2D2R2U2L2DLDRU2LDRURDL2DR2U2L2DRULDR2ULDLU\n"
-            with open("scramble.png", "rb") as f:
-              picture = discord.File(f)
-              await message.channel.send(mess, file=picture) 
-            os.remove("scramble.png")     
+            if not getFMCstatus():
+                await message.channel.send("Please use !daily_close to close current session first.")
+            else:
+                await message.channel.send("Starting daily FMC, please wait!")
+                scramble = scrambler.getScramble(4)
+                solution = solvers[4].solveOne(scramble)
+                sollen = str(len(solution))
+                outString = scramble + "\n" + solution + "\n" + sollen
+                db["daily_status.txt"] = outString
+                img = drawPuzzle(scramble)
+                img.save('scramble.png', 'PNG')
+                mess = "Daily FMC scramble: " + scramble + "\n"
+                mess += "Optimal solution length: " + sollen + "\n"
+                mess += "Use **!submit** command to submit solutions (You can submit multiple times!), for example:\n"
+                mess += "!submit LULD3RU2LD2LUR2UL2D2RU2RLULDR3UL2D2R2U2L2DLDRU2LDRURDL2DR2U2L2DRULDR2ULDLU\n"
+                with open("scramble.png", "rb") as f:
+                    picture = discord.File(f)
+                    await message.channel.send(mess, file=picture)
+                os.remove("scramble.png")
     if message.content.startswith("!getlb"):
-      await makeTmpSend("prettylb.txt", db["prettylb.txt"], "Leaderboard for ranks: ", message.channel)
+        await makeTmpSend("prettylb.txt", db["prettylb.txt"], "Leaderboard for ranks: ", message.channel)
     if message.content.startswith("!update"):
-      await message.channel.send("Wait for it!")
-      try:
-        getLeaderboard()
-        await makeTmpSend("smartboard.txt", db["smartboard.txt"], "Check this: https://egg.dphdmn.repl.co\nProbably updated! Try !getpb command: ", message.channel)
-        db["lastupdate"] = datetime.datetime.now().timestamp()
-      except:
-        print(traceback.format_exc())
-        await message.channel.send("Sorry, something is wrong")
+        await message.channel.send("Wait for it!")
+        try:
+            getLeaderboard()
+            await makeTmpSend("smartboard.txt", db["smartboard.txt"], "Check this: https://egg.dphdmn.repl.co\nProbably updated! Try !getpb command: ", message.channel)
+            db["lastupdate"] = datetime.datetime.now().timestamp()
+        except:
+            print(traceback.format_exc())
+            await message.channel.send("Sorry, something is wrong")
     if message.content.startswith("!stop"):
         if message.author.guild_permissions.administrator:
             spam.cancel()
     if message.content.startswith("!getreal"):
-      scramble = scrambler.getScramble(4)
-      await message.channel.send("Please wait! I am slow, use ben's scrambler instead: http://benwh.000webhostapp.com/software/15poprs/index.html")
-      solution = solvers[4].solveOne(scramble)
-      rever = solvereverse(solution)
-      mypuz, blank = create_puz()
-      out = "DDDRUURDDRUUULLL" + rever
-      mypuz, _ = doMoves(mypuz, blank, out)
-      out = " ".join(list(out))
-      out = out.replace("D D D", "D3")
-      out = out.replace("D D", "D2")
-      out = out.replace("L L L", "L3")
-      out = out.replace("L L", "L2")
-      out = out.replace("U U U", "U3")
-      out = out.replace("U U", "U2")
-      out = out.replace("R R R", "R3")
-      out = out.replace("R R", "R2")
-      scr=toScramble(mypuz)
-      img = drawPuzzle(scr)
-      img.save('scramble.png', 'PNG')
-      with open("scramble.png", "rb") as f:
-        picture = discord.File(f)
-        await message.channel.send("Your scramble: \n" + out + "\n" +scr, file=picture)
-      os.remove("scramble.png")
-    if message.content.startswith("!getscramble"):
-      contentArray = message.content.lower().split(" ")
-      n = 4
-      if len(contentArray)>1:
-        n = int(contentArray[1])
-      scramble = scrambler.getScramble(n)
-      if n == 4:
-        img = drawPuzzle(scramble)
+        scramble = scrambler.getScramble(4)
+        await message.channel.send("Please wait! I am slow, use ben's scrambler instead: http://benwh.000webhostapp.com/software/15poprs/index.html")
+        solution = solvers[4].solveOne(scramble)
+        rever = solvereverse(solution)
+        mypuz, blank = create_puz()
+        out = "DDDRUURDDRUUULLL" + rever
+        mypuz, _ = doMoves(mypuz, blank, out)
+        out = " ".join(list(out))
+        out = out.replace("D D D", "D3")
+        out = out.replace("D D", "D2")
+        out = out.replace("L L L", "L3")
+        out = out.replace("L L", "L2")
+        out = out.replace("U U U", "U3")
+        out = out.replace("U U", "U2")
+        out = out.replace("R R R", "R3")
+        out = out.replace("R R", "R2")
+        scr=toScramble(mypuz)
+        img = drawPuzzle(scr)
         img.save('scramble.png', 'PNG')
         with open("scramble.png", "rb") as f:
-          picture = discord.File(f)
-          await message.channel.send("Your random 4x4 scramble: \n" + scramble, file=picture)
+            picture = discord.File(f)
+            await message.channel.send("Your scramble: \n" + out + "\n" +scr, file=picture)
         os.remove("scramble.png")
-      else: 
-        await message.channel.send("Random scramble for " + str(n) + "x" + str(n) + " puzzle\n" + scramble)
+    if message.content.startswith("!getscramble"):
+        contentArray = message.content.lower().split(" ")
+        n = 4
+        if len(contentArray)>1:
+            n = int(contentArray[1])
+        scramble = scrambler.getScramble(n)
+        if n == 4:
+            img = drawPuzzle(scramble)
+            img.save('scramble.png', 'PNG')
+            with open("scramble.png", "rb") as f:
+                picture = discord.File(f)
+                await message.channel.send("Your random 4x4 scramble: \n" + scramble, file=picture)
+            os.remove("scramble.png")
+        else:
+            await message.channel.send("Random scramble for " + str(n) + "x" + str(n) + " puzzle\n" + scramble)
     if message.content.startswith("!getwr"):
         try:
             fp = urllib.request.urlopen(
@@ -1545,15 +1545,15 @@ async def on_message(message):
                 )
             else:
                 if len(my_string) > 1950:
-                  f = open("wrsby.txt", "w+")
-                  f.write(my_string)
-                  f.close()
-                  with open("wrsby.txt", "rb") as f:
-                    txt = discord.File(f)
-                    await message.channel.send("WR list: ", file=txt)
-                  os.remove("wrsby.txt")
+                    f = open("wrsby.txt", "w+")
+                    f.write(my_string)
+                    f.close()
+                    with open("wrsby.txt", "rb") as f:
+                        txt = discord.File(f)
+                        await message.channel.send("WR list: ", file=txt)
+                    os.remove("wrsby.txt")
                 else:
-                  await message.channel.send("```" + my_string + "```")
+                    await message.channel.send("```" + my_string + "```")
         except:
             await message.channel.send(
                 "Something is wrong\n```" + traceback.format_exc() + "```"
@@ -1644,72 +1644,71 @@ async def on_message(message):
                 "Please specify the puzzle size, for example: !getpb dphdmn 4x4"
             )
     if message.content.startswith("!animate"):
-      try:
-        contentArray = message.content.split("\n")
-        await message.channel.send("Working on it! It may take some time, please wait")
-        scramble = contentArray[1]
-        solution = contentArray[2]
-        if len(contentArray) == 4:
-          tps = float(contentArray[3])
-        else:
-          tps = 10
-        words = solution
-        words = words.replace("R3", "RRR")
-        words = words.replace("R2", "RR")
-        words = words.replace("L3", "LLL")
-        words = words.replace("L2", "LL")
-        words = words.replace("U3", "UUU")
-        words = words.replace("U2", "UU")
-        words = words.replace("D3", "DDD")
-        words = words.replace("D2", "DD")
-        solution = words
-        makeGif(scramble,solution, tps)
-        with open("movie.webm", "rb") as f:
-          picture = discord.File(f)
-          await message.channel.send("Solution for " + scramble + " by " + message.author.mention + "\n" + str(len(solution)) + " moves (May not be optimal)\nTPS (playback): "+str(tps) +"\nTime (playback): "+ str(round(len(solution)/tps,3)) , file=picture)
-        os.remove("movie.webm")
-      except Exception as e:
-        #print(e)
-        print(traceback.print_exc())
-        await message.channel.send("Sorry, something is wrong")
+        try:
+            contentArray = message.content.split("\n")
+            await message.channel.send("Working on it! It may take some time, please wait")
+            scramble = contentArray[1]
+            solution = contentArray[2]
+            if len(contentArray) == 4:
+                tps = float(contentArray[3])
+            else:
+                tps = 10
+            words = solution
+            words = words.replace("R3", "RRR")
+            words = words.replace("R2", "RR")
+            words = words.replace("L3", "LLL")
+            words = words.replace("L2", "LL")
+            words = words.replace("U3", "UUU")
+            words = words.replace("U2", "UU")
+            words = words.replace("D3", "DDD")
+            words = words.replace("D2", "DD")
+            solution = words
+            makeGif(scramble,solution, tps)
+            with open("movie.webm", "rb") as f:
+                picture = discord.File(f)
+                await message.channel.send("Solution for " + scramble + " by " + message.author.mention + "\n" + str(len(solution)) + " moves (May not be optimal)\nTPS (playback): "+str(tps) +"\nTime (playback): "+ str(round(len(solution)/tps,3)) , file=picture)
+            os.remove("movie.webm")
+        except Exception as e:
+            print(traceback.print_exc())
+            await message.channel.send("Sorry, something is wrong")
     if message.content.startswith("!analyse"):
         await message.channel.send("Working on it!")
         try:
-          contentArray = message.content.split("\n")
-          scramble = contentArray[1]
-          solution = contentArray[2]
-          words = solution
-          words = words.replace("R3", "RRR")
-          words = words.replace("R2", "RR")
-          words = words.replace("L3", "LLL")
-          words = words.replace("L2", "LL")
-          words = words.replace("U3", "UUU")
-          words = words.replace("U2", "UU")
-          words = words.replace("D3", "DDD")
-          words = words.replace("D2", "DD")
-          solution = words
-          out = analyse(scramble, solution)
+            contentArray = message.content.split("\n")
+            scramble = contentArray[1]
+            solution = contentArray[2]
+            words = solution
+            words = words.replace("R3", "RRR")
+            words = words.replace("R2", "RR")
+            words = words.replace("L3", "LLL")
+            words = words.replace("L2", "LL")
+            words = words.replace("U3", "UUU")
+            words = words.replace("U2", "UU")
+            words = words.replace("D3", "DDD")
+            words = words.replace("D2", "DD")
+            solution = words
+            out = analyse(scramble, solution)
         except Exception as e:
-          out="Something is wrong with your inputs"
-          print(str(e))
+            out="Something is wrong with your inputs"
+            print(str(e))
         f = open("anal.txt", "w+")
         f.write(out)
         f.close()
         with open("anal.txt", "rb") as f:
-          txt = discord.File(f)
-          await message.channel.send("Your analysis: ", file=txt)
+            txt = discord.File(f)
+            await message.channel.send("Your analysis: ", file=txt)
         os.remove("anal.txt")
     if message.content.startswith("!draw"):
-      try:
-        scramble=message.content[6:]
-        img = drawPuzzle(scramble)
-        img.save('scramble.png', 'PNG')
-        with open("scramble.png", "rb") as f:
-          picture = discord.File(f)
-          await message.channel.send("Your scramble: ", file=picture)
-        os.remove("scramble.png")
-      except:
-        await message.channel.send("Something is wrong, sorry")
+        try:
+            scramble=message.content[6:]
+            img = drawPuzzle(scramble)
+            img.save('scramble.png', 'PNG')
+            with open("scramble.png", "rb") as f:
+                picture = discord.File(f)
+                await message.channel.send("Your scramble: ", file=picture)
+            os.remove("scramble.png")
+        except:
+            await message.channel.send("Something is wrong, sorry")
     if message.content.startswith("!getreq"):
         mystr = db["tiers.txt"].lower()
         # print(mystr)
@@ -1892,7 +1891,6 @@ async def on_message(message):
                         + examples
                     )
                     await message.channel.send(examples)
-            # getProbText(f1, f2, pzlName, nscr)
         except:
             await message.channel.send(
                 "Something is wrong\n```" + traceback.format_exc() + "```"
@@ -2044,27 +2042,27 @@ async def on_message(message):
         except:
             await message.channel.send("Something is wrong")
     if message.content.startswith("!savecmp"):   
-      if message.author.guild_permissions.administrator:
-       today = str(datetime.datetime.today().strftime('%Y-%m-%d'))
-       db["SMARTanon"] = db["SMART"+today]
-       await message.channel.send("Saved to anon!")
-      else:
-        await message.channel.send("Sorry, you are not admin")
+        if message.author.guild_permissions.administrator:
+            today = str(datetime.datetime.today().strftime('%Y-%m-%d'))
+            db["SMARTanon"] = db["SMART"+today]
+            await message.channel.send("Saved to anon!")
+        else:
+            await message.channel.send("Sorry, you are not admin")
     if message.content.startswith("!datecompare"):
-      contentArray = message.content.lower().split(" ")
-      if len(contentArray) != 3:
-        await message.channel.send("Sorry your dates are wrong. Format:\n!datecompae 2021-06-13 2021-06-14")
-      else:
-        date1 = "SMART"+contentArray[1]
-        date2 = "SMART"+contentArray[2]
-        out = comparelist(date1, date2)
-        f = open("compare.txt", "w+")
-        f.write(out)
-        f.close()
-        with open("compare.txt", "rb") as f:
-          txt = discord.File(f)
-          await message.channel.send("Your cmp: ", file=txt)
-        os.remove("compare.txt")
+        contentArray = message.content.lower().split(" ")
+        if len(contentArray) != 3:
+            await message.channel.send("Sorry your dates are wrong. Format:\n!datecompae 2021-06-13 2021-06-14")
+        else:
+            date1 = "SMART"+contentArray[1]
+            date2 = "SMART"+contentArray[2]
+            out = comparelist(date1, date2)
+            f = open("compare.txt", "w+")
+            f.write(out)
+            f.close()
+            with open("compare.txt", "rb") as f:
+                txt = discord.File(f)
+                await message.channel.send("Your cmp: ", file=txt)
+            os.remove("compare.txt")
     if message.content.startswith("!compare"):
         out = comparelist("file1.txt", "file2.txt")
         if len(out) > 1900:
@@ -2100,48 +2098,48 @@ async def on_message(message):
             db["file2.txt"] = dbcomp(text)
             await message.channel.send("Probably updated")
     if message.content.startswith("!movesgame"):
-      scramble = scrambler.getScramble(4)
-      img = drawPuzzle(scramble)
-      img.save('scramble.png', 'PNG')
-      with open("scramble.png", "rb") as f:
-        picture = discord.File(f)
-        await message.channel.send("Find good move at this scramble: \n" + scramble + "\nYou will get answer in few seconds", file=picture)
-      os.remove("scramble.png")
-      goodmoves = getGoodMoves(scramble, 4)
-      goodmovesmessage=""
-      for j in ["R","U","L","D"]:
-        if j in goodmoves:
-          goodmovesmessage+= "**"+j+"**" +" \tis \t**OK!**\t move\n"
-        else:
-          goodmovesmessage+= ""+j+"" +" \tis \tbad\t move\n"
-      await message.channel.send("\n" + "||" + goodmovesmessage + "||")
-    if message.content.startswith("!goodm"):
-      try:
-        scramble = message.content[7:]
+        scramble = scrambler.getScramble(4)
+        img = drawPuzzle(scramble)
+        img.save('scramble.png', 'PNG')
+        with open("scramble.png", "rb") as f:
+            picture = discord.File(f)
+            await message.channel.send("Find good move at this scramble: \n" + scramble + "\nYou will get answer in few seconds", file=picture)
+        os.remove("scramble.png")
         goodmoves = getGoodMoves(scramble, 4)
-        await message.channel.send("Your scramble:\n"+scramble+"\nGood moves for your scramble: " + ' or '.join(goodmoves))
-      except:
-        print(traceback.format_exc())
-        await message.channel.send("Sorry, something is wrong")
-    if message.content.startswith("!eggsolve"):
-      scramble = message.content[10:]
-      print(scramble)
-      if len(scramble) != 37:
-        print(len(scramble))
-        await message.channel.send("Your scramble is wrong.")
-      else:
+        goodmovesmessage=""
+        for j in ["R","U","L","D"]:
+            if j in goodmoves:
+                goodmovesmessage+= "**"+j+"**" +" \tis \t**OK!**\t move\n"
+            else:
+                goodmovesmessage+= ""+j+"" +" \tis \tbad\t move\n"
+        await message.channel.send("\n" + "||" + goodmovesmessage + "||")
+    if message.content.startswith("!goodm"):
         try:
-          a = perf_counter()
-          solutions = solvers[4].solveAll(scramble)
-          b = perf_counter()
-          string = ""
-          string += "Time: " + str(round((b - a), 3)) + "\n"
-          string += "Amount of solutions: " + str(len(solutions)) + "\n"
-          string += "Len: " + str(len(solutions[0])) + "\n"
-          string += '\n'.join(solutions)
-          await makeTmpSend("Solutions.txt", string, "All solutions for scramble " + scramble, message.channel)
+            scramble = message.content[7:]
+            goodmoves = getGoodMoves(scramble, 4)
+            await message.channel.send("Your scramble:\n"+scramble+"\nGood moves for your scramble: " + ' or '.join(goodmoves))
         except:
-          await message.channel.send("Sorry, can't solve it.")
+            print(traceback.format_exc())
+            await message.channel.send("Sorry, something is wrong")
+    if message.content.startswith("!eggsolve"):
+        scramble = message.content[10:]
+        print(scramble)
+        if len(scramble) != 37:
+            print(len(scramble))
+            await message.channel.send("Your scramble is wrong.")
+        else:
+            try:
+                a = perf_counter()
+                solutions = solvers[4].solveAll(scramble)
+                b = perf_counter()
+                string = ""
+                string += "Time: " + str(round((b - a), 3)) + "\n"
+                string += "Amount of solutions: " + str(len(solutions)) + "\n"
+                string += "Len: " + str(len(solutions[0])) + "\n"
+                string += '\n'.join(solutions)
+                await makeTmpSend("Solutions.txt", string, "All solutions for scramble " + scramble, message.channel)
+            except:
+                await message.channel.send("Sorry, can't solve it.")
     if message.content.startswith("!solve") or message.content.startswith("!video"):
         try:
             solve = message.content.startswith("!solve")
