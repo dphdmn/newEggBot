@@ -2042,7 +2042,7 @@ async def on_message(message):
             await message.channel.send("Sorry, you are not admin")
     if message.content.startswith("!anoncmp"):
         date1 = "SMARTanon"
-        date2 = str(datetime.datetime.today().strftime('%Y-%m-%d'))
+        date2 = "SMART" + str(datetime.datetime.today().strftime('%Y-%m-%d'))
         out = comparelist(date1, date2)
         f = open("compare.txt", "w+")
         f.write(out)
