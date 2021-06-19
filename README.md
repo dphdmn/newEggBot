@@ -19,6 +19,7 @@ PB/ranks-related commands
 - !getlb - get current version of leaderboard (ascii style)
 - !update - updates current pbs for getpb command, also gives a file of current pbs at 30 tiers  [technical]
 - !datecompare [date1] [date2] - compare two states of leaderboard (!datecompare 2021-06-14 2021-06-13)
+- !anoncmp - compare from last anon date to today's date
 
 Solver-related commands:
 - !solve [scramble] - solve some 4x4 or 3x3 scramble
@@ -38,7 +39,7 @@ Scramble/solution-related commands:
 
 Fun/stats commands:
 - !getprob [puzzle] [moves] [[moves], [amount] || [amount] - get probability of getting N moves optimal scramble, type !getprob for examples
-- !paint [[size]] - pain image into slidysim scramble, use size to  make it custom puzzles size (up to 256), you should upload image as attachment 
+- !paint [[size]] - paint image into slidysim scramble, use size to  make it custom puzzles size (up to 256), you should upload image as attachment 
 - !tti [text] - funny function, gives some image, don't spam it
 
 Technical commands to compare rank pages (will be removed or changed in next updates probably):

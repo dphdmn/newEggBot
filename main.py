@@ -2040,6 +2040,17 @@ async def on_message(message):
             await message.channel.send("Saved to anon!")
         else:
             await message.channel.send("Sorry, you are not admin")
+    if message.content.startswith("!anoncmp"):
+        date1 = "SMARTanon"
+        date2 = str(datetime.datetime.today().strftime('%Y-%m-%d'))
+        out = comparelist(date1, date2)
+        f = open("compare.txt", "w+")
+        f.write(out)
+        f.close()
+        with open("compare.txt", "rb") as f:
+            txt = discord.File(f)
+            await message.channel.send("Your cmp to last anon: ", file=txt)
+        os.remove("compare.txt")
     if message.content.startswith("!datecompare"):
         contentArray = message.content.lower().split(" ")
         if len(contentArray) != 3:
