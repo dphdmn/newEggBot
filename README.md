@@ -5,6 +5,7 @@ https://discord.gg/7vXrWAS3yZ
 WR-related commands:
 - !getwr [NxM] - get wr for this puzzle (single)
 - !wrsby [username] - get all wrs for that username
+- !wrupdate - update WR pages
 
 FMC-competion related commands:
 - !submit [solution] - submit solution to current fmc competition
