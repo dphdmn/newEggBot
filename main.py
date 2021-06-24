@@ -23,6 +23,7 @@ import shutil
 from PIL import Image, ImageDraw, ImageFont
 import glob
 import zlib
+import bot
 from replit import db
 
 solvers = {
@@ -2203,7 +2204,16 @@ async def on_message(message):
         await message.channel.send(
             "Egg bot commands: https://github.com/dphdmn/newEggBot/blob/master/README.md"
         )
-
+    if message.content.startswith("!git"):
+        if message.author.guild_permissions.administrator:
+            await message.channel.send(bot.git_head)
+    if message.content.startswith("!restart"):
+        if message.author.guild_permissions.administrator:
+            bot.restart()
+    if message.content.startswith("!botupdate"):
+        if message.author.guild_permissions.administrator:
+            bot.update()
+            bot.restart()
 
 @tasks.loop(seconds=1)
 async def spam(chan, msg):
