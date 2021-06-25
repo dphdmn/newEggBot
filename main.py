@@ -1307,6 +1307,14 @@ def appendFile(file, text):
 @client.event
 async def on_ready():
     print("We have logged in as {0.user}".format(client))
+    #check for message to send after a restart/update
+    if "restart/channel_id" in db.keys() and "restart/message" in db.keys():
+        channel_id = db["restart/channel_id"]
+        channel = client.get_channel(channel_id)
+        message = db["restart/message"]
+        await channel.send(message)
+        del db["restart/channel_id"]
+        del db["restart/message"]
 
 @client.event
 async def on_message(message):
@@ -2212,9 +2220,15 @@ async def on_message(message):
             await message.channel.send(bot.git_info)
     if message.content.startswith("!restart"):
         if message.author.guild_permissions.administrator:
+            await message.channel.send("Restarting...")
+            db["restart/channel_id"] = message.channel.id
+            db["restart/message"] = "Restarted"
             bot.restart()
     if message.content.startswith("!botupdate"):
         if message.author.guild_permissions.administrator:
+            await message.channel.send("Updating...")
+            db["restart/channel_id"] = message.channel.id
+            db["restart/message"] = "Updated!"
             bot.update()
             bot.restart()
 
