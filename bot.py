@@ -1,7 +1,7 @@
 import os
 import subprocess
 
-git_head = subprocess.check_output(["git", "rev-parse", "HEAD"], universal_newlines=True)
+git_info = subprocess.check_output(["git", "show", "-s", "--format=\"%h, %ci\"", "HEAD"], universal_newlines=True)
 
 def restart():
     os.system(f"kill -9 {os.getpid()}")

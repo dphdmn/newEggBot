@@ -2209,7 +2209,7 @@ async def on_message(message):
         )
     if message.content.startswith("!git"):
         if message.author.guild_permissions.administrator:
-            await message.channel.send(bot.git_head)
+            await message.channel.send(bot.git_info)
     if message.content.startswith("!restart"):
         if message.author.guild_permissions.administrator:
             bot.restart()
