@@ -25,12 +25,7 @@ import glob
 import zlib
 import bot
 from replit import db
-del db["HTML2021-06-27"]
-del db["HTML2021-06-26"]
-del db["HTML2021-06-25"]
-del db["HTML2021-06-24"]
-del db["HTML2021-06-23"]
-del db["HTML2021-06-22"]
+
 solvers = {
     3: solver.Solver(3),
     4: solver.Solver(4)
