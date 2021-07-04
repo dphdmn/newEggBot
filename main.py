@@ -2208,7 +2208,7 @@ async def on_message(message):
                 )
         except Exception as e:
             await message.channel.send("Something is wrong\n```" + str(e) + "```")
-    if message.content.startswith("!egg"):
+    if message.content == "!egg":
         egg = readFilenormal("misc/egg.txt")
         await message.channel.send("```" + egg + "```")
     if message.content.startswith("!help"):
