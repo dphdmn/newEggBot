@@ -2076,7 +2076,7 @@ async def on_message(message):
     if message.content.startswith("!datecompare"):
         contentArray = message.content.lower().split(" ")
         if len(contentArray) != 3:
-            await message.channel.send("Sorry your dates are wrong. Format:\n!datecompae 2021-06-13 2021-06-14")
+            await message.channel.send("Sorry your dates are wrong. Format:\n!datecompare 2021-06-13 2021-06-14")
         else:
             date1 = "SMART"+contentArray[1]
             date2 = "SMART"+contentArray[2]
