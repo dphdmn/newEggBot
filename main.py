@@ -1467,7 +1467,9 @@ async def on_message(message):
         await message.channel.send("Wait for it!")
         try:
             getLeaderboard()
-            await makeTmpSend("smartboard.txt", db["smartboard.txt"], "Check this: https://egg.dphdmn.repl.co\nProbably updated! Try !getpb command: ", message.channel)
+            webpage = os.environ["webpage"]
+            msg = f"Check this: {webpage}\nProbably updated! Try !getpb command:"
+            await makeTmpSend("smartboard.txt", db["smartboard.txt"], msg, message.channel)
             db["lastupdate"] = datetime.datetime.now().timestamp()
         except:
             print(traceback.format_exc())
