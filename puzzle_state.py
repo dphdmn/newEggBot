@@ -1,4 +1,5 @@
 import math
+from move import Move
 
 class PuzzleState:
     def __init__(self, state):
@@ -44,3 +45,19 @@ class PuzzleState:
         pos = [x == 0 for row in self.arr for x in row].index(True)
         w = self.width()
         return pos%w, pos//w
+
+    def move(self, m):
+        x, y = self.blankPos()
+        w, h = self.size()
+        if m == Move.U:
+            if y < h:
+                self.arr[y][x], self.arr[y+1][x] = self.arr[y+1][x], self.arr[y][x]
+        elif m == Move.L:
+            if x < w:
+                self.arr[y][x], self.arr[y][x+1] = self.arr[y][x+1], self.arr[y][x]
+        elif m == Move.D:
+            if y > 0:
+                self.arr[y][x], self.arr[y-1][x] = self.arr[y-1][x], self.arr[y][x]
+        elif m == Move.R:
+            if x > 0:
+                self.arr[y][x], self.arr[y][x-1] = self.arr[y][x-1], self.arr[y][x]
