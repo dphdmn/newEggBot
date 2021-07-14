@@ -2,7 +2,10 @@ import math
 from move import Move
 
 class PuzzleState:
-    def __init__(self, state):
+    def __init__(self, state=None):
+        if state == None:
+            return
+
         state = state.strip()
         state = state.replace("\n", "/")
         arr = [row.split(" ") for row in state.split("/")]
