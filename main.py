@@ -24,6 +24,8 @@ from PIL import Image, ImageDraw, ImageFont
 import glob
 import zlib
 import bot
+from puzzle_state import PuzzleState
+from algorithm import Algorithm
 from replit import db
 
 solvers = {
@@ -2177,20 +2179,18 @@ async def on_message(message):
             solve = message.content.startswith("!solve")
             video = message.content.startswith("!video")
 
-            scramble = message.content[7:]
-            if len(scramble) == 37:
-                size = 4
-            elif len(scramble) == 17:
-                size = 3
+            scramble = PuzzleState(message.content[7:])
+            size = scramble.size()
 
-            if size == 4 or (size == 3 and solve):
+            if size == (4, 4) or (size == (3, 3) and solve):
                 a = perf_counter()
-                solution = solvers[size].solveOne(scramble)
+                solver = solvers[size[0]]
+                solution = solver.solveOne(scramble)
                 b = perf_counter()
 
-                outm = "Solution for: " + scramble + "\n"
-                outm += "||" + solution + "||\n"
-                outm += "Moves: " + str(len(solution)) + "\n"
+                outm = "Solution for: " + scramble.to_string() + "\n"
+                outm += "||" + solution.to_string() + "||\n"
+                outm += "Moves: " + str(solution.length()) + "\n"
                 outm += "Time: " + str(round((b - a), 3))
 
                 if video:
