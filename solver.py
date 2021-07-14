@@ -1,4 +1,6 @@
 import subprocess
+from algorithm import Algorithm
+from puzzle_state import PuzzleState
 
 class Solver:
     def __init__(self, size):
@@ -11,7 +13,7 @@ class Solver:
         self.process.terminate()
 
     def solve(self, scramble):
-        self.process.stdin.write(scramble.strip()+"\n")
+        self.process.stdin.write(scramble.to_string()+"\n")
         self.process.stdin.flush()
 
         solutions = []
@@ -20,7 +22,7 @@ class Solver:
             if line == "done":
                 break
             else:
-                solutions.append(line)
+                solutions.append(Algorithm(line))
 
         return solutions
 
