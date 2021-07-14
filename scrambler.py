@@ -1,4 +1,6 @@
 import random
+from puzzle_state import PuzzleState
+from move import Move
 
 def evenPermutation(n):
     if n <= 1:
@@ -23,24 +25,16 @@ def getScramble(n):
         raise ValueError(f"puzzle size ({n}) should be greater than 1")
 
     arr = evenPermutation(n*n-1) + [0]
-    g = n*n-1
+
+    scramble = PuzzleState()
+    scramble.arr = [arr[n*i : n*(i+1)] for i in range(n)]
 
     d = random.randint(0, n-1)
     r = random.randint(0, n-1)
 
     for i in range(d):
-        arr[g], arr[g-n] = arr[g-n], arr[g]
-        g = g-n
-
+        scramble.move(Move.D)
     for i in range(r):
-        arr[g], arr[g-1] = arr[g-1], arr[g]
-        g = g-1
-    
-    scrl = list(" ".join(map(str,arr)))
-    spaceid = 0
-    for i,el in enumerate(scrl):
-      if el == " ":
-        spaceid += 1
-        if spaceid % n == 0:
-          scrl[i] = "/"
-    return "".join(scrl)
+        scramble.move(Move.R)
+
+    return scramble
