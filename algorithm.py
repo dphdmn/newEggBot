@@ -24,7 +24,22 @@ class Algorithm:
 
             return move.from_string(m[0]), amount
 
-        self.moves = [parse_move(m) for m in moves]
+        # parse moves
+        arr = []
+        for m in moves:
+            next_move = parse_move(m)
+            # add the first move
+            if arr == []:
+                arr.append(next_move)
+            else:
+                # check if direction is the same as previous move. if yes, combine them
+                if arr[-1][0] == next_move[0]:
+                    amount = arr[-1][1] + next_move[1]
+                    arr[-1] = (arr[-1][0], amount)
+                else:
+                    arr.append(next_move)
+
+        self.moves = arr
 
     def length(self):
         return sum([m[1] for m in self.moves])
