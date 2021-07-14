@@ -61,3 +61,6 @@ class PuzzleState:
         elif m == Move.R:
             if x > 0:
                 self.arr[y][x], self.arr[y][x-1] = self.arr[y][x-1], self.arr[y][x]
+
+    def to_string(self):
+        return "/".join([" ".join([str(x) for x in row]) for row in self.arr])
