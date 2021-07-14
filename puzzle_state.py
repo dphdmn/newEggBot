@@ -25,3 +25,9 @@ class PuzzleState:
                 raise ValueError(f"puzzle state \"{state}\" is not a square (length = {n})")
 
         self.arr = arr
+
+    def width(self):
+        return len(self.arr[0])
+
+    def height(self):
+        return len(self.arr)
