@@ -25,3 +25,13 @@ def from_string(move):
         return Move.D
     elif move == "R":
         return Move.R
+
+def inverse(move):
+    if move == Move.U:
+        return Move.D
+    elif move == Move.L:
+        return Move.R
+    elif move == Move.D:
+        return Move.U
+    elif move == Move.R:
+        return Move.L
