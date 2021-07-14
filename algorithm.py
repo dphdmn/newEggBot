@@ -38,3 +38,13 @@ class Algorithm:
                 return move.to_string(t[0]) + str(t[1])
 
         return "".join([to_string(m) for m in self.moves])
+
+    def invert(self):
+        arr = [(move.inverse(m), a) for (m, a) in self.moves]
+        arr.reverse()
+        self.moves = arr
+
+    def inverse(self):
+        a = self
+        a.invert()
+        return a
