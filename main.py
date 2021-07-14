@@ -2153,22 +2153,19 @@ async def on_message(message):
             print(traceback.format_exc())
             await message.channel.send("Sorry, something is wrong")
     if message.content.startswith("!eggsolve"):
-        scramble = message.content[10:]
-        if len(scramble) == 37:
-            size = 4
-        elif len(scramble) == 17:
-            size = 3
-        if size == 3 or size == 4:
+        scramble = PuzzleState(message.content[10:])
+        size = scramble.size()
+        if size == (3, 3) or size == (4, 4):
             try:
                 a = perf_counter()
-                solutions = solvers[size].solveAll(scramble)
+                solutions = solvers[size[0]].solveAll(scramble)
                 b = perf_counter()
                 string = ""
                 string += "Time: " + str(round((b - a), 3)) + "\n"
                 string += "Amount of solutions: " + str(len(solutions)) + "\n"
-                string += "Len: " + str(len(solutions[0])) + "\n"
-                string += '\n'.join(solutions)
-                await makeTmpSend("Solutions.txt", string, "All solutions for scramble " + scramble, message.channel)
+                string += "Len: " + str(solutions[0].to_string()) + "\n"
+                string += '\n'.join([s.to_string() for s in solutions])
+                await makeTmpSend("Solutions.txt", string, "All solutions for scramble " + scramble.to_string(), message.channel)
             except:
                 await message.channel.send("Sorry, can't solve it.")
         else:
