@@ -36,3 +36,11 @@ class PuzzleState:
 
     def height(self):
         return len(self.arr)
+
+    def size(self):
+        return self.width(), self.height()
+
+    def blankPos(self):
+        pos = [x == 0 for row in self.arr for x in row].index(True)
+        w = self.width()
+        return pos%w, pos//w
