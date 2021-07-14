@@ -24,6 +24,11 @@ class PuzzleState:
                 # not a square, so we can't guess the size
                 raise ValueError(f"puzzle state \"{state}\" is not a square (length = {n})")
 
+        # check that all rows are the same length
+        for row in arr:
+            if len(row) != len(arr[0]):
+                raise ValueError(f"puzzle state \"{state}\" has rows of differing lengths")
+
         self.arr = arr
 
     def width(self):
