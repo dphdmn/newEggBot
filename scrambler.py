@@ -1,7 +1,8 @@
 import random
 
 def evenPermutation(n):
-    assert n > 2
+    if n <= 1:
+        raise ValueError(f"list size ({n}) should be greater than 1")
 
     arr = list(range(1, n+1))
     parity = False
@@ -18,7 +19,8 @@ def evenPermutation(n):
     return arr
 
 def getScramble(n):
-    assert n > 1
+    if n <= 1:
+        raise ValueError(f"puzzle size ({n}) should be greater than 1")
 
     arr = evenPermutation(n*n-1) + [0]
     g = n*n-1
