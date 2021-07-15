@@ -41,6 +41,32 @@ class Algorithm:
 
         self.moves = arr
 
+    def __add__(self, other):
+        if self.moves == []:
+            return other
+
+        if other.moves == []:
+            return self
+
+        # check if the last move of self and the first move of other are the same direction
+        if self.moves[-1][0] == other.moves[0][0]:
+            # all moves of self, except last
+            arr = self.moves[:-1]
+
+            # add combined last and first moves
+            amount = self.moves[-1][1] + other.moves[0][1]
+            arr.append((self.moves[-1][0], amount))
+
+            # add all moves of other, except first
+            arr += other.moves[1:]
+        else:
+            # join the two arrays
+            arr = self.moves + other.moves
+
+        a = Algorithm()
+        a.moves = arr
+        return a
+
     def length(self):
         return sum([m[1] for m in self.moves])
 
