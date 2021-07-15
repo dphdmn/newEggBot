@@ -1,9 +1,11 @@
 from solver import solvers
 import scrambler
 import os
+import time
 from draw_state import draw_state
 from replit import db
 import discord
+from discord.ext import tasks
 from prettytable import PrettyTable
 
 class DailyFMC:
@@ -23,6 +25,9 @@ class DailyFMC:
 
     def solution(self):
         return db[self.db_path + "solution"]
+
+    def elapsed(self):
+        return int(time.time()) - int(db[self.db_path + "start_time"])
 
     def results(self):
         keys = [x for x in db.keys() if x.startswith(self.db_path + "results/")]
@@ -45,6 +50,7 @@ class DailyFMC:
 
             db[self.db_path + "scramble"] = scramble
             db[self.db_path + "solution"] = solution
+            db[self.db_path + "start_time"] = int(time.time())
 
             msg = "Daily FMC scramble: " + scramble.to_string() + "\n"
             msg += "Optimal solution length: " + str(solution.length()) + "\n"
@@ -71,6 +77,7 @@ class DailyFMC:
             del db[self.db_path + "scramble"]
             del db[self.db_path + "solution"]
             del db[self.db_path + "results"]
+            del db[self.db_path + "start_time"]
 
             scramble = self.scramble()
             optSolution = self.solution()
@@ -104,9 +111,10 @@ class DailyFMC:
             with open("FMC_results.txt", "rb") as f:
                 txt = discord.File(f)
                 if len(rowarray) == 0:
-                    await self.channel.send(msg + "\nNo one joined :(")
+                    results_msg = await self.channel.send(msg + "\nNo one joined :(")
                 else:
-                    await self.channel.send(msg, file=txt)
+                    results_msg = await self.channel.send(msg, file=txt)
+                await results_msg.pin()
 
             os.remove("FMC_results.txt")
 
@@ -115,3 +123,12 @@ class DailyFMC:
 #                picture = discord.File(f)
 #                await message.channel.send("Optimal solution for last FMC competition:\n" + scramble +"\n"+solution+"\n"+leng, file=picture)
 #            os.remove("movie.webm")
+
+    @tasks.loop(seconds=10)
+    async def loop(self):
+        if self.status() == 0:
+            return
+
+        if self.elapsed() >= 86400:
+            await self.close()
+            await self.open()
