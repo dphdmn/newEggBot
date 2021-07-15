@@ -1229,7 +1229,7 @@ async def on_message(message):
         if not message.author.guild_permissions.administrator:
             await message.channel.send("Sorry you are not FMC manager.")
         else:
-            fmc.close()
+            await fmc.close()
     if message.content.startswith("!submit"):
         if getFMCstatus():
             await message.channel.send("Sorry, there is no FMC competition now.")
@@ -1246,7 +1246,7 @@ async def on_message(message):
         if not message.author.guild_permissions.administrator:
             await message.channel.send("Sorry you are not FMC manager.")
         else:
-            fmc.open()
+            await fmc.open()
     if message.content.startswith("!getlb"):
         await makeTmpSend("prettylb.txt", db["prettylb.txt"], "Leaderboard for ranks: ", message.channel)
     if message.content.startswith("!wrupdate"):
