@@ -1387,14 +1387,14 @@ async def on_message(message):
             n = int(contentArray[1])
         scramble = scrambler.getScramble(n)
         if n == 4:
-            img = drawPuzzle(scramble)
+            img = draw_state(scramble)
             img.save('scramble.png', 'PNG')
             with open("scramble.png", "rb") as f:
                 picture = discord.File(f)
-                await message.channel.send("Your random 4x4 scramble: \n" + scramble, file=picture)
+                await message.channel.send("Your random 4x4 scramble: \n" + scramble.to_string(), file=picture)
             os.remove("scramble.png")
         else:
-            await message.channel.send("Random scramble for " + str(n) + "x" + str(n) + " puzzle\n" + scramble)
+            await message.channel.send("Random scramble for " + str(n) + "x" + str(n) + " puzzle\n" + scramble.to_string())
     if message.content.startswith("!getwr"):
         try:
             fp = urllib.request.urlopen(
