@@ -75,16 +75,16 @@ class DailyFMC:
             pass
         else:
             results = self.results()
+            scramble = self.scramble()
+            optSolution = self.solution()
+            optLength = optSolution.length()
 
             db[self.db_path + "status"] = 0
             del db[self.db_path + "scramble"]
             del db[self.db_path + "solution"]
-            del db[self.db_path + "results"]
+            for name in results:
+                del db[self.db_path + "results/" + name]
             del db[self.db_path + "start_time"]
-
-            scramble = self.scramble()
-            optSolution = self.solution()
-            optLength = optSolution.length()
 
             msg = "FMC results!\n"
             msg += "Scramble was: " + scramble.to_string() + "\n"
