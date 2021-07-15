@@ -12,17 +12,17 @@ def drawSquare(img, x, y, r, color):
     img.rectangle(shape, fill=color)
     return img
 
-def drawTile(im, draw, xP, yP, col, text):
+def drawTile(im, draw, xP, yP, col, number):
     size = 100
     x = xP*size
     y = yP*size
     font = ImageFont.truetype("font.ttf", int(size/2))
     W = size
     H = size
-    w, h = draw.textsize(text, font=font)
-    if text != "0":
+    w, h = draw.textsize(str(number), font=font)
+    if number != 0:
         drawSquare(draw, x, y, size, col)
-        draw.text(((W-w)/2+x, (H-h)/2+y), text, fill="black", font=font)
+        draw.text(((W-w)/2+x, (H-h)/2+y), str(number), fill="black", font=font)
     else:
         mask = Image.new('L', im.size, color=255)
         mask_d = ImageDraw.Draw(mask)
@@ -48,9 +48,12 @@ def draw_state(state):
 
     for y in range(state.height()):
         for x in range(state.width()):
-            number = state.arr[y][x]
-            cord = colorCords[y][x]
-            mycolor = tileColors[cord]
-            drawTile(img, draw, x, y, mycolor, str(number))
+            n = state.arr[y][x]
+            if n == 0:
+                mycolor = color(0, 0, 0)
+            else:
+                cord = colorCords[(n-1)//4][(n-1)%4]
+                mycolor = tileColors[cord]
+            drawTile(img, draw, x, y, mycolor, n)
 
     return img
