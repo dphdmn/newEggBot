@@ -2,6 +2,8 @@ from solver import solvers
 import scrambler
 import os
 import time
+from puzzle_state import PuzzleState
+from algorithm import Algorithm
 from draw_state import draw_state
 from replit import db
 import discord
@@ -21,10 +23,10 @@ class DailyFMC:
         return db[self.db_path + "status"]
 
     def scramble(self):
-        return db[self.db_path + "scramble"]
+        return PuzzleState(db[self.db_path + "scramble"])
 
     def solution(self):
-        return db[self.db_path + "solution"]
+        return Algorithm(db[self.db_path + "solution"])
 
     def elapsed(self):
         return int(time.time()) - int(db[self.db_path + "start_time"])
@@ -51,8 +53,8 @@ class DailyFMC:
             scramble = scrambler.getScramble(4)
             solution = solvers[4].solveOne(scramble)
 
-            db[self.db_path + "scramble"] = scramble
-            db[self.db_path + "solution"] = solution
+            db[self.db_path + "scramble"] = scramble.to_string()
+            db[self.db_path + "solution"] = solution.to_string()
             db[self.db_path + "start_time"] = int(time.time())
 
             msg = "Daily FMC scramble: " + scramble.to_string() + "\n"
