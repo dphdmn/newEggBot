@@ -1645,15 +1645,17 @@ async def on_message(message):
         os.remove("anal.txt")
     if message.content.startswith("!draw"):
         try:
-            scramble=message.content[6:]
-            img = drawPuzzle(scramble)
+            state = PuzzleState(message.content[6:])
+            if state.size() != (4, 4):
+                raise ValueError(f"puzzle size {state.size()} must be 4x4")
+            img = draw_state(state)
             img.save('scramble.png', 'PNG')
             with open("scramble.png", "rb") as f:
                 picture = discord.File(f)
                 await message.channel.send("Your scramble: ", file=picture)
             os.remove("scramble.png")
-        except:
-            await message.channel.send("Something is wrong, sorry")
+        except Exception as e:
+            await message.channel.send("Something is wrong\n```" + repr(e) + "```")
     if message.content.startswith("!getreq"):
         mystr = db["tiers.txt"].lower()
         # print(mystr)
