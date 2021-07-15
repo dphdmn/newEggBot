@@ -1,4 +1,5 @@
 import math
+import move
 from move import Move
 from algorithm import Algorithm
 
@@ -57,23 +58,37 @@ class PuzzleState:
     def move(self, m):
         x, y = self.blankPos()
         w, h = self.size()
+        good = False
         if m == Move.U:
             if y < h-1:
                 self.arr[y][x], self.arr[y+1][x] = self.arr[y+1][x], self.arr[y][x]
+                good = True
         elif m == Move.L:
             if x < w-1:
                 self.arr[y][x], self.arr[y][x+1] = self.arr[y][x+1], self.arr[y][x]
+                good = True
         elif m == Move.D:
             if y > 0:
                 self.arr[y][x], self.arr[y-1][x] = self.arr[y-1][x], self.arr[y][x]
+                good = True
         elif m == Move.R:
             if x > 0:
                 self.arr[y][x], self.arr[y][x-1] = self.arr[y][x-1], self.arr[y][x]
+                good = True
+
+        if not good:
+            raise ValueError(f"move \"{move.to_string(m)}\" can not be applied to puzzle state \"{self.to_string()}\"")
 
     def apply(self, alg):
-        for (direction, amount) in alg.moves:
-            for i in range(amount):
-                self.move(direction)
+        # create a copy so that self.arr isn't partially modified if we try and apply an alg that doesn't work
+        copy = self
+        try:
+            for (direction, amount) in alg.moves:
+                for i in range(amount):
+                    copy.move(direction)
+            self.arr = copy.arr
+        except ValueError as e:
+            raise ValueError(f"algorithm \"{alg.to_string()}\" can not be applied to puzzle state \"{self.to_string()}\"")
 
     def to_string(self):
         return "/".join([" ".join([str(x) for x in row]) for row in self.arr])
