@@ -1229,48 +1229,7 @@ async def on_message(message):
         if not message.author.guild_permissions.administrator:
             await message.channel.send("Sorry you are not FMC manager.")
         else:
-            if getFMCstatus():
-                await message.channel.send("No FMC challange to close! Use !daily_open.")
-            else:
-                stats = getDailyStats()
-                log = readLog()
-                db["daily_status.txt"] = "CLOSED"
-                db["daily_log.txt"] = ""
-                scramble = stats[0]
-                solution = stats[1]
-                leng = stats[2]
-                out = "FMC results!\n"
-                out += "Scramble was: " + scramble + "\n"
-                out += "Optimal solution: " + solution + "\n"
-                out += "Optimal moves: " + leng + "\n"
-                out += "Results:\n"
-                rowarray = []
-                rowheaders = ["Player", "Moves", "To optimal", "Solution"]
-                for i in log:
-                    row = []
-                    row.append(i["Name"])
-                    row.append(i["Len"])
-                    row.append(str(int(i["Len"])-int(leng)))
-                    row.append(i["Solution"])
-                    rowarray.append(row)
-                if len(rowarray)>0:
-                    rowarray.sort(key=lambda x: int(x[1]))
-                y = PrettyTable()
-                y.field_names = rowheaders
-                y.add_rows(rowarray)
-                rewriteFile("FMC_results.txt",y.get_string())
-                with open("FMC_results.txt", "rb") as f:
-                    txt = discord.File(f)
-                    if len(rowarray) == 0:
-                        await message.channel.send(out + "\nNo one joined :(")
-                    else:
-                        await message.channel.send(out, file=txt)
-                os.remove("FMC_results.txt")
-                makeGif(scramble, solution, 10)
-                with open("movie.webm", "rb") as f:
-                    picture = discord.File(f)
-                    await message.channel.send("Optimal solution for last FMC competition:\n" + scramble +"\n"+solution+"\n"+leng, file=picture)
-                os.remove("movie.webm")
+            fmc.close()
     if message.content.startswith("!submit"):
         if getFMCstatus():
             await message.channel.send("Sorry, there is no FMC competition now.")
@@ -1315,24 +1274,7 @@ async def on_message(message):
         if not message.author.guild_permissions.administrator:
             await message.channel.send("Sorry you are not FMC manager.")
         else:
-            if not getFMCstatus():
-                await message.channel.send("Please use !daily_close to close current session first.")
-            else:
-                await message.channel.send("Starting daily FMC, please wait!")
-                scramble = scrambler.getScramble(4)
-                solution = solvers[4].solveOne(scramble)
-                outString = scramble.to_string() + "\n" + solution.to_string() + "\n" + str(solution.length())
-                db["daily_status.txt"] = outString
-                img = draw_state(scramble)
-                img.save('scramble.png', 'PNG')
-                msg = "Daily FMC scramble: " + scramble.to_string() + "\n"
-                msg += "Optimal solution length: " + str(solution.length()) + "\n"
-                msg += "Use **!submit** command to submit solutions (You can submit multiple times!), for example:\n"
-                msg += "!submit LULD3RU2LD2LUR2UL2D2RU2RLULDR3UL2D2R2U2L2DLDRU2LDRURDL2DR2U2L2DRULDR2ULDLU\n"
-                with open("scramble.png", "rb") as f:
-                    picture = discord.File(f)
-                    await message.channel.send(msg, file=picture)
-                os.remove("scramble.png")
+            fmc.open()
     if message.content.startswith("!getlb"):
         await makeTmpSend("prettylb.txt", db["prettylb.txt"], "Leaderboard for ranks: ", message.channel)
     if message.content.startswith("!wrupdate"):
