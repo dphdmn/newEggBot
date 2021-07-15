@@ -31,13 +31,20 @@ class DailyFMC:
     def elapsed(self):
         return int(time.time()) - int(db[self.db_path + "start_time"])
 
+    def result(self, name):
+        key = self.db_path + "results/" + name
+        if key in db:
+            return Algorithm(db[key])
+        else:
+            raise ValueError(f"name \"{name}\" has not submitted a solution")
+
     def results(self):
         keys = [x for x in db.keys() if x.startswith(self.db_path + "results/")]
         results = {}
 
         for key in keys:
             name = key.split("/")[-1]
-            result = db[key].length()
+            result = self.result(name).length()
             results[name] = result
 
         return results
@@ -98,7 +105,7 @@ class DailyFMC:
             rowheaders = ["Player", "Moves", "To optimal", "Solution"]
             
             for user in results:
-                solution = results[user]
+                solution = self.result(user)
                 length = solution.length()
                 rowarray.append([user, str(length), str(length - optLength), solution.to_string()])
 
@@ -140,7 +147,8 @@ class DailyFMC:
                 db[result_key] = solution.to_string()
                 await self.channel.send(f"[{solution.length()}] Solution added for {name}")
             else:
-                previous_length = db[result_key].length()
+                previous = self.result(name)
+                previous_length = previous.length()
                 new_length = solution.length()
                 if new_length < previous_length:
                     db[result_key] = solution.to_string()
