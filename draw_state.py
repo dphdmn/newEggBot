@@ -44,7 +44,7 @@ def draw_state(state):
                   color(154, 141, 255),
                   color(207, 141, 255),
                   color(255, 133, 251)]
-    colorCords = [[0, 0, 0, 0], [2, 4, 4, 4], [2, 6, 8, 8], [2, 6, 9, 10]]
+    colorCords = [[0, 0, 0, 0], [2, 4, 4, 4], [2, 6, 8, 8], [2, 6, 10, 11]]
 
     for y in range(state.height()):
         for x in range(state.width()):
