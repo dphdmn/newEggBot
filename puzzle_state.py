@@ -36,6 +36,10 @@ class PuzzleState:
 
         self.arr = arr
 
+    def reset(self, w, h):
+        arr = list(range(1, w*h)) + [0]
+        self.arr = [arr[w*i : w*(i+1)] for i in range(h)]
+
     def width(self):
         return len(self.arr[0])
 
