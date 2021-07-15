@@ -58,10 +58,10 @@ class PuzzleState:
         x, y = self.blankPos()
         w, h = self.size()
         if m == Move.U:
-            if y < h:
+            if y < h-1:
                 self.arr[y][x], self.arr[y+1][x] = self.arr[y+1][x], self.arr[y][x]
         elif m == Move.L:
-            if x < w:
+            if x < w-1:
                 self.arr[y][x], self.arr[y][x+1] = self.arr[y][x+1], self.arr[y][x]
         elif m == Move.D:
             if y > 0:
