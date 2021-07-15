@@ -26,6 +26,7 @@ import bot
 from puzzle_state import PuzzleState
 from algorithm import Algorithm
 from draw_state import draw_state
+from daily_fmc import DailyFMC
 from replit import db
 
 client = discord.Client()
@@ -1193,6 +1194,11 @@ async def on_ready():
         await channel.send(message)
         del db["restart/channel_id"]
         del db["restart/message"]
+
+    #start daily fmc
+    global fmc
+    fmc = DailyFMC(client, int(os.environ["daily_fmc_channel"]))
+    fmc.start()
 
 @client.event
 async def on_message(message):
