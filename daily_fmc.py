@@ -149,8 +149,7 @@ class DailyFMC:
     @tasks.loop(seconds=10)
     async def loop(self):
         if self.status() == 0:
-            return
-
-        if self.elapsed() >= 86400:
+            await self.open()
+        elif self.elapsed() >= 86400:
             await self.close()
             await self.open()
