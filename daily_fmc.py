@@ -44,7 +44,7 @@ class DailyFMC:
 
         for key in keys:
             name = key.split("/")[-1]
-            result = self.result(name).length()
+            result = self.result(name)
             results[name] = result
 
         return results
@@ -105,7 +105,7 @@ class DailyFMC:
             rowheaders = ["Player", "Moves", "To optimal", "Solution"]
             
             for user in results:
-                solution = self.result(user)
+                solution = results[user]
                 length = solution.length()
                 rowarray.append([user, str(length), str(length - optLength), solution.to_string()])
 
