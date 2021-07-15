@@ -1480,28 +1480,21 @@ async def on_message(message):
         if message.author.guild_permissions.administrator:
             spam.cancel()
     if message.content.startswith("!getreal"):
-        scramble = scrambler.getScramble(4)
-        await message.channel.send("Please wait! I am slow, use ben's scrambler instead: http://benwh.000webhostapp.com/software/15poprs/index.html")
-        solution = solvers[4].solveOne(scramble)
-        rever = solvereverse(solution)
-        mypuz, blank = create_puz()
-        out = "DDDRUURDDRUUULLL" + rever
-        mypuz, _ = doMoves(mypuz, blank, out)
-        out = " ".join(list(out))
-        out = out.replace("D D D", "D3")
-        out = out.replace("D D", "D2")
-        out = out.replace("L L L", "L3")
-        out = out.replace("L L", "L2")
-        out = out.replace("U U U", "U3")
-        out = out.replace("U U", "U2")
-        out = out.replace("R R R", "R3")
-        out = out.replace("R R", "R2")
-        scr=toScramble(mypuz)
-        img = drawPuzzle(scr)
+        await message.channel.send("Generating scramble!")
+
+        state = scrambler.getScramble(4)
+        solution = solvers[4].solveOne(state)
+        scramble = Algorithm("D3 R U2 R D2 R U3 L3") + solution.inverse()
+
+        scrambleState = PuzzleState()
+        scrambleState.reset(4, 4)
+        scrambleState.apply(scramble)
+
+        img = drawPuzzle(scrambleState.to_string())
         img.save('scramble.png', 'PNG')
         with open("scramble.png", "rb") as f:
             picture = discord.File(f)
-            await message.channel.send("Your scramble: \n" + out + "\n" +scr, file=picture)
+            await message.channel.send(scrambleState.to_string() + "\n" + scramble.to_string(), file=picture)
         os.remove("scramble.png")
     if message.content.startswith("!getscramble"):
         contentArray = message.content.lower().split(" ")
