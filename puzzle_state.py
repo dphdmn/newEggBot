@@ -50,6 +50,10 @@ class PuzzleState:
     def size(self):
         return self.width(), self.height()
 
+    def solved(self):
+        w, h = self.size()
+        return [x for row in self.arr for x in row] == list(range(1, w*h)) + [0]
+
     def blankPos(self):
         pos = [x == 0 for row in self.arr for x in row].index(True)
         w = self.width()
