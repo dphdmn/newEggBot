@@ -1,5 +1,5 @@
 import scrambler
-import solver
+from solver import solvers
 import os
 from keep_alive import keep_alive
 from prettytable import PrettyTable
@@ -27,14 +27,6 @@ from puzzle_state import PuzzleState
 from algorithm import Algorithm
 from draw_state import draw_state
 from replit import db
-
-solvers = {
-    3: solver.Solver(3),
-    4: solver.Solver(4)
-}
-
-solvers[3].start()
-solvers[4].start()
 
 client = discord.Client()
 print('\n'.join(db.keys()))

@@ -37,3 +37,11 @@ class Solver:
     def solveAll(self, scramble):
         self.process.stdin.write("all\n")
         return self.solve(scramble)
+
+solvers = {
+    3: Solver(3),
+    4: Solver(4)
+}
+
+solvers[3].start()
+solvers[4].start()
