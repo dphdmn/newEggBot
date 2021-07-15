@@ -1323,18 +1323,17 @@ async def on_message(message):
                 await message.channel.send("Starting daily FMC, please wait!")
                 scramble = scrambler.getScramble(4)
                 solution = solvers[4].solveOne(scramble)
-                sollen = str(len(solution))
-                outString = scramble + "\n" + solution + "\n" + sollen
+                outString = scramble.to_string() + "\n" + solution.to_string() + "\n" + str(solution.length())
                 db["daily_status.txt"] = outString
-                img = drawPuzzle(scramble)
+                img = draw_state(scramble)
                 img.save('scramble.png', 'PNG')
-                mess = "Daily FMC scramble: " + scramble + "\n"
-                mess += "Optimal solution length: " + sollen + "\n"
-                mess += "Use **!submit** command to submit solutions (You can submit multiple times!), for example:\n"
-                mess += "!submit LULD3RU2LD2LUR2UL2D2RU2RLULDR3UL2D2R2U2L2DLDRU2LDRURDL2DR2U2L2DRULDR2ULDLU\n"
+                msg = "Daily FMC scramble: " + scramble.to_string() + "\n"
+                msg += "Optimal solution length: " + str(solution.length()) + "\n"
+                msg += "Use **!submit** command to submit solutions (You can submit multiple times!), for example:\n"
+                msg += "!submit LULD3RU2LD2LUR2UL2D2RU2RLULDR3UL2D2R2U2L2DLDRU2LDRURDL2DR2U2L2DRULDR2ULDLU\n"
                 with open("scramble.png", "rb") as f:
                     picture = discord.File(f)
-                    await message.channel.send(mess, file=picture)
+                    await message.channel.send(msg, file=picture)
                 os.remove("scramble.png")
     if message.content.startswith("!getlb"):
         await makeTmpSend("prettylb.txt", db["prettylb.txt"], "Leaderboard for ranks: ", message.channel)
