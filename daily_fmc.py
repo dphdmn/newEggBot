@@ -40,6 +40,9 @@ class DailyFMC:
 
         return results
 
+    def start(self):
+        self.loop.start()
+
     async def open(self):
         if self.status() == 1:
             pass
