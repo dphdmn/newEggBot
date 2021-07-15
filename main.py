@@ -1954,9 +1954,9 @@ async def on_message(message):
                 )
             os.remove("scramble.txt")
     if message.content.startswith("!rev"):
-        words = message.content[5:]
-        words = solvereverse(words)
-        await message.channel.send("Reversed moves:\n||" + words + "||")
+        alg = Algorithm(message.content[5:])
+        alg.invert()
+        await message.channel.send(alg.to_string())
     if message.content.startswith("!not"):
         words = message.content[5:]
         words = words.replace("R", "_")
