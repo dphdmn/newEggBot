@@ -3,7 +3,7 @@ import move
 from move import Move
 
 class Algorithm:
-    def __init__(self, alg):
+    def __init__(self, alg=""):
         # remove all whitespace
         alg = "".join(alg.split())
 
