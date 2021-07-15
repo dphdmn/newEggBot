@@ -1238,38 +1238,10 @@ async def on_message(message):
             contentArray = message.content.lower().split(" ")
             await message.delete()
             if len(contentArray) != 2:
-                await message.channel.send("Sorry, " + name + ", i can't get your solution")
+                await message.channel.send("Sorry, " + name + ", I can't get your solution")
             else:
-                solution = contentArray[1].upper()
-                solution = solution.replace("|","")
-                solution = fixSolution(solution)
-                scramble = getDailyStats()[0]
-                lenstr = "||[" + str(len(solution)) + "]|| "
-                if not checkSol(scramble, solution):
-                    await message.channel.send("Sorry, " + name + ", your solution is not working.")
-                else:
-                    log = readLog()
-                    item_old = next((item for item in log if item["Name"] == name), None)
-                    if item_old == None:
-                        addFMCResult(name, solution)
-                        channel2 = client.get_channel(852636984475516928)
-                        with open("daily_backup.txt", "rb") as f:
-                            txt = discord.File(f)
-                            await channel2.send("Backup", file=txt)
-                        os.remove("daily_backup.txt")
-                        await message.channel.send(lenstr + "Your solution added, " + name)
-                    else:
-                        if int(item_old["Len"]) <= len(solution):
-                            await message.channel.send(lenstr+ "You already have a better or same solution in the list, " + name + " (You have ||" + item_old["Len"]+ "||)")
-                        else:
-                            removeResult(name)
-                            addFMCResult(name, solution)
-                            channel2 = client.get_channel(852636984475516928)
-                            with open("daily_backup.txt", "rb") as f:
-                                txt = discord.File(f)
-                                await channel2.send("Backup", file=txt)
-                            os.remove("daily_backup.txt")
-                            await message.channel.send("||" + item_old["Len"] + "||->" + lenstr + "Your solution updated, " + name)
+                solution = Algorithm(contentArray[1])
+                fmc.submit(name, solution)
     if message.content.startswith("!daily_open"):
         if not message.author.guild_permissions.administrator:
             await message.channel.send("Sorry you are not FMC manager.")
