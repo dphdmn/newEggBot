@@ -1241,7 +1241,7 @@ async def on_message(message):
                 await message.channel.send("Sorry, " + name + ", I can't get your solution")
             else:
                 solution = Algorithm(contentArray[1])
-                fmc.submit(name, solution)
+                await fmc.submit(name, solution)
     if message.content.startswith("!daily_open"):
         if not message.author.guild_permissions.administrator:
             await message.channel.send("Sorry you are not FMC manager.")
