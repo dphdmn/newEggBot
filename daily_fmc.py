@@ -124,6 +124,25 @@ class DailyFMC:
 #                await message.channel.send("Optimal solution for last FMC competition:\n" + scramble +"\n"+solution+"\n"+leng, file=picture)
 #            os.remove("movie.webm")
 
+    async def submit(self, name, solution):
+        scramble = self.scramble()
+        scramble.apply(solution)
+        if not scramble.solved():
+            await self.channel.send("Sorry, " + name + ", your solution is not working.")
+        else:
+            result_key = self.db_path + "results/" + name
+            if result_key not in db:
+                db[result_key] = solution.to_string()
+                await self.channel.send(f"[{solution.length()}] Solution added for {name}")
+            else:
+                previous_length = db[result_key].length()
+                new_length = solution.length()
+                if new_length < previous_length:
+                    db[result_key] = solution.to_string()
+                    await self.channel.send(f"[{previous_length} -> {new_length}] Solution updated for {name}")
+                else:
+                    await self.channel.send(f"You already have a {previous_length} move solution, {name}")
+
     @tasks.loop(seconds=10)
     async def loop(self):
         if self.status() == 0:
