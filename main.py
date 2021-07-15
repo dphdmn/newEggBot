@@ -471,39 +471,6 @@ def getReverse(move):
 def getGoodMoves(scramble, size):
     return [x[0] for x in solvers[size].solveGood(scramble)]
 
-def bannedmove(blank, move):
-    if move == "R":
-        return blank in [0,4,8,12]
-    if move == "L":
-        return blank in [3,7,11,15]
-    if move == "D":
-        return blank in [0,1,2,3]
-    if move == "U":
-        return blank in [12,13,14,15]
-
-def getLegalmoves(blank):
-    list=[]
-    if not bannedmove(blank,"R"):
-        list.append("R")
-    if not bannedmove(blank,"U"):
-        list.append("U")
-    if not bannedmove(blank,"L"):
-        list.append("L")
-    if not bannedmove(blank,"D"):
-        list.append("D")
-    return list
-
-def get4state(scramble):
-    list = []
-    puzzle, blank = createScrambled(scramble)
-    legalmoves=getLegalmoves(blank)
-    print("legal moves" + str(legalmoves))
-    for i in legalmoves:
-        puzzle, blank = createScrambled(scramble)
-        puz, _ =  move(puzzle, blank, i)
-        list.append((i, toScramble(puz)))
-    return list
-
 def isReverse(a, b):
     return getReverse(a) == b
 
