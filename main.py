@@ -1374,7 +1374,7 @@ async def on_message(message):
         scrambleState.reset(4, 4)
         scrambleState.apply(scramble)
 
-        img = drawPuzzle(scrambleState.to_string())
+        img = draw_state(scrambleState)
         img.save('scramble.png', 'PNG')
         with open("scramble.png", "rb") as f:
             picture = discord.File(f)
