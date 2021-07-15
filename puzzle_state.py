@@ -1,5 +1,6 @@
 import math
 from move import Move
+from algorithm import Algorithm
 
 class PuzzleState:
     def __init__(self, state=None):
@@ -64,6 +65,11 @@ class PuzzleState:
         elif m == Move.R:
             if x > 0:
                 self.arr[y][x], self.arr[y][x-1] = self.arr[y][x-1], self.arr[y][x]
+
+    def apply(self, alg):
+        for (direction, amount) in alg.moves:
+            for i in range(amount):
+                self.move(direction)
 
     def to_string(self):
         return "/".join([" ".join([str(x) for x in row]) for row in self.arr])
