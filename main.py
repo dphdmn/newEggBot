@@ -60,25 +60,6 @@ def addConstants():
 
 addConstants()
 
-
-def solvereverse(words):
-    words = words.replace("R3", "RRR")
-    words = words.replace("R2", "RR")
-    words = words.replace("L3", "LLL")
-    words = words.replace("L2", "LL")
-    words = words.replace("U3", "UUU")
-    words = words.replace("U2", "UU")
-    words = words.replace("D3", "DDD")
-    words = words.replace("D2", "DD")
-    words = words.replace("R", "_")
-    words = words.replace("L", "R")
-    words = words.replace("_", "L")
-    words = words.replace("U", "_")
-    words = words.replace("D", "U")
-    words = words.replace("_", "D")
-    words = words[::-1]
-    return words
-
 #_______________________________Auto leaderboard
 
 def getLeaderboard():
