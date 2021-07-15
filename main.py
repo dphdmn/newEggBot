@@ -20,12 +20,12 @@ import cv2
 import sys
 import requests
 import shutil
-from PIL import Image, ImageDraw, ImageFont
 import glob
 import zlib
 import bot
 from puzzle_state import PuzzleState
 from algorithm import Algorithm
+from draw_state import draw_state
 from replit import db
 
 solvers = {
@@ -373,70 +373,6 @@ def makeImages(scramble,solution):
     for n, scr in enumerate(states):
         img = drawPuzzle(scr)
         img.save("images/" + str(n).zfill(5) + ".png", 'PNG')
-
-#________________________________SCRAMBLE DRAWER
-
-def color(r, g, b):
-    return '#{:02x}{:02x}{:02x}'.format(r, g, b)
-
-def makeImage(w, h):
-    img = Image.new("RGB", (w, h))
-    return img, ImageDraw.Draw(img, 'RGBA')
-
-def drawSquare(img,x,y,r,color):
-    shape = [(x, y), (x+r, y+r)]
-    img.rectangle(shape, fill=color)
-    return img
-
-
-def drawTile(im, draw, pos, col, text):
-    size = 100
-    xP, yP = getXY(pos)
-    x = xP*size
-    y = yP*size
-    font = ImageFont.truetype("font.ttf", int(size/2))
-    W = size
-    H = size
-    w, h = draw.textsize(text,font=font)
-    if text != "0":
-        drawSquare(draw, x, y, size, col)
-        draw.text(((W-w)/2+x,(H-h)/2+y), text, fill="black", font=font)
-    else:
-        mask = Image.new('L', im.size, color=255)
-        mask_d = ImageDraw.Draw(mask)
-        drawSquare(mask_d, x, y, size, 0)
-        im.putalpha(mask)
-
-
-def drawTiles(puz):
-    img, draw = makeImage(400, 400)
-    pos = 0
-    tileColors = [color(255, 103, 103),
-                  color(255, 163, 87),
-                  color(255, 241, 83),
-                  color(193, 255, 87),
-                  color(123, 255, 97),
-                  color(107, 255, 149),
-                  color(121, 255, 222),
-                  color(131, 230, 255),
-                  color(139, 178, 255),
-                  color(154, 141, 255),
-                  color(207, 141, 255),
-                  color(255, 133, 251)]
-    colorCords = [10, 0, 0, 0, 0, 2, 4, 4, 4, 2, 6, 8, 8, 2, 6, 9]
-    for i, row in enumerate(puz):
-        for j in row:
-            cord = colorCords[j]
-            mycolor = tileColors[cord]
-            drawTile(img, draw, pos, mycolor, str(j))
-            pos += 1
-    return img
-
-def drawPuzzle(scramble):
-    puz, _ = create_puz()
-    puz, blank = scramble_puz(puz, scramble)
-    img = drawTiles(puz)
-    return img
 
 # _________________________________________________________________________
 # ________________solve_anal_project
