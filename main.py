@@ -1235,7 +1235,7 @@ async def on_message(message):
             await message.channel.send("Sorry, there is no FMC competition now.")
         else:
             name = message.author.name
-            contentArray = message.content.lower().split(" ")
+            contentArray = message.content.split(" ")
             await message.delete()
             if len(contentArray) != 2:
                 await message.channel.send("Sorry, " + name + ", I can't get your solution")
