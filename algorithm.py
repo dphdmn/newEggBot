@@ -118,8 +118,14 @@ class Algorithm:
         a.moves = arr
         return a
 
+    def rtake(self, n):
+        return self.inverse().take(n).inverse()
+
     def drop(self, n):
-        return self.inverse().take(self.length()-n).inverse()
+        return self.rtake(self.length()-n)
+
+    def rdrop(self, n):
+        return self.take(self.length()-n)
 
     def first(self):
         if self.moves == []:
