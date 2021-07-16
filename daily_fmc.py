@@ -31,6 +31,9 @@ class DailyFMC:
     def elapsed(self):
         return int(time.time()) - int(db[self.db_path + "start_time"])
 
+    def remaining(self):
+        return max(0, 86400 - self.elapsed())
+
     def result(self, name):
         key = self.db_path + "results/" + name
         if key in db:
