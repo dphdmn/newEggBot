@@ -125,7 +125,6 @@ class DailyFMC:
                     results_msg = await self.channel.send(msg + "\nNo one joined :(")
                 else:
                     results_msg = await self.channel.send(msg, file=txt)
-                await results_msg.pin()
 
             os.remove("FMC_results.txt")
 
@@ -134,6 +133,8 @@ class DailyFMC:
                 picture = discord.File(f)
                 await self.channel.send("", file=picture)
             os.remove("movie.webm")
+
+            await results_msg.pin()
 
     async def submit(self, name, solution):
         scramble = self.scramble()
