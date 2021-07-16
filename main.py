@@ -1726,13 +1726,14 @@ async def on_message(message):
         await message.channel.send("||" + msg + "||")
     if message.content.startswith("!goodm"):
         try:
-            scramble = message.content[7:]
-            if len(scramble) == 37:
-                size = 4
-            elif len(scramble) == 17:
-                size = 3
-            goodmoves = getGoodMoves(scramble, size)
-            await message.channel.send("Your scramble:\n"+scramble+"\nGood moves for your scramble: " + ' or '.join(goodmoves))
+            scramble = PuzzleState(message.content[7:])
+            size = scramble.size()
+            if size == (3, 3) or size == (4, 4):
+                solver = solvers[size[0]]
+                good_moves = [move.to_string(sol.first()) for sol in solver.solveGood(scramble)]
+                await message.channel.send("Your scramble:\n" + scramble.to_string() + "\nGood moves for your scramble: " + ", ".join(good_moves))
+            else:
+                raise ValueError(f"puzzle size {scramble.size()} must be 3x3 or 4x4")
         except:
             print(traceback.format_exc())
             await message.channel.send("Sorry, something is wrong")
