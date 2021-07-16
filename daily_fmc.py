@@ -110,25 +110,17 @@ class DailyFMC:
             table.field_names = ["Player", "Moves", "To optimal", "Solution"]
 
             # organise results in an array
-            rows = []
-            for user in results:
-                solution = results[user]
+            for (user, solution) in results.items():
                 length = solution.length()
-                rows.append([user, str(length), str(length - optLength), solution.to_string()])
+                table.add_row([user, length, length - optLength, solution.to_string()])
 
-            # sort by solution length
-            if len(rows) > 0:
-                rows.sort(key=lambda x: int(x[1]))
-
-            table.add_rows(rows)
-            
             with open("FMC_results.txt", "w+") as f:
                 f.write(table.get_string())
                 f.close()
 
             with open("FMC_results.txt", "rb") as f:
                 txt = discord.File(f)
-                if len(rowarray) == 0:
+                if len(results) == 0:
                     results_msg = await self.channel.send(msg + "\nNo one joined :(")
                 else:
                     results_msg = await self.channel.send(msg, file=txt)
