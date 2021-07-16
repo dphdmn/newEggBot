@@ -2,6 +2,7 @@ from solver import solvers
 import scrambler
 import os
 import time
+from animate import make_video
 from puzzle_state import PuzzleState
 from algorithm import Algorithm
 from draw_state import draw_state
@@ -128,11 +129,11 @@ class DailyFMC:
 
             os.remove("FMC_results.txt")
 
-#            makeGif(scramble, solution, 10)
-#            with open("movie.webm", "rb") as f:
-#                picture = discord.File(f)
-#                await message.channel.send("Optimal solution for last FMC competition:\n" + scramble +"\n"+solution+"\n"+leng, file=picture)
-#            os.remove("movie.webm")
+            make_video(scramble, solution, 8)
+            with open("movie.webm", "rb") as f:
+                picture = discord.File(f)
+                await self.channel.send("", file=picture)
+            os.remove("movie.webm")
 
     async def submit(self, name, solution):
         scramble = self.scramble()
