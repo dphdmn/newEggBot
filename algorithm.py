@@ -85,6 +85,7 @@ class Algorithm:
         arr = [(move.inverse(m), a) for (m, a) in self.moves]
         arr.reverse()
         self.moves = arr
+        return self
 
     def inverse(self):
         a = copy.deepcopy(self)
@@ -93,6 +94,7 @@ class Algorithm:
 
     def revert(self):
         self.moves.reverse()
+        return self
 
     def reverse(self):
         a = copy.deepcopy(self)
