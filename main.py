@@ -925,6 +925,17 @@ async def on_message(message):
         else:
             solution = Algorithm(contentArray[1])
             await fmc.submit(name, solution)
+    if message.content.startswith("!results"):
+        if message.channel.id != fmc.channel.id or fmc.status() == 0:
+            return
+        results = fmc.results()
+        if len(results) == 0:
+            msg = "No results yet"
+        else:
+            msg = ""
+            for (name, result) in results.items():
+                msg += f"{name}: {result.length()}\n"
+        await message.channel.send(msg)
     if message.content.startswith("!getlb"):
         await makeTmpSend("prettylb.txt", db["prettylb.txt"], "Leaderboard for ranks: ", message.channel)
     if message.content.startswith("!wrupdate"):
