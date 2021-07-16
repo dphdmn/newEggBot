@@ -417,13 +417,6 @@ def doMoves(puzzle, blank, moves):
     except:
         return None, None
 
-
-# returns true if puzzle is solved
-def checkSolved(puzzle):
-    s, _ = create_puz()
-    return np.array_equal(puzzle, s)
-
-
 # get slidysim style scramble from array
 def toScramble(puzzle):
     scr = ""
@@ -451,117 +444,9 @@ def getStates(scramble, solution):
         list.append(toScramble(mypuz))
     return list
     # return '\n'.join(list)
-def getReverse(move):
-    if move == "R":
-        return "L"
-    if move =="L":
-        return "R"
-    if move =="U":
-        return "D"
-    if move =="D":
-        return "U"
-    return None
 
 def getGoodMoves(scramble, size):
     return [x[0] for x in solvers[size].solveGood(scramble)]
-
-def isReverse(a, b):
-    return getReverse(a) == b
-
-def analyse(scramble, solution):
-    solution = solution.upper()
-    states = getStates(scramble,solution)
-    if states[len(states)-1] == "1 2 3 4/5 6 7 8/9 10 11 12/13 14 15 0":
-        optimals = []
-        optl = []
-        userlen=len(solution)
-        #print('\n'.join(states))
-        lastopt=""
-        for id,i in enumerate(states):
-            print(i)
-            user_end_len=userlen-id
-            predicted_opt_end_len=len(lastopt)-1
-            if lastopt !="" and user_end_len==predicted_opt_end_len:
-                opt = lastopt[1:]
-            else:
-                opt = solvers[4].solveOne(i)
-            lastopt=opt
-            optimals.append(opt)
-            optl.append(len(opt))
-        log = "Analysing " + scramble + "\n"
-        log += "Your solution " + solution + " [" + str(userlen) + "]\n"
-        dif = userlen-optl[0]
-        log += "Your solution is [" + str(dif) + "] away from optimal\n"
-        log += "Optimal: " + optimals[0] + " [" + str(optl[0]) + "]\n"
-        x = PrettyTable()
-        x.field_names = ["Move", "State", "Fail", "Your Before","Your Ending","Opt_Ending", "Your_with_Optimal_ending"]
-        myrows=[]
-        wrongmoves = []
-        lasti = -1
-        for id, move in enumerate(solution):
-            movesdone=id+1
-            userlen -= 1
-            if userlen != -1:
-                row = []
-                #dif =  userlen - optl[movesdone]
-                optdif = abs(optl[movesdone-1] - optl[movesdone] - 1)
-                row.append(move)
-                row.append(states[movesdone])
-                #row.append(str(dif))
-                if optdif == 0:
-                    row.append(" ")
-                    if len(myrows) > 1 and len(wrongmoves) > 0:
-                        lastrow=myrows[len(myrows)-2]
-                        movebeforerow=myrows[len(myrows)-1]
-                        prev=wrongmoves[len(wrongmoves)-1]
-                        #print(str(lastrow[1]==prev[1]) + str(movesdone)+str(lastrow)+str(prev))
-                        if isReverse(move,movebeforerow[0]) and lastrow[1]==prev[1]:
-                            prev[3]="!"+prev[3]
-                else:
-                    wrong= []
-                    wrong.append(movesdone)
-                    wrong.append(states[movesdone-1])
-                    wrong.append(solution[:movesdone-1])
-                    if movesdone-1 == lasti:
-                        prev=wrongmoves[len(wrongmoves)-1]
-                        prev[3]="!"+prev[3]
-                    wrong.append(move)
-                    lasti=movesdone
-                    opt=optimals[movesdone-1]
-                    wrong.append(opt[:1])
-                    wrong.append(solution[movesdone-1:])
-                    wrong.append(opt)
-                    wrong.append(solution[:movesdone-1] + opt)
-                    row.append(str(optdif))
-                    wrongmoves.append(wrong)
-                your = solution[:movesdone]
-                yourend= solution[movesdone:]
-                after = optimals[movesdone]
-                full=your+after
-                if len(your)>10:
-                    your = your[:10] + "..."
-                if len(yourend)>10:
-                    yourend = yourend[:10] + "..."
-                if len(after)>10:
-                    after = after[:10] + "..."
-                row.append(your)
-                row.append(yourend + "[" + str(len(solution[movesdone:])) + "]")
-                row.append(after + "[" + str(len(optimals[movesdone])) + "]")
-                row.append(full)
-                myrows.append(row)
-        x.add_rows(myrows)
-
-        y = PrettyTable()
-        y.field_names = ["N","State","Setup","Move","Better","Your ending","Better ending","Your+opt"]
-        y.add_rows(wrongmoves)
-        if len(wrongmoves)>0:
-            log+="Wrong moves:\n"
-            log+=y.get_string() + "\n\n"
-    else:
-        log = "Something is wrong with your solution"
-
-    return log
-# _______________________________________________________________
 
 # _____________compare tables___________________
 
@@ -1101,87 +986,6 @@ def editP(rp):
     else:
         out += bl(str(round(float(rp), 2))) + "%"
     return out
-
-#_________________daily fmc
-def getFMCstatus():
-    try:
-        status = db["daily_status.txt"]
-        return "CLOSED" in status #true if you can start
-    except:
-        return True
-
-
-
-def checkSol(scramble, solution):
-    result = False
-    try:
-        st = getStates(scramble,solution)
-        #print(scramble, solution, st)
-        result = (st[len(st)-1] == "1 2 3 4/5 6 7 8/9 10 11 12/13 14 15 0")
-    except:
-        result = False
-    return result
-
-
-def getDailyStats():
-    return db["daily_status.txt"].splitlines()
-
-
-def fixSolution(solution):
-    words = solution
-    words = words.replace("R3", "RRR")
-    words = words.replace("R2", "RR")
-    words = words.replace("L3", "LLL")
-    words = words.replace("L2", "LL")
-    words = words.replace("U3", "UUU")
-    words = words.replace("U2", "UU")
-    words = words.replace("D3", "DDD")
-    words = words.replace("D2", "DD")
-    return words
-
-def rewriteFile(file, text):
-    f = open(file, "w+")
-    f.write(text)
-    f.close()
-
-def removeResult(name):
-    text = db["daily_log.txt"].splitlines()
-    newtext = ""
-    name = name + "\t"
-    for i in text:
-        if not (name in i):
-          newtext+= i + "\n"
-    db["daily_log.txt"] = newtext
-
-
-def readLog():
-    try:
-        text = db["daily_log.txt"].splitlines()
-    except:
-        text = ""
-        db["daily_log.txt"] = ""
-        print("DAILY LOG IS EMPTY ERROR")
-    logdata = []
-    for i in text:
-        rowlist = i.split("\t")
-        logdata.append({"Name":rowlist[0],"Solution": rowlist[1], "Len": rowlist[2]})
-    return logdata
-
-
-def addFMCResult(name, solution):
-    text = name + "\t" + solution + "\t" + str(len(solution)) + "\n"
-    appendDB("daily_log.txt", text)
-    rewriteFile("daily_backup.txt", db["daily_log.txt"])
-
-def appendDB(key, text):
-    dbtext = db[key]
-    dbtext += text
-    db[key] = dbtext
-
-def appendFile(file, text):
-    f = open(file, 'a')
-    f.write(text)
-    f.close()
 
 #____________________________discord started
 @client.event
