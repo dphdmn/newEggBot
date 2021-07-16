@@ -120,3 +120,13 @@ class Algorithm:
 
     def drop(self, n):
         return self.inverse().take(self.length()-n).inverse()
+
+    def first(self):
+        if self.moves == []:
+            raise ValueError("algorithm is empty")
+        return self.moves[0][0]
+
+    def last(self):
+        if self.moves == []:
+            raise ValueError("algorithm is empty")
+        return self.moves[-1][0]
