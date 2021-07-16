@@ -66,6 +66,7 @@ class DailyFMC:
             db[self.db_path + "scramble"] = scramble.to_string()
             db[self.db_path + "solution"] = solution.to_string()
             db[self.db_path + "start_time"] = int(time.time())
+            db[self.db_path + "one_hour_warning"] = False
 
             msg = "Daily FMC scramble: " + scramble.to_string() + "\n"
             msg += "Optimal solution length: " + str(solution.length()) + "\n"
@@ -97,6 +98,7 @@ class DailyFMC:
             for name in results:
                 del db[self.db_path + "results/" + name]
             del db[self.db_path + "start_time"]
+            del db[self.db_path + "one_hour_warning"]
 
             msg = "FMC results!\n"
             msg += "Scramble was: " + scramble.to_string() + "\n"
@@ -166,3 +168,7 @@ class DailyFMC:
         elif self.elapsed() >= 86400:
             await self.close()
             await self.open()
+        elif self.elapsed() >= 86400 - 3600:
+            if not db[self.db_path + "one_hour_warning"]:
+                await self.channel.send("One hour remaining!")
+                db[self.db_path + "one_hour_warning"] = True
