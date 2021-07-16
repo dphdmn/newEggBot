@@ -25,6 +25,7 @@ import zlib
 import bot
 import time_format
 import move
+from animate import make_video
 from puzzle_state import PuzzleState
 from algorithm import Algorithm
 from analyse import analyse
@@ -1256,28 +1257,27 @@ async def on_message(message):
             )
     if message.content.startswith("!animate"):
         try:
-            contentArray = message.content.split("\n")
             await message.channel.send("Working on it! It may take some time, please wait")
-            scramble = contentArray[1]
-            solution = contentArray[2]
+
+            contentArray = message.content.split("\n")
+            scramble = PuzzleState(contentArray[1])
+            solution = Algorithm(contentArray[2])
+
             if len(contentArray) == 4:
                 tps = float(contentArray[3])
             else:
-                tps = 10
-            words = solution
-            words = words.replace("R3", "RRR")
-            words = words.replace("R2", "RR")
-            words = words.replace("L3", "LLL")
-            words = words.replace("L2", "LL")
-            words = words.replace("U3", "UUU")
-            words = words.replace("U2", "UU")
-            words = words.replace("D3", "DDD")
-            words = words.replace("D2", "DD")
-            solution = words
-            makeGif(scramble,solution, tps)
+                tps = 8
+
+            make_video(scramble, solution, tps)
+
+            msg = scramble.to_string() + "\n"
+            msg += solution.to_string() + " (" + str(solution.length()) + " moves)\n"
+            msg += "TPS (playback): " + str(tps) + "\n"
+            msg += "Time (playback): " + str(round(solution.length()/tps, 3))
+
             with open("movie.webm", "rb") as f:
                 picture = discord.File(f)
-                await message.channel.send("Solution for " + scramble + " by " + message.author.mention + "\n" + str(len(solution)) + " moves (May not be optimal)\nTPS (playback): "+str(tps) +"\nTime (playback): "+ str(round(len(solution)/tps,3)) , file=picture)
+                await message.channel.send(msg, file=picture)
             os.remove("movie.webm")
         except Exception as e:
             print(traceback.print_exc())
