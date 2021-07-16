@@ -91,6 +91,14 @@ class Algorithm:
         a.invert()
         return a
 
+    def revert(self):
+        self.moves.reverse()
+
+    def reverse(self):
+        a = copy.deepcopy(self)
+        a.reverse()
+        return a
+
     def at(self, n):
         if n < 0 or n >= self.length():
             raise ValueError(f"index {n} out of range")
