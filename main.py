@@ -1493,15 +1493,15 @@ async def on_message(message):
             solution = words
             out = analyse(scramble, solution)
         except Exception as e:
-            out="Something is wrong with your inputs"
+            out = "Something is wrong with your inputs"
             print(str(e))
-        f = open("anal.txt", "w+")
+        f = open("analysis.txt", "w+")
         f.write(out)
         f.close()
-        with open("anal.txt", "rb") as f:
+        with open("analysis.txt", "rb") as f:
             txt = discord.File(f)
             await message.channel.send("Your analysis: ", file=txt)
-        os.remove("anal.txt")
+        os.remove("analysis.txt")
     if message.content.startswith("!draw"):
         try:
             state = PuzzleState(message.content[6:])
