@@ -1,4 +1,5 @@
 import re
+import copy
 import move
 from move import Move
 
@@ -86,6 +87,6 @@ class Algorithm:
         self.moves = arr
 
     def inverse(self):
-        a = self
+        a = copy.deepcopy(self)
         a.invert()
         return a
