@@ -447,9 +447,6 @@ def getStates(scramble, solution):
     return list
     # return '\n'.join(list)
 
-def getGoodMoves(scramble, size):
-    return [x[0] for x in solvers[size].solveGood(scramble)]
-
 # _____________compare tables___________________
 
 def readFile(name):
