@@ -1778,10 +1778,10 @@ async def on_message(message):
                 await message.channel.send(outm)
 
                 if video:
-                    makeGif(scramble, solution, 10)
+                    make_video(scramble, solution, 8)
                     with open("movie.webm", "rb") as f:
-                        picture = discord.File(f)
-                        await message.channel.send("Solution for " + scramble + "\nOptimal: " + str(len(solution)) + " moves", file=picture)
+                        video = discord.File(f)
+                        await message.channel.send("", file=video)
                     os.remove("movie.webm")
             else:
                 await message.channel.send(
