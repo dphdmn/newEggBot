@@ -1219,13 +1219,6 @@ async def on_message(message):
             for x in range(3000):
                 msg += shit + " "
             spam.start(message.channel, msg[:2000])
-    if message.content.startswith("!daily_scramble"):
-        if getFMCstatus():
-            await message.channel.send("No FMC challange is going on")
-        else:
-          stats = getDailyStats()
-          out = "Current FMC scramble: " + stats[0] + "\nMoves: " + stats[2]
-          await message.channel.send(out)
     if message.content.startswith("!daily_open"):
         if message.channel.id != fmc.channel.id or fmc.status() == 1:
             return
@@ -1240,6 +1233,12 @@ async def on_message(message):
             await message.channel.send("Sorry you are not FMC manager.")
         else:
             await fmc.close()
+    if message.content.startswith("!fmc"):
+        if message.channel.id != fmc.channel.id or fmc.status() == 0:
+            return
+        msg = "Current FMC scramble: " + fmc.scramble().to_string() + "\n"
+        msg += "Optimal solution length: " + str(fmc.solution().length())
+        await message.channel.send(msg)
     if message.content.startswith("!submit"):
         if message.channel.id != fmc.channel.id or fmc.status() == 0:
             return
