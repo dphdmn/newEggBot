@@ -24,6 +24,7 @@ import glob
 import zlib
 import bot
 import time_format
+import move
 from puzzle_state import PuzzleState
 from algorithm import Algorithm
 from analyse import analyse
@@ -1709,20 +1710,20 @@ async def on_message(message):
             await message.channel.send("Probably updated")
     if message.content.startswith("!movesgame"):
         scramble = scrambler.getScramble(4)
-        img = drawPuzzle(scramble)
+        img = draw_state(scramble)
         img.save('scramble.png', 'PNG')
         with open("scramble.png", "rb") as f:
             picture = discord.File(f)
-            await message.channel.send("Check this: https://dphdmn.github.io/movesgame/\nFind good move at this scramble: \n" + scramble + "\nYou will get answer in few seconds", file=picture)
+            await message.channel.send("Check this: https://dphdmn.github.io/movesgame/\nFind good move at this scramble: \n" + scramble.to_string() + "\nYou will get answer in few seconds", file=picture)
         os.remove("scramble.png")
-        goodmoves = getGoodMoves(scramble, 4)
-        goodmovesmessage=""
-        for j in ["R","U","L","D"]:
-            if j in goodmoves:
-                goodmovesmessage+= "**"+j+"**" +" \tis \t**OK!**\t move\n"
+        good_moves = [move.to_string(sol.first()) for sol in solvers[4].solveGood(scramble)]
+        msg = ""
+        for m in "ULDR":
+            if m in good_moves:
+                msg += f"**{m}** \tis \t**OK!**\t move\n"
             else:
-                goodmovesmessage+= ""+j+"" +" \tis \tbad\t move\n"
-        await message.channel.send("\n" + "||" + goodmovesmessage + "||")
+                msg += f"{m} \tis \tbad\t move\n"
+        await message.channel.send("||" + msg + "||")
     if message.content.startswith("!goodm"):
         try:
             scramble = message.content[7:]
