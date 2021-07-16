@@ -1616,15 +1616,9 @@ async def on_message(message):
         alg.invert()
         await message.channel.send(alg.to_string())
     if message.content.startswith("!not"):
-        words = message.content[5:]
-        words = words.replace("R", "_")
-        words = words.replace("L", "R")
-        words = words.replace("_", "L")
-        words = words.replace("U", "_")
-        words = words.replace("D", "U")
-        words = words.replace("_", "D")
-        words = words.replace(" ", "")
-        await message.channel.send("Changed notation moves:\n||" + words + "||")
+        alg = Algorithm(message.content[5:])
+        alg.invert().revert()
+        await message.channel.send(alg.to_string())
     if message.content.startswith("!tti"):
         try:
             words = message.content[5:]
