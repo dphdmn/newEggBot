@@ -25,6 +25,7 @@ import zlib
 import bot
 from puzzle_state import PuzzleState
 from algorithm import Algorithm
+from analyse import analyse
 from draw_state import draw_state
 from daily_fmc import DailyFMC
 from replit import db
@@ -1479,18 +1480,8 @@ async def on_message(message):
         await message.channel.send("Working on it!")
         try:
             contentArray = message.content.split("\n")
-            scramble = contentArray[1]
-            solution = contentArray[2]
-            words = solution
-            words = words.replace("R3", "RRR")
-            words = words.replace("R2", "RR")
-            words = words.replace("L3", "LLL")
-            words = words.replace("L2", "LL")
-            words = words.replace("U3", "UUU")
-            words = words.replace("U2", "UU")
-            words = words.replace("D3", "DDD")
-            words = words.replace("D2", "DD")
-            solution = words
+            scramble = PuzzleState(contentArray[1])
+            solution = Algorithm(contentArray[2])
             out = analyse(scramble, solution)
         except Exception as e:
             out = "Something is wrong with your inputs"
