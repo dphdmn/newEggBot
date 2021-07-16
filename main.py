@@ -23,6 +23,7 @@ import shutil
 import glob
 import zlib
 import bot
+import time_format
 from puzzle_state import PuzzleState
 from algorithm import Algorithm
 from analyse import analyse
@@ -1041,7 +1042,8 @@ async def on_message(message):
         if message.channel.id != fmc.channel.id or fmc.status() == 0:
             return
         msg = "Current FMC scramble: " + fmc.scramble().to_string() + "\n"
-        msg += "Optimal solution length: " + str(fmc.solution().length())
+        msg += "Optimal solution length: " + str(fmc.solution().length()) + "\n"
+        msg += "Time remaining: " + time_format.format(fmc.remaining())
         await message.channel.send(msg)
     if message.content.startswith("!submit"):
         if message.channel.id != fmc.channel.id or fmc.status() == 0:
