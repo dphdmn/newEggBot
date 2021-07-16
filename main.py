@@ -1227,27 +1227,30 @@ async def on_message(message):
           out = "Current FMC scramble: " + stats[0] + "\nMoves: " + stats[2]
           await message.channel.send(out)
     if message.content.startswith("!daily_open"):
+        if message.channel.id != fmc.channel.id or fmc.status() == 1:
+            return
         if not message.author.guild_permissions.administrator:
             await message.channel.send("Sorry you are not FMC manager.")
         else:
             await fmc.open()
     if message.content.startswith("!daily_close"):
+        if message.channel.id != fmc.channel.id or fmc.status() == 0:
+            return
         if not message.author.guild_permissions.administrator:
             await message.channel.send("Sorry you are not FMC manager.")
         else:
             await fmc.close()
     if message.content.startswith("!submit"):
-        if getFMCstatus():
-            await message.channel.send("Sorry, there is no FMC competition now.")
+        if message.channel.id != fmc.channel.id or fmc.status() == 0:
+            return
+        name = message.author.name
+        contentArray = message.content.split(" ")
+        await message.delete()
+        if len(contentArray) != 2:
+            await message.channel.send("Sorry, " + name + ", I can't get your solution")
         else:
-            name = message.author.name
-            contentArray = message.content.split(" ")
-            await message.delete()
-            if len(contentArray) != 2:
-                await message.channel.send("Sorry, " + name + ", I can't get your solution")
-            else:
-                solution = Algorithm(contentArray[1])
-                await fmc.submit(name, solution)
+            solution = Algorithm(contentArray[1])
+            await fmc.submit(name, solution)
     if message.content.startswith("!getlb"):
         await makeTmpSend("prettylb.txt", db["prettylb.txt"], "Leaderboard for ranks: ", message.channel)
     if message.content.startswith("!wrupdate"):
