@@ -90,3 +90,33 @@ class Algorithm:
         a = copy.deepcopy(self)
         a.invert()
         return a
+
+    def at(self, n):
+        if n < 0 or n >= self.length():
+            raise ValueError(f"index {n} out of range")
+        total = 0
+        for (direction, amount) in self.moves:
+            if total + amount < n + 1:
+                total += amount
+            else:
+                return direction
+
+    def take(self, n):
+        arr = []
+        total = 0
+        for (direction, amount) in self.moves:
+            if total + amount <= n:
+                arr.append((direction, amount))
+                if total + amount == n:
+                    break
+            else:
+                arr.append((direction, n - total))
+                break
+            total += amount
+
+        a = Algorithm()
+        a.moves = arr
+        return a
+
+    def drop(self, n):
+        return self.inverse().take(self.length()-n).inverse()
