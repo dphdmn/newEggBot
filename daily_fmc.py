@@ -106,20 +106,21 @@ class DailyFMC:
             msg += "Optimal moves: " + str(optLength) + "\n"
             msg += "Results:\n"
             
-            rowarray = []
-            rowheaders = ["Player", "Moves", "To optimal", "Solution"]
-            
+            table = PrettyTable()
+            table.field_names = ["Player", "Moves", "To optimal", "Solution"]
+
+            # organise results in an array
+            rows = []
             for user in results:
                 solution = results[user]
                 length = solution.length()
-                rowarray.append([user, str(length), str(length - optLength), solution.to_string()])
+                rows.append([user, str(length), str(length - optLength), solution.to_string()])
 
-            if len(rowarray) > 0:
-                rowarray.sort(key=lambda x: int(x[1]))
+            # sort by solution length
+            if len(rows) > 0:
+                rows.sort(key=lambda x: int(x[1]))
 
-            table = PrettyTable()
-            table.field_names = rowheaders
-            table.add_rows(rowarray)
+            table.add_rows(rows)
             
             with open("FMC_results.txt", "w+") as f:
                 f.write(table.get_string())
