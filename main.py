@@ -1226,6 +1226,11 @@ async def on_message(message):
           stats = getDailyStats()
           out = "Current FMC scramble: " + stats[0] + "\nMoves: " + stats[2]
           await message.channel.send(out)
+    if message.content.startswith("!daily_open"):
+        if not message.author.guild_permissions.administrator:
+            await message.channel.send("Sorry you are not FMC manager.")
+        else:
+            await fmc.open()
     if message.content.startswith("!daily_close"):
         if not message.author.guild_permissions.administrator:
             await message.channel.send("Sorry you are not FMC manager.")
@@ -1243,11 +1248,6 @@ async def on_message(message):
             else:
                 solution = Algorithm(contentArray[1])
                 await fmc.submit(name, solution)
-    if message.content.startswith("!daily_open"):
-        if not message.author.guild_permissions.administrator:
-            await message.channel.send("Sorry you are not FMC manager.")
-        else:
-            await fmc.open()
     if message.content.startswith("!getlb"):
         await makeTmpSend("prettylb.txt", db["prettylb.txt"], "Leaderboard for ranks: ", message.channel)
     if message.content.startswith("!wrupdate"):
