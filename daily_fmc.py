@@ -42,15 +42,15 @@ class DailyFMC:
             raise ValueError(f"name \"{name}\" has not submitted a solution")
 
     def results(self):
-        keys = [x for x in db.keys() if x.startswith(self.db_path + "results/")]
+        names = [x.split("/")[-1] for x in db.keys() if x.startswith(self.db_path + "results/")]
+
         results = {}
+        for name in names:
+            results[name] = self.result(name)
 
-        for key in keys:
-            name = key.split("/")[-1]
-            result = self.result(name)
-            results[name] = result
+        sorted_results = dict(sorted(results.items(), key=lambda x: x[1].length()))
 
-        return results
+        return sorted_results
 
     def start(self):
         self.loop.start()
