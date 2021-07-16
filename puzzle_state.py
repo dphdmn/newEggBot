@@ -83,6 +83,9 @@ class PuzzleState:
         if not good:
             raise ValueError(f"move \"{move.to_string(m)}\" can not be applied to puzzle state \"{self.to_string()}\"")
 
+    def undo_move(self, m):
+        self.move(move.inverse(m))
+
     def apply(self, alg):
         # create a copy so that self.arr isn't partially modified if we try and apply an alg that doesn't work
         copy = self
