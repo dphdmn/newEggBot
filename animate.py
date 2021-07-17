@@ -10,14 +10,20 @@ def make_video(scramble, solution, tps):
 
     # create a copy so we don't modify the original
     pos = copy.deepcopy(scramble)
-    for i in range(solution.length()):
-        move = solution.at(i)
-        pos.move(move)
 
+    def write_frame():
         # draw the state and send it to the video writer
         image = draw_state(pos)
         cv2_image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
         writer.write(cv2_image)
+
+    # draw the first frame before any moves were applied
+    write_frame()
+
+    # draw the rest of the frames
+    for i in range(solution.length()):
+        pos.move(solution.at(i))
+        write_frame()
 
     # finish the video
     writer.release()
