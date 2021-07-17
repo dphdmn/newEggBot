@@ -82,6 +82,10 @@ class DailyFMC:
                 await self.channel.send(msg, file=picture)
             os.remove("scramble.png")
 
+            # ping fmc role
+            id = os.environ["fmc_role_id"]
+            await self.channel.send(f"<@&{id}>")
+
             db[self.db_path + "status"] = 1
 
     async def close(self):
