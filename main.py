@@ -1670,6 +1670,10 @@ async def on_message(message):
                 )
         except Exception as e:
             await message.channel.send("Something is wrong\n```" + str(e) + "```")
+    if message.content.startswith("!simplify"):
+        alg = Algorithm(message.content[10:])
+        alg.simplify()
+        await message.channel.send(alg.to_string())
     if message.content == "!egg":
         egg = readFilenormal("misc/egg.txt")
         await message.channel.send("```" + egg + "```")
