@@ -42,6 +42,36 @@ class Algorithm:
 
         self.moves = arr
 
+    def simplify(self):
+        i = 0
+        while i < len(self.moves) - 1:
+            # check for cancellation of moves i and i+1
+            if self.moves[i][0] == self.moves[i+1][0] or self.moves[i][0] == move.inverse(self.moves[i+1][0]):
+                direction = self.moves[i][0]
+                if self.moves[i][0] == self.moves[i+1][0]:
+                    amount = self.moves[i][1] + self.moves[i+1][1]
+                else:
+                    amount = self.moves[i][1] - self.moves[i+1][1]
+
+                # if amount is 0, delete both moves
+                if amount == 0:
+                    self.moves.pop(i+1)
+                    self.moves.pop(i)
+                    i -= 1
+                else:
+                    # if amount is negative, flip the move, e.g. R(-2) -> L2
+                    if amount < 0:
+                        direction = move.inverse(direction)
+                        amount = -amount
+
+                    # delete i+1th move and update ith move
+                    self.moves.pop(i+1)
+                    self.moves[i] = (direction, amount)
+            # no cancellation
+            else:
+                i += 1
+        return self
+
     def __add__(self, other):
         if self.moves == []:
             return other
