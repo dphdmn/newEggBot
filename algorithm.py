@@ -57,7 +57,7 @@ class Algorithm:
                 if amount == 0:
                     self.moves.pop(i+1)
                     self.moves.pop(i)
-                    i -= 1
+                    i = max(i-1, 0)
                 else:
                     # if amount is negative, flip the move, e.g. R(-2) -> L2
                     if amount < 0:
