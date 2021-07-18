@@ -939,16 +939,15 @@ async def on_message(message):
     if message.content.startswith("!getlb"):
         await makeTmpSend("prettylb.txt", db["prettylb.txt"], "Leaderboard for ranks: ", message.channel)
     if message.content.startswith("!wrupdate"):
-        if message.author.guild_permissions.administrator:
-            url = os.environ["updateURL"]
-            x = requests.get(url).text
-            if x == "":
-                x = "WRs updated\n" + \
-                    "WRs: http://slidysim.000webhostapp.com/leaderboard/records.html\n" + \
-                    "WRs (all): http://slidysim.000webhostapp.com/leaderboard/records_all.html\n" + \
-                    "WRs (moves): http://slidysim.000webhostapp.com/leaderboard/records_moves.html\n" + \
-                    "WRs (moves, all): http://slidysim.000webhostapp.com/leaderboard/records_all_moves.html"
-            await message.channel.send(x)
+        url = os.environ["updateURL"]
+        x = requests.get(url).text
+        if x == "":
+            x = "WRs updated\n" + \
+                "WRs: http://slidysim.000webhostapp.com/leaderboard/records.html\n" + \
+                "WRs (all): http://slidysim.000webhostapp.com/leaderboard/records_all.html\n" + \
+                "WRs (moves): http://slidysim.000webhostapp.com/leaderboard/records_moves.html\n" + \
+                "WRs (moves, all): http://slidysim.000webhostapp.com/leaderboard/records_all_moves.html"
+        await message.channel.send(x)
     if message.content.startswith("!update"):
         await message.channel.send("Wait for it!")
         try:
