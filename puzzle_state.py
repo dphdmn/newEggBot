@@ -37,6 +37,9 @@ class PuzzleState:
 
         self.arr = arr
 
+    def __eq__(self, other):
+        return self.arr == other.arr
+
     def reset(self, w, h):
         arr = list(range(1, w*h)) + [0]
         self.arr = [arr[w*i : w*(i+1)] for i in range(h)]

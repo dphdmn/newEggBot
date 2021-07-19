@@ -1641,6 +1641,13 @@ async def on_message(message):
             scramble = PuzzleState(message.content[7:])
             size = scramble.size()
 
+            # don't allow daily fmc scramble
+            if fmc.status() == 1:
+                daily_fmc_scramble = fmc.scramble()
+                if scramble == daily_fmc_scramble:
+                    await message.channel.send("No cheating!")
+                    return
+
             if size == (4, 4) or (size == (3, 3) and solve):
                 a = perf_counter()
                 solver = solvers[size[0]]
