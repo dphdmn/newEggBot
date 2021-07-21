@@ -19,7 +19,6 @@ import numpy as np
 import cv2
 import sys
 import requests
-import shutil
 import glob
 import zlib
 import bot
