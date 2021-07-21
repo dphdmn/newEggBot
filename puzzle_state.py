@@ -103,3 +103,35 @@ class PuzzleState:
 
     def to_string(self):
         return "/".join([" ".join([str(x) for x in row]) for row in self.arr])
+
+    def solvable(self):
+        # create a copy to avoid modifying self
+        p = copy.deepcopy(self)
+
+        w, h = p.size()
+        gx, gy = p.blankPos()
+
+        # move blank to bottom right
+        for i in range(w-gx-1):
+            p.move(Move.L)
+        for i in range(h-gy-1):
+            p.move(Move.U)
+
+        # count transpositions required to bring the puzzle to solved
+        swaps = 0
+        for y in range(h):
+            for x in range(w):
+                if x == w-1 and y == h-1:
+                    break
+
+                # fix the cycle starting with the piece at (x, y)
+                while p.arr[y][x] != 1+w*y+x:
+                    # calculate where the tile at (x, y) belongs
+                    t = p.arr[y][x]
+                    tx, ty = (t-1)%w, (t-1)//w
+
+                    # swap it into place
+                    p.arr[y][x], p.arr[ty][tx] = p.arr[ty][tx], p.arr[y][x]
+                    swaps += 1
+
+        return swaps % 2 == 0
