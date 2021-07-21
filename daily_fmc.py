@@ -158,7 +158,7 @@ class DailyFMC:
                     db[result_key] = solution.to_string()
                     await self.channel.send(f"[{previous_length} -> {new_length}] Solution updated for {name}")
                 else:
-                    await self.channel.send(f"You already have a {previous_length} move solution, {name}")
+                    await self.channel.send(f"[{new_length}] You already have a {previous_length} move solution, {name}")
 
     @tasks.loop(seconds=10)
     async def loop(self):
