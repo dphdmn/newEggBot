@@ -33,7 +33,7 @@ Scramble/solution-related commands:
 - !not [solution] - change notation (R = L, U = D) etc. of the solution
 - !getscramble (size-optionally) - get random puzzle for sliding puzzle with that size
 - !draw [scrambles] - draws image of your scramble
-- !animate\n[scramble]\n[solution]\n(tps - optionally) - makes an animation of your solve (use new string as separator! not just space)
+- !animate [scramble (optional)] [solution] [tps (optional)] - makes an animation of your solve. if scramble is not given, the inverse of the solution will be used. default tps is 8.
 
 Fun/stats commands:
 - !getprob [puzzle] [moves] [[moves], [amount] || [amount] - get probability of getting N moves optimal scramble, type !getprob for examples
@@ -49,4 +49,3 @@ Technical commands to compare rank pages (will be removed or changed in next upd
 Spamming fun commands:
 - !spam [something] - make bot spam something many times [admin]
 - !stop - make bot stop spamming [admin]
-
