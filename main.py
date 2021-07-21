@@ -1645,7 +1645,8 @@ async def on_message(message):
             if fmc.status() == 1:
                 daily_fmc_scramble = fmc.scramble()
                 if scramble == daily_fmc_scramble:
-                    await message.channel.send("No cheating!")
+                    name = message.author.name
+                    await message.channel.send(f"No cheating, {name}!")
                     return
 
             if size == (4, 4) or (size == (3, 3) and solve):
