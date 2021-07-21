@@ -956,9 +956,9 @@ async def on_message(message):
             msg = f"Check this: {webpage}\nProbably updated! Try !getpb command:"
             await makeTmpSend("smartboard.txt", db["smartboard.txt"], msg, message.channel)
             db["lastupdate"] = datetime.datetime.now().timestamp()
-        except:
-            print(traceback.format_exc())
-            await message.channel.send("Sorry, something is wrong")
+        except Exception as e:
+            traceback.print_exc()
+            await message.channel.send(f"```\n{repr(e)}\n```")
     if message.content.startswith("!stop"):
         if message.author.guild_permissions.administrator:
             spam.cancel()
@@ -1013,10 +1013,9 @@ async def on_message(message):
             else:
                 out = matching[0]
                 await message.channel.send(out)
-        except:
-            await message.channel.send(
-                "Something is wrong\n```" + traceback.format_exc() + "```"
-            )
+        except Exception as e:
+            traceback.print_exc()
+            await message.channel.send(f"```\n{repr(e)}\n```")
     if message.content.startswith("!wrsby"):
         try:
             fp = urllib.request.urlopen(
@@ -1046,10 +1045,9 @@ async def on_message(message):
                     os.remove("wrsby.txt")
                 else:
                     await message.channel.send("```" + my_string + "```")
-        except:
-            await message.channel.send(
-                "Something is wrong\n```" + traceback.format_exc() + "```"
-            )
+        except Exception as e:
+            traceback.print_exc()
+            await message.channel.send(f"```\n{repr(e)}\n```")
     if message.content.startswith("!getpb"):
         mystr=db["leaderboard.txt"].lower()
         # print(mystr)
@@ -1131,10 +1129,9 @@ async def on_message(message):
             if not bad:
                 dif = "\nTime since last !update: " + str(int((datetime.datetime.now().timestamp() - (db["lastupdate"]))/60)) + " minutes"
                 await message.channel.send(outputString + dif)
-        except:
-            await message.channel.send(
-                "Please specify the puzzle size, for example: !getpb dphdmn 4x4"
-            )
+        except Exception as e:
+            traceback.print_exc()
+            await message.channel.send(f"Please specify the puzzle size, for example: !getpb dphdmn 4x4\n```\n{repr(e)}\n```")
     if message.content.startswith("!animate"):
         try:
             await message.channel.send("Working on it! It may take some time, please wait")
@@ -1160,8 +1157,8 @@ async def on_message(message):
                 await message.channel.send(msg, file=picture)
             os.remove("movie.webm")
         except Exception as e:
-            print(traceback.print_exc())
-            await message.channel.send("Sorry, something is wrong")
+            traceback.print_exc()
+            await message.channel.send(f"```\n{repr(e)}\n```")
     if message.content.startswith("!analyse"):
         await message.channel.send("Working on it!")
         try:
@@ -1170,8 +1167,8 @@ async def on_message(message):
             solution = Algorithm(contentArray[2])
             out = analyse(scramble, solution)
         except Exception as e:
-            out = "Something is wrong with your inputs"
-            print(str(e))
+            traceback.print_exc()
+            await message.channel.send(f"```\n{repr(e)}\n```")
         f = open("analysis.txt", "w+")
         f.write(out)
         f.close()
@@ -1191,7 +1188,8 @@ async def on_message(message):
                 await message.channel.send("Your scramble: ", file=picture)
             os.remove("scramble.png")
         except Exception as e:
-            await message.channel.send("Something is wrong\n```" + repr(e) + "```")
+            traceback.print_exc()
+            await message.channel.send(f"```\n{repr(e)}\n```")
     if message.content.startswith("!getreq"):
         mystr = db["tiers.txt"].lower()
         # print(mystr)
@@ -1275,10 +1273,9 @@ async def on_message(message):
                 bad = True
             if not bad:
                 await message.channel.send(outputString)
-        except:
-            await message.channel.send(
-                "Please specify the puzzle size, for example: !getreq ascended 4x4"
-            )
+        except Exception as e:
+            traceback.print_exc()
+            await message.channel.send(f"Please specify the puzzle size, for example: !getreq ascended 4x4```\n{repr(e)}\n```")
     if message.content.startswith("!getprob"):
         #!getprob 4x4 30 40 1000, or !getprob 4x4 30 40, or !getprob 4x4 30
         try:
@@ -1374,10 +1371,9 @@ async def on_message(message):
                         + examples
                     )
                     await message.channel.send(examples)
-        except:
-            await message.channel.send(
-                "Something is wrong\n```" + traceback.format_exc() + "```"
-            )
+        except Exception as e:
+            traceback.print_exc()
+            await message.channel.send(f"```\n{repr(e)}\n```")
     if "scrable" in message.content.lower():
         await message.channel.send("Infinity tps, " + message.author.mention + "?")
         await message.add_reaction("0️⃣")
@@ -1386,10 +1382,9 @@ async def on_message(message):
         try:
             img_data = requests.get(message.attachments[0].url).content
             good = True
-        except:
-            await message.channel.send(
-                "Please add image file! (URL does not work, upload it, or paste like an image)"
-            )
+        except Exception as e:
+            traceback.print_exc()
+            await message.channel.send(f"Please upload an image file!\n```\n{repr(e)}\n```")
         if good:
             contentArray = message.content.lower().split(" ")
             size = 50
@@ -1516,8 +1511,9 @@ async def on_message(message):
                 picture = discord.File(f)
                 await message.channel.send("Your weird image: ", file=picture)
             os.remove("img_lemon.jpg")
-        except:
-            await message.channel.send("Something is wrong")
+        except Exception as e:
+            traceback.print_exc()
+            await message.channel.send(f"```\n{repr(e)}\n```")
     if message.content.startswith("!savecmp"):
         if message.author.guild_permissions.administrator:
             today = str(datetime.datetime.today().strftime('%Y-%m-%d'))
@@ -1611,9 +1607,9 @@ async def on_message(message):
                 await message.channel.send("Your scramble:\n" + scramble.to_string() + "\nGood moves for your scramble: " + ", ".join(good_moves))
             else:
                 raise ValueError(f"puzzle size {scramble.size()} must be 3x3 or 4x4")
-        except:
-            print(traceback.format_exc())
-            await message.channel.send("Sorry, something is wrong")
+        except Exception as e:
+            traceback.print_exc()
+            await message.channel.send(f"```\n{repr(e)}\n```")
     if message.content.startswith("!eggsolve"):
         scramble = PuzzleState(message.content[10:])
         size = scramble.size()
@@ -1628,8 +1624,9 @@ async def on_message(message):
                 string += "Len: " + str(solutions[0].length()) + "\n"
                 string += '\n'.join([s.to_string() for s in solutions])
                 await makeTmpSend("Solutions.txt", string, "All solutions for scramble " + scramble.to_string(), message.channel)
-            except:
-                await message.channel.send("Sorry, can't solve it.")
+            except Exception as e:
+                traceback.print_exc()
+                await message.channel.send(f"```\n{repr(e)}\n```")
         else:
             print(len(scramble))
             await message.channel.send("Your scramble is wrong.")
@@ -1676,7 +1673,8 @@ async def on_message(message):
                     "Sorry, something is wrong with your scramble"
                 )
         except Exception as e:
-            await message.channel.send("Something is wrong\n```" + str(e) + "```")
+            traceback.print_exc()
+            await message.channel.send(f"```\n{repr(e)}\n```")
     if message.content.startswith("!simplify"):
         alg = Algorithm(message.content[10:])
         alg.simplify()
