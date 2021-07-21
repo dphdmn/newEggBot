@@ -1677,13 +1677,17 @@ async def on_message(message):
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
     if message.content.startswith("!simplify"):
-        alg = Algorithm(message.content[10:])
-        alg.simplify()
-        alg_str = alg.to_string()
-        if alg_str == "":
-            await message.channel.send("empty")
-        else:
-            await message.channel.send(alg_str)
+        try:
+            alg = Algorithm(message.content[10:])
+            alg.simplify()
+            alg_str = alg.to_string()
+            if alg_str == "":
+                await message.channel.send("empty")
+            else:
+                await message.channel.send(alg_str)
+        except Exception as e:
+            traceback.print_exc()
+            await message.channel.send(f"```\n{repr(e)}\n```")
     if message.content == "!egg":
         egg = readFilenormal("misc/egg.txt")
         await message.channel.send("```" + egg + "```")
