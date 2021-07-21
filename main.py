@@ -1699,6 +1699,32 @@ async def on_message(message):
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
+    if message.content.startswith("!8fmc"):
+        try:
+            if len(message.content) == 5:
+                n = 100
+            else:
+                n = int(message.content[6:])
+                n = max(1, min(1000, n))
+
+            data = ""
+            l = []
+            for i in range(n):
+                scramble = scrambler.getScramble(3)
+                solution = solvers[3].solveOne(scramble)
+                length = solution.length()
+
+                l.append(length)
+                data += scramble.to_string() + "\t" + str(length) + "\n"
+
+            msg = "Average: " + str(round(sum(l)/n, 3)) + "\n"
+            msg += "Longest: " + str(max(l)) + "\n"
+            msg += "Shortest: " + str(min(l))
+
+            await makeTmpSend("8fmc.txt", data, msg, message.channel)
+        except Exception as e:
+            traceback.print_exc()
+            await message.channel.send(f"```\n{repr(e)}\n```")
     if message.content == "!egg":
         egg = readFilenormal("misc/egg.txt")
         await message.channel.send("```" + egg + "```")
