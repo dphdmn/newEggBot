@@ -20,6 +20,7 @@ import sys
 import requests
 import glob
 import zlib
+import re
 import bot
 import time_format
 import move
@@ -1132,23 +1133,39 @@ async def on_message(message):
             await message.channel.send(f"Please specify the puzzle size, for example: !getpb dphdmn 4x4\n```\n{repr(e)}\n```")
     if message.content.startswith("!animate"):
         try:
+            # !animate [optional scramble] [solution] [optional tps]
+            regex = re.compile("!animate\s*(?P<scramble>[0-9][0-9 /]*[0-9])?\s*(?P<moves>([ULDR][0-9]* *)*[ULDR][0-9]*)\s*(?P<tps>[0-9]{1,})?")
+            match = regex.fullmatch(message.content)
+
+            if match is None:
+                raise SyntaxError(f"failed to parse arguments")
+
+            groups = match.groupdict()
+
+            moves = Algorithm(groups["moves"])
+
+            # if no scramble given, use the inverse of the moves
+            if groups["scramble"] is None:
+                scramble = PuzzleState()
+                scramble.reset(4, 4)
+                scramble.apply(moves.inverse())
+            else:
+                scramble = PuzzleState(groups["scramble"])
+
+            # if no tps given, use 8 as a default
+            if groups["tps"] is None:
+                tps = 8
+            else:
+                tps = int(groups["tps"])
+
             await message.channel.send("Working on it! It may take some time, please wait")
 
-            contentArray = message.content.split("\n")
-            scramble = PuzzleState(contentArray[1])
-            solution = Algorithm(contentArray[2])
-
-            if len(contentArray) == 4:
-                tps = float(contentArray[3])
-            else:
-                tps = 8
-
-            make_video(scramble, solution, tps)
+            make_video(scramble, moves, tps)
 
             msg = scramble.to_string() + "\n"
-            msg += solution.to_string() + " (" + str(solution.length()) + " moves)\n"
+            msg += moves.to_string() + " (" + str(moves.length()) + " moves)\n"
             msg += "TPS (playback): " + str(tps) + "\n"
-            msg += "Time (playback): " + str(round(solution.length()/tps, 3))
+            msg += "Time (playback): " + str(round(moves.length()/tps, 3))
 
             with open("movie.webm", "rb") as f:
                 picture = discord.File(f)
