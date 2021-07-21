@@ -1,3 +1,4 @@
+import copy
 import math
 import move
 from move import Move
@@ -91,12 +92,12 @@ class PuzzleState:
 
     def apply(self, alg):
         # create a copy so that self.arr isn't partially modified if we try and apply an alg that doesn't work
-        copy = self
+        p = copy.deepcopy(self)
         try:
             for (direction, amount) in alg.moves:
                 for i in range(amount):
-                    copy.move(direction)
-            self.arr = copy.arr
+                    p.move(direction)
+            self.arr = p.arr
         except ValueError as e:
             raise ValueError(f"algorithm \"{alg.to_string()}\" can not be applied to puzzle state \"{self.to_string()}\"")
 
