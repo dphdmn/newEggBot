@@ -36,6 +36,10 @@ class PuzzleState:
             if len(row) != len(arr[0]):
                 raise ValueError(f"puzzle state \"{state}\" has rows of differing lengths")
 
+        # don't allow 1xN puzzles (Nx1 is not possible because we reshape them into squares)
+        if len(arr[0]) == 1:
+            raise ValueError(f"puzzle state \"{state}\" must have width greater than 1")
+
         self.arr = arr
 
     def __eq__(self, other):
