@@ -892,20 +892,6 @@ async def on_message(message):
             for x in range(3000):
                 msg += shit + " "
             spam.start(message.channel, msg[:2000])
-    if message.content.startswith("!daily_open"):
-        if message.channel.id != fmc.channel.id or fmc.status() == 1:
-            return
-        if not message.author.guild_permissions.administrator:
-            await message.channel.send("Sorry you are not FMC manager.")
-        else:
-            await fmc.open()
-    if message.content.startswith("!daily_close"):
-        if message.channel.id != fmc.channel.id or fmc.status() == 0:
-            return
-        if not message.author.guild_permissions.administrator:
-            await message.channel.send("Sorry you are not FMC manager.")
-        else:
-            await fmc.close()
     if message.content.startswith("!fmc"):
         if message.channel.id != fmc.channel.id or fmc.status() == 0:
             return
