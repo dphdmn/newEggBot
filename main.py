@@ -6,7 +6,6 @@ from prettytable import PrettyTable
 import subprocess
 import threading
 import discord
-from re import match
 from discord.ext import tasks
 import urllib.request
 import html2text
@@ -881,7 +880,7 @@ async def on_message(message):
         return
     if "pls" in message.content.lower():
         await message.add_reaction("eff:803888415858098217")
-    if match("<@!?809437517564477522>", message.content) is not None:
+    if "<@!?809437517564477522>" in message.content:
         await message.channel.send("You are egg, " + message.author.mention)
     if "fuck you" in message.content.lower():
         await message.channel.send("no u, " + message.author.mention)
