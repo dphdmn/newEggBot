@@ -1691,12 +1691,11 @@ async def on_message(message):
     if message.content.startswith("!solvable"):
         try:
             pos = PuzzleState(message.content[10:])
-            msg = pos.to_string() + " is "
             if pos.solvable():
-                msg += "solvable"
+                msg = "solvable"
             else:
-                msg += "unsolvable"
-            await message.channel.send(msg)
+                msg = "unsolvable"
+            await message.reply(msg)
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
