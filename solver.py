@@ -13,6 +13,10 @@ class Solver:
         self.process.terminate()
 
     def solve(self, scramble):
+        # check that the scramble is solvable
+        if not scramble.solvable():
+            raise ValueError(f"puzzle state \"{scramble.to_string()}\" is not solvable")
+
         self.process.stdin.write(scramble.to_string()+"\n")
         self.process.stdin.flush()
 
