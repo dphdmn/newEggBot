@@ -841,7 +841,6 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    namea = str(message.author)
     if message.author == client.user:
         return
     if "pls" in message.content.lower():
