@@ -3,8 +3,6 @@ from solver import solvers
 import os
 from keep_alive import keep_alive
 from prettytable import PrettyTable
-import subprocess
-import threading
 import discord
 from discord.ext import tasks
 import urllib.request
