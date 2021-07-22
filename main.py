@@ -1128,10 +1128,9 @@ async def on_message(message):
     if message.content.startswith("!analyse"):
         await message.channel.send("Working on it!")
         try:
-            contentArray = message.content.split("\n")
-            scramble = PuzzleState(contentArray[1])
-            solution = Algorithm(contentArray[2])
-            out = analyse(scramble, solution)
+            contentArray = message.content.split(" ")
+            solution = Algorithm(contentArray[1])
+            out = analyse(solution)
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")

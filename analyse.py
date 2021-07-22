@@ -1,14 +1,13 @@
-import copy
 import move
 from prettytable import PrettyTable
 from solver import solvers
+from puzzle_state import PuzzleState
 
-def analyse(scramble, solution):
-    # check that the solution works
-    scramble2 = copy.deepcopy(scramble)
-    scramble2.apply(solution)
-    if not scramble2.solved():
-        raise ValueError(f"solution \"{solution.to_string()}\" does not solve scramble \"{scramble.to_string()}\"")
+def analyse(solution):
+    # get the scramble as the inverse of the solution
+    scramble = PuzzleState()
+    scramble.reset(4, 4)
+    scramble.apply(solution.inverse())
 
     table = PrettyTable()
     table.field_names = ["N", "State", "Setup", "Move", "Better", "Your ending", "Better ending", "Your+opt"]
@@ -16,30 +15,28 @@ def analyse(scramble, solution):
     # the optimal solution of the scramble
     opt_end = solvers[4].solveOne(scramble)
 
-    pos = copy.deepcopy(scramble)
-
     for i in range(1, solution.length()):
         # the first i moves of our solution
         user_start = solution.take(i)
 
         # apply the next move
         next_move = solution.at(i-1)
-        pos.move(next_move)
+        scramble.move(next_move)
 
         # optimal solution of position with i-1 moves applied
         last_opt_end = opt_end
 
         # solutions of the position with i moves applied
-        opt_end = solvers[4].solveOne(pos)
+        opt_end = solvers[4].solveOne(scramble)
         user_end = solution.drop(i)
 
         # the optimal solution length increased, so this is a mistake
         if opt_end.length() == last_opt_end.length() + 1:
             N = i
 
-            pos.undo_move(next_move)
-            state = pos.to_string()
-            pos.move(next_move)
+            scramble.undo_move(next_move)
+            state = scramble.to_string()
+            scramble.move(next_move)
             
             setup = user_start.rdrop(1).to_string()
             bad_move = move.to_string(next_move)
