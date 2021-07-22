@@ -1130,17 +1130,22 @@ async def on_message(message):
         try:
             contentArray = message.content.split(" ")
             solution = Algorithm(contentArray[1])
-            out = analyse(solution)
+            analysis = analyse(solution)
+
+            scramble = PuzzleState()
+            scramble.reset(4, 4)
+            scramble.apply(solution.inverse())
+            optSolution = solvers[4].solveOne(scramble)
+
+            msg = f"Scramble: {scramble.to_string()}\n"
+            msg += f"Your solution [{solution.length()}]: {solution.to_string()}\n"
+            msg += f"Optimal solution [{optSolution.length()}]: {optSolution.to_string()}\n"
+            msg += "Analysis:"
+
+            await makeTmpSend("analysis.txt", analysis, msg, message.channel)
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
-        f = open("analysis.txt", "w+")
-        f.write(out)
-        f.close()
-        with open("analysis.txt", "rb") as f:
-            txt = discord.File(f)
-            await message.channel.send("Your analysis: ", file=txt)
-        os.remove("analysis.txt")
     if message.content.startswith("!draw"):
         try:
             state = PuzzleState(message.content[6:])
