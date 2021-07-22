@@ -522,41 +522,6 @@ def comparelist(name1, name2):
     else:
         return dberror
 
-
-# _______________processing commands in threads with timeout________________________
-class Command(object):
-    def __init__(self, cmd):
-        self.cmd = cmd
-        self.process = None
-
-    def getSol(self):
-        return self.solution
-
-    def run(self, timeout):
-        def target():
-            print("Thread started")
-            self.process = subprocess.Popen(
-                "exec " + self.cmd,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                shell=True,
-            )
-            stdout, stderr = self.process.communicate()
-            self.solution = str(stdout)
-
-            print("Thread finished")
-
-        thread = threading.Thread(target=target)
-        thread.start()
-
-        thread.join(timeout)
-        if thread.is_alive():
-            print("Terminating process")
-            self.process.kill()
-            self.process.terminate()
-            self.solution = "Timeout :("
-            print("Timeout done")
-            thread.join()
 #_________________________probably for !paint
 def apply_brightness_contrast(input_img, brightness=0, contrast=0):
     if brightness != 0:
