@@ -110,27 +110,28 @@ class DailyFMC:
             msg += "Optimal solution: " + optSolution.to_string() + "\n"
             msg += "Optimal moves: " + str(optLength) + "\n"
             msg += "Results:\n"
-            
-            table = PrettyTable()
-            table.field_names = ["Player", "Moves", "To optimal", "Solution"]
 
-            # organise results in an array
-            for (user, solution) in results.items():
-                length = solution.length()
-                table.add_row([user, length, length - optLength, solution.to_string()])
+            if len(results) == 0:
+                msg += "\nNo one joined :("
+                results_msg = await self.channel.send(msg)
+            else:
+                table = PrettyTable()
+                table.field_names = ["Player", "Moves", "To optimal", "Solution"]
 
-            with open("FMC_results.txt", "w+") as f:
-                f.write(table.get_string())
-                f.close()
+                # organise results in an array
+                for (user, solution) in results.items():
+                    length = solution.length()
+                    table.add_row([user, length, length - optLength, solution.to_string()])
 
-            with open("FMC_results.txt", "rb") as f:
-                txt = discord.File(f)
-                if len(results) == 0:
-                    results_msg = await self.channel.send(msg + "\nNo one joined :(")
-                else:
+                with open("FMC_results.txt", "w+") as f:
+                    f.write(table.get_string())
+                    f.close()
+
+                with open("FMC_results.txt", "rb") as f:
+                    txt = discord.File(f)
                     results_msg = await self.channel.send(msg, file=txt)
 
-            os.remove("FMC_results.txt")
+                os.remove("FMC_results.txt")
 
             make_video(scramble, solution, 8)
             with open("movie.webm", "rb") as f:
