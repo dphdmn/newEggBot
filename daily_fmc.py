@@ -166,8 +166,12 @@ class DailyFMC:
         if self.status() == 0:
             await self.open()
         elif self.elapsed() >= 86400:
+            # close and open, but set the start time to exactly 86400 seconds after the previous
+            # start time, otherwise there will be a slight shift in start time over many rounds
+            start = db[self.db_path + "start_time"]
             await self.close()
             await self.open()
+            db[self.db_path + "start_time"] = start + 86400
         elif self.elapsed() >= 86400 - 3600:
             if not db[self.db_path + "one_hour_warning"]:
                 await self.channel.send("One hour remaining!")
