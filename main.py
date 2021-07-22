@@ -834,7 +834,7 @@ async def on_ready():
 
     #start daily fmc
     global fmc
-    fmc = DailyFMC(client, int(os.environ["daily_fmc_channel"]))
+    fmc = DailyFMC(client, int(os.environ["daily_fmc_channel"]), int(os.environ["daily_fmc_results_channel"]))
     fmc.start()
 
 @client.event

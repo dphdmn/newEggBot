@@ -1,3 +1,4 @@
+import datetime as dt
 from solver import solvers
 import scrambler
 import os
@@ -12,9 +13,10 @@ from discord.ext import tasks
 from prettytable import PrettyTable
 
 class DailyFMC:
-    def __init__(self, client, channel_id):
+    def __init__(self, client, channel_id, results_channel_id):
         self.client = client
         self.channel = client.get_channel(channel_id)
+        self.results_channel = client.get_channel(results_channel_id)
         self.db_path = f"{self.channel.guild.id}/fmc/{self.channel.id}/"
 
         if self.db_path + "status" not in db:
@@ -96,6 +98,7 @@ class DailyFMC:
             scramble = self.scramble()
             optSolution = self.solution()
             optLength = optSolution.length()
+            start = int(db[self.db_path + "start_time"])
 
             db[self.db_path + "status"] = 0
             del db[self.db_path + "scramble"]
@@ -105,41 +108,45 @@ class DailyFMC:
             del db[self.db_path + "start_time"]
             del db[self.db_path + "one_hour_warning"]
 
-            msg = "FMC results!\n"
-            msg += "Scramble was: " + scramble.to_string() + "\n"
-            msg += "Optimal solution: " + optSolution.to_string() + "\n"
-            msg += "Optimal moves: " + str(optLength) + "\n"
-            msg += "Results:\n"
+            msg = "Daily FMC results!\n"
+            msg += "Date: " + dt.datetime.utcfromtimestamp(start).strftime("%Y-%m-%d") + "\n"
+            msg += "Scramble: " + scramble.to_string() + "\n"
+            msg += f"Optimal solution [{optLength}]: {optSolution.to_string()}"
 
             if len(results) == 0:
-                msg += "\nNo one joined :("
-                results_msg = await self.channel.send(msg)
+                msg += "\n\nNo one joined :("
+                await self.channel.send(msg)
+                await self.results_channel.send(msg)
             else:
                 table = PrettyTable()
-                table.field_names = ["Player", "Moves", "To optimal", "Solution"]
+                table.field_names = ["Username", "Moves", "To optimal", "Solution"]
 
                 # organise results in an array
                 for (user, solution) in results.items():
                     length = solution.length()
                     table.add_row([user, length, length - optLength, solution.to_string()])
 
-                with open("FMC_results.txt", "w+") as f:
+                with open("results.txt", "w+") as f:
                     f.write(table.get_string())
                     f.close()
 
-                with open("FMC_results.txt", "rb") as f:
+                with open("results.txt", "rb") as f:
                     txt = discord.File(f)
-                    results_msg = await self.channel.send(msg, file=txt)
+                    await self.channel.send(msg, file=txt)
+                    f.close()
 
-                os.remove("FMC_results.txt")
+                with open("results.txt", "rb") as f:
+                    txt = discord.File(f)
+                    await self.results_channel.send(msg, file=txt)
+                    f.close()
+
+                os.remove("results.txt")
 
             make_video(scramble, optSolution, 8)
             with open("movie.webm", "rb") as f:
                 picture = discord.File(f)
                 await self.channel.send("", file=picture)
             os.remove("movie.webm")
-
-            await results_msg.pin()
 
     async def submit(self, name, solution):
         scramble = self.scramble()
