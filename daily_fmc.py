@@ -133,7 +133,7 @@ class DailyFMC:
 
                 os.remove("FMC_results.txt")
 
-            make_video(scramble, solution, 8)
+            make_video(scramble, optSolution, 8)
             with open("movie.webm", "rb") as f:
                 picture = discord.File(f)
                 await self.channel.send("", file=picture)
