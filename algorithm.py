@@ -142,6 +142,9 @@ class Algorithm:
                 return direction
 
     def take(self, n):
+        if n == 0:
+            return Algorithm("")
+
         arr = []
         total = 0
         for (direction, amount) in self.moves:
