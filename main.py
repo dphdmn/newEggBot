@@ -864,14 +864,14 @@ async def on_message(message):
     if message.content.startswith("!submit"):
         if message.channel.id != fmc.channel.id or fmc.status() == 0:
             return
-        name = message.author.name
-        contentArray = message.content.split(" ")
-        await message.delete()
-        if len(contentArray) != 2:
-            await message.channel.send("Sorry, " + name + ", I can't get your solution")
-        else:
-            solution = Algorithm(contentArray[1])
+        try:
+            name = message.author.name
+            solution = Algorithm(message.content[8:])
+            await message.delete()
             await fmc.submit(name, solution)
+        except Exception as e:
+            traceback.print_exc()
+            await message.channel.send(f"```\n{repr(e)}\n```")
     if message.content.startswith("!results"):
         if message.channel.id != fmc.channel.id or fmc.status() == 0:
             return
