@@ -865,9 +865,9 @@ async def on_message(message):
         if message.channel.id != fmc.channel.id or fmc.status() == 0:
             return
         try:
+            await message.delete()
             name = message.author.name
             solution = Algorithm(message.content[8:])
-            await message.delete()
             await fmc.submit(name, solution)
         except Exception as e:
             traceback.print_exc()
