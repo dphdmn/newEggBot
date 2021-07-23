@@ -149,24 +149,25 @@ class DailyFMC:
             os.remove("movie.webm")
 
     async def submit(self, name, solution):
+        # check that the solution works
         scramble = self.scramble()
         scramble.apply(solution)
         if not scramble.solved():
-            await self.channel.send("Sorry, " + name + ", your solution is not working.")
+            raise ValueError(f"solution does not solve scramble \"{scramble.to_string()}\"")
+
+        result_key = self.db_path + "results/" + name
+        if result_key not in db:
+            db[result_key] = solution.to_string()
+            await self.channel.send(f"[{solution.length()}] Solution added for {name}")
         else:
-            result_key = self.db_path + "results/" + name
-            if result_key not in db:
+            previous = self.result(name)
+            previous_length = previous.length()
+            new_length = solution.length()
+            if new_length < previous_length:
                 db[result_key] = solution.to_string()
-                await self.channel.send(f"[{solution.length()}] Solution added for {name}")
+                await self.channel.send(f"[{previous_length} -> {new_length}] Solution updated for {name}")
             else:
-                previous = self.result(name)
-                previous_length = previous.length()
-                new_length = solution.length()
-                if new_length < previous_length:
-                    db[result_key] = solution.to_string()
-                    await self.channel.send(f"[{previous_length} -> {new_length}] Solution updated for {name}")
-                else:
-                    await self.channel.send(f"[{new_length}] You already have a {previous_length} move solution, {name}")
+                await self.channel.send(f"[{new_length}] You already have a {previous_length} move solution, {name}")
 
     @tasks.loop(seconds=10)
     async def loop(self):
