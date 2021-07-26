@@ -6,7 +6,7 @@
 <style>
 *{
   margin: 0;
-  pading: 0;
+  padding: 0;
   box-sizing: border-box;
 }
 body{
@@ -187,6 +187,7 @@ pre{
   cursor: pointer;
   padding: 14px 16px;
   transition: 0.3s;
+  min-width: 120px;
 }
 
 /* Change background color of buttons on hover */
@@ -213,6 +214,10 @@ pre{
   from {opacity: 0.9;}
   to {opacity: 1;}
 }
+
+/* Not displaying the last buttons so the amount of dates stay the same */
+.tab button:nth-child(n + 16){
+  display: none;
 }
 </style>
 </head>
