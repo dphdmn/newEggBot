@@ -1622,15 +1622,14 @@ async def on_message(message):
             solution = solver.solveOne(scramble)
             b = perf_counter()
 
-            outm = "Solution for: " + scramble.to_string() + "\n"
-            outm += "||" + solution.to_string() + "||\n"
-            outm += "Moves: " + str(solution.length()) + "\n"
-            outm += "Time: " + str(round((b - a), 3))
+            msg = f"Scramble: {scramble.to_string()}\n"
+            msg += f"Solution [{solution.length()}]: ||{solution.to_string()}||\n"
+            msg += f"Time: {round((b - a), 3)}"
 
             if video:
-                outm += "\nPlease wait! I'm making a video for you!"
+                msg += "\nPlease wait! I'm making a video for you!"
 
-            await message.channel.send(outm)
+            await message.channel.send(msg)
 
             if video:
                 make_video(scramble, solution, 8)
