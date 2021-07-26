@@ -1599,7 +1599,6 @@ async def on_message(message):
             await message.channel.send("Your scramble is wrong.")
     if message.content.startswith("!solve") or message.content.startswith("!video"):
         try:
-            solve = message.content.startswith("!solve")
             video = message.content.startswith("!video")
 
             scramble = PuzzleState(message.content[7:])
