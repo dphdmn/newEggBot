@@ -1613,32 +1613,32 @@ async def on_message(message):
                     await message.channel.send(f"No cheating, {name}!")
                     return
 
-            if size == (4, 4) or (size == (3, 3) and solve):
-                a = perf_counter()
-                solver = solvers[size[0]]
-                solution = solver.solveOne(scramble)
-                b = perf_counter()
+            if size != (3, 3) and size != (4, 4):
+                raise ValueError(f"puzzle size {size} must be 3x3 or 4x4")
+            if size == (3, 3) and video:
+                raise ValueError(f"puzzle size {size} must be 4x4")
 
-                outm = "Solution for: " + scramble.to_string() + "\n"
-                outm += "||" + solution.to_string() + "||\n"
-                outm += "Moves: " + str(solution.length()) + "\n"
-                outm += "Time: " + str(round((b - a), 3))
+            a = perf_counter()
+            solver = solvers[size[0]]
+            solution = solver.solveOne(scramble)
+            b = perf_counter()
 
-                if video:
-                    outm += "\nPlease wait! I'm making a video for you!"
+            outm = "Solution for: " + scramble.to_string() + "\n"
+            outm += "||" + solution.to_string() + "||\n"
+            outm += "Moves: " + str(solution.length()) + "\n"
+            outm += "Time: " + str(round((b - a), 3))
 
-                await message.channel.send(outm)
+            if video:
+                outm += "\nPlease wait! I'm making a video for you!"
 
-                if video:
-                    make_video(scramble, solution, 8)
-                    with open("movie.webm", "rb") as f:
-                        video = discord.File(f)
-                        await message.channel.send("", file=video)
-                    os.remove("movie.webm")
-            else:
-                await message.channel.send(
-                    "Sorry, something is wrong with your scramble"
-                )
+            await message.channel.send(outm)
+
+            if video:
+                make_video(scramble, solution, 8)
+                with open("movie.webm", "rb") as f:
+                    video = discord.File(f)
+                    await message.channel.send("", file=video)
+                os.remove("movie.webm")
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
