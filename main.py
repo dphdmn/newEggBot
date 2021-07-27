@@ -1565,7 +1565,7 @@ async def on_message(message):
         elapsed = time.time() - start_time
 
         # wait until 5s has elapsed, including solve time
-        asyncio.sleep(5 - elapsed)
+        await asyncio.sleep(5 - elapsed)
 
         msg = ""
         for m in "ULDR":
