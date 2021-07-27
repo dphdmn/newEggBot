@@ -8,6 +8,7 @@ from discord.ext import tasks
 import urllib.request
 import html2text
 import traceback
+import time
 from time import perf_counter
 import datetime
 import math
@@ -19,6 +20,7 @@ import requests
 import glob
 import zlib
 import re
+import asyncio
 import bot
 import time_format
 import move
@@ -1556,7 +1558,15 @@ async def on_message(message):
             picture = discord.File(f)
             await message.channel.send("Check this: https://dphdmn.github.io/movesgame/\nFind good move at this scramble: \n" + scramble.to_string() + "\nYou will get answer in few seconds", file=picture)
         os.remove("scramble.png")
+
+        # time the solve
+        start_time = time.time()
         good_moves = [move.to_string(sol.first()) for sol in solvers[4].solveGood(scramble)]
+        elapsed = time.time() - start_time
+
+        # wait until 5s has elapsed, including solve time
+        asyncio.sleep(5 - elapsed)
+
         msg = ""
         for m in "ULDR":
             if m in good_moves:
