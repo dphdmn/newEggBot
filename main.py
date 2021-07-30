@@ -33,7 +33,7 @@ from daily_fmc import DailyFMC
 from replit import db
 
 client = discord.Client()
-print('\n'.join(db.keys()))
+
 async def makeTmpSend(filename, filedata, messagewith, msgchn):
     f = open(filename, "w+")
     f.write(filedata)
