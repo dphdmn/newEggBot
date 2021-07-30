@@ -294,6 +294,7 @@ def getAllHTML():
 
 def updatehtml():
     allhtml = getAllHTML()
+    allhtml = [allhtml[0]]
     egginfo = ""
     egginfo += "<div class=\"tab\">\n"
     #headers
