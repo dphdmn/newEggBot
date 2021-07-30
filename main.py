@@ -825,7 +825,8 @@ def editP(rp):
 #____________________________discord started
 @client.event
 async def on_ready():
-    print("We have logged in as {0.user}".format(client))
+    print(f"We have logged in as {client.user}")
+
     #check for message to send after a restart/update
     if "restart/channel_id" in db.keys() and "restart/message" in db.keys():
         channel_id = db["restart/channel_id"]
