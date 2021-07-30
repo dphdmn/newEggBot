@@ -846,7 +846,7 @@ async def on_message(message):
         return
     if "pls" in message.content.lower():
         await message.add_reaction("eff:803888415858098217")
-    if "<@!?809437517564477522>" in message.content:
+    if client.user in message.mentions:
         await message.channel.send("You are egg, " + message.author.mention)
     if "fuck you" in message.content.lower():
         await message.channel.send("no u, " + message.author.mention)
