@@ -1654,12 +1654,11 @@ async def on_message(message):
     if message.content.startswith("!simplify"):
         try:
             alg = Algorithm(message.content[10:])
+            old_len = alg.length()
             alg.simplify()
+            new_len = alg.length()
             alg_str = alg.to_string()
-            if alg_str == "":
-                await message.channel.send("empty")
-            else:
-                await message.channel.send(alg_str)
+            await message.channel.send(f"[{old_len} -> {new_len}] {alg_str}")
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
