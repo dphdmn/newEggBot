@@ -1634,8 +1634,13 @@ async def on_message(message):
             solution = solver.solveOne(scramble)
             b = perf_counter()
 
+            # solution of solved puzzle = egg
+            solution_str = solution.to_string()
+            if solution_str == "":
+                solution_str = ":egg:"
+
             msg = f"Scramble: {scramble.to_string()}\n"
-            msg += f"Solution [{solution.length()}]: ||{solution.to_string()}||\n"
+            msg += f"Solution [{solution.length()}]: ||{solution_str}||\n"
             msg += f"Time: {round((b - a), 3)}"
 
             if video:
