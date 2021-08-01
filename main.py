@@ -1034,7 +1034,9 @@ async def on_message(message):
 
             # write the message
             msg = f"Probability of {w}x{h} having an optimal solution of {moves_range} moves is {prob_one}\n"
-            msg += f"Probability of at least one scramble out of {reps} within that range is {prob}"
+            if reps > 1:
+                msg += f"Probability of at least one scramble out of {reps} within that range is {prob}"
+
             await message.channel.send(msg)
         except Exception as e:
             traceback.print_exc()
