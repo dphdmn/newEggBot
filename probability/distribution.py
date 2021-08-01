@@ -24,6 +24,14 @@ class Distribution:
         return Distribution(polypow(self.arr, n))
 
     def prob_range(self, start, end):
+        if start < 0:
+            start = 0
+        if end > self.n:
+            end = self.n
+
+        if end < start:
+            return 0
+
         return sum(self.arr[start:end+1])
 
     def prob(self, n, comparison):
