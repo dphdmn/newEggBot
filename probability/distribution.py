@@ -1,16 +1,6 @@
 import numpy as np
 from numpy.polynomial.polynomial import polypow
-from enum import Flag
-
-class Comparison(Flag):
-    Null               = 0
-    LessThan           = 1
-    Equal              = 2
-    GreaterThan        = 4
-    LessThanOrEqual    = LessThan | Equal
-    GreaterThanOrEqual = GreaterThan | Equal
-    NotEqual           = LessThan | GreaterThan
-    All                = LessThan | Equal | GreaterThan
+from comparison import Comparison
 
 # represents a discrete probability distribution on the points 0, 1, ..., n
 class Distribution:
@@ -34,28 +24,28 @@ class Distribution:
 
         return sum(self.arr[start:end+1])
 
-    def prob(self, n, comparison):
-        if comparison == Comparison.Null:
+    def prob(self, n, comp):
+        if comp == Comparison.Null:
             return 0
-        if comparison == Comparison.All:
+        if comp == Comparison.All:
             return 1
 
-        if comparison == Comparison.LessThan:
+        if comp == Comparison.LessThan:
             start = 0
             end = n-1
-        elif comparison == Comparison.Equal:
+        elif comp == Comparison.Equal:
             start = n
             end = n
-        elif comparison == Comparison.GreaterThan:
+        elif comp == Comparison.GreaterThan:
             start = n+1
             end = self.n
-        elif comparison == Comparison.LessThanOrEqual:
+        elif comp == Comparison.LessThanOrEqual:
             start = 0
             end = n
-        elif comparison == Comparison.GreaterThanOrEqual:
+        elif comp == Comparison.GreaterThanOrEqual:
             start = n
             end = self.n
-        elif comparison == Comparison.NotEqual:
+        elif comp == Comparison.NotEqual:
             return 1 - self.prob(n, Comparison.Equal)
 
         return self.prob_range(start, end)
