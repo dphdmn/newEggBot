@@ -23,22 +23,31 @@ class Distribution:
     def sum_distribution(self, n):
         return Distribution(polypow(self.arr, n))
 
+    def prob_range(self, start, end):
+        return sum(self.arr[start:end+1])
+
     def prob(self, n, comparison):
-        if n < 0:
+        if comparison == Comparison.Null:
             return 0
-        if n > self.n:
+        if comparison == Comparison.All:
             return 1
 
-        less = comparison & Comparison.LessThan
-        equal = comparison & Comparison.Equal
-        greater = comparison & Comparison.GreaterThan
+        if comparison == Comparison.LessThan:
+            start = 0
+            end = n-1
+        elif comparison == Comparison.Equal:
+            start = n
+            end = n
+        elif comparison == Comparison.GreaterThan:
+            start = n+1
+            end = self.n
+        elif comparison == Comparison.LessThanOrEqual:
+            start = 0
+            end = n
+        elif comparison == Comparison.GreaterThanOrEqual:
+            start = n
+            end = self.n
+        elif comparison == Comparison.NotEqual:
+            return 1 - self.prob(n, Comparison.Equal)
 
-        total = 0
-        if less:
-            total += sum(self.arr[:n])
-        if equal:
-            total += self.arr[n]
-        if greater:
-            total += sum(self.arr[n+1:])
-
-        return total
+        return self.prob_range(start, end)
