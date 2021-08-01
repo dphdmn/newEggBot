@@ -9,3 +9,18 @@ class Comparison(Flag):
     GreaterThanOrEqual = GreaterThan | Equal
     NotEqual           = LessThan | GreaterThan
     All                = LessThan | Equal | GreaterThan
+
+def from_string(str):
+    dict = {
+        "<"  : Comparison.LessThan,
+        "="  : Comparison.Equal,
+        ">"  : Comparison.GreaterThan,
+        "<=" : Comparison.LessThanOrEqual,
+        ">=" : Comparison.GreaterThanOrEqual,
+        "!=" : Comparison.NotEqual,
+    }
+
+    if str not in dict:
+        raise ValueError(f"cannot convert string \"{str}\" to Comparison")
+
+    return dict[str]
