@@ -1,5 +1,6 @@
 import os
 import requests
+from categories import categories
 
 def get_leaderboard(width=-1, height=-1, solvetype="any", avglen=-1, user=""):
     url = os.environ['slidysim']
@@ -37,3 +38,20 @@ def get_leaderboard(width=-1, height=-1, solvetype="any", avglen=-1, user=""):
         })
 
     return leaderboard
+
+def get_category_results():
+    # get the full leaderboard
+    lb = get_leaderboard()
+
+    # filter the results
+    filtered_lb = []
+    entries = ["width", "height", "solvetype", "avglen"]
+    for result in lb:
+        result_category = {x : result[x] for x in entries}
+        if result_category in categories:
+            filtered_lb.append(result)
+
+    # sort by username
+    filtered_lb.sort(key=lambda x: x["user"])
+
+    return filtered_lb
