@@ -30,6 +30,7 @@ from algorithm import Algorithm
 from analyse import analyse
 from draw_state import draw_state
 from daily_fmc import DailyFMC
+from probability import comparison, distributions
 from replit import db
 
 client = discord.Client()
@@ -1248,100 +1249,50 @@ async def on_message(message):
             traceback.print_exc()
             await message.channel.send(f"Please specify the puzzle size, for example: !getreq ascended 4x4```\n{repr(e)}\n```")
     if message.content.startswith("!getprob"):
-        #!getprob 4x4 30 40 1000, or !getprob 4x4 30 40, or !getprob 4x4 30
         try:
-            examples = "- !getprob <puzzle> <moves> [<moves>, <amount> || <amount] - get probability of getting N moves optimal scramble\nCommand examples:\n```!getprob 4x4 30 - get probability for 4x4 in 30 moves\n!getprob 4x4 30 40 - get probability for 4x4 from 30 to 40 moves\n!getprob 4x4 30 40 _1000 - from 30 to 40 moves, repeat 1000 times (default 100)\n!getprob 4x4 30 _1000 - 30 moves, repeat 1000 times\n!getprob 3x3 20 - 3x3 puzzle```\n"
-            contentArray = message.content.lower().split(" ")
-            arraylen = len(contentArray)
-            if arraylen == 1:
-                await message.channel.send(examples)
-            elif arraylen == 2:
-                examples = "Command should have at least 3 words in it.\n" + examples
-                await message.channel.send(examples)
-            elif arraylen == 3:
-                pzlName = contentArray[1]
-                if pzlName == "3x3" or pzlName == "4x4":
-                    num = contentArray[2]
-                    if num.isdigit():
-                        f1 = num
-                        f2 = num
-                        await message.channel.send(getProbText(f1, f2, pzlName, 100))
-                    else:
-                        examples = (
-                            "Something is wrong with your range number, most be positive integer.\n"
-                            + examples
-                        )
-                        await message.channel.send(examples)
-                else:
-                    examples = (
-                        "Something is wrong with your puzzle size (must be 4x4 or 3x3)\n"
-                        + examples
-                    )
-                    await message.channel.send(examples)
+            # !getprob [size: N or WxH] [moves: a-b or e.g. >=m, <m, =m, etc.] [repetitions: optional]
+            regex = re.compile("!getprob\s+(?P<width>[0-9]+)(x(?P<height>[0-9]+))?\s+(?P<range>((?P<moves_from>[0-9]+)-(?P<moves_to>[0-9]+))|((?P<comparison>[<>]?=?)(?P<moves>[0-9]*)))(\s+(?P<repetitions>[0-9]*))?")
+            match = regex.fullmatch(message.content)
+
+            if match is None:
+                raise SyntaxError(f"failed to parse arguments")
+
+            groups = match.groupdict()
+
+            # read the size
+            w = int(groups["width"])
+            if groups["height"] is None:
+                h = w
             else:
-                pzlName = contentArray[1]
-                if pzlName == "3x3" or pzlName == "4x4":
-                    if (
-                        arraylen == 4
-                    ):  # expect number and amount rep OR number and second number
-                        num = contentArray[2]
-                        if num.isdigit():
-                            otherThing = contentArray[3]
-                            if (
-                                otherThing[:1] == "_"
-                            ):  # thiking that this is number and amount of rep
-                                num2 = otherThing[1:]
-                                if num2.isdigit():
-                                    await message.channel.send(
-                                        getProbText(num, num, pzlName, num2)
-                                    )
-                                else:
-                                    examples = (
-                                        "Something is wrong with your range number, most be positive integer.\n"
-                                        + examples
-                                    )
-                                    await message.channel.send(examples)
-                            else:  # thinking that this number is just the 2nd range number
-                                num2 = otherThing
-                                if num2.isdigit():
-                                    await message.channel.send(
-                                        getProbText(num, num2, pzlName, 100)
-                                    )
-                                else:
-                                    examples = (
-                                        "Something is wrong with your range number, most be positive integer.\n"
-                                        + examples
-                                    )
-                                    await message.channel.send(examples)
-                        else:
-                            examples = (
-                                "Something is wrong with your range number, most be positive integer.\n"
-                                + examples
-                            )
-                            await message.channel.send(examples)
-                    else:  # we have 5 inputs
-                        num1 = contentArray[2]
-                        num2 = contentArray[3]
-                        num3 = contentArray[4]
-                        trueNum3 = num3
-                        if num3[:1] == "_":
-                            trueNum3 = num3[1:]
-                        if num1.isdigit() and num2.isdigit() and trueNum3.isdigit():
-                            await message.channel.send(
-                                getProbText(num1, num2, pzlName, trueNum3)
-                            )
-                        else:
-                            examples = (
-                                "Something is wrong with your range number, most be positive integer.\n"
-                                + examples
-                            )
-                            await message.channel.send(examples)
-                else:
-                    examples = (
-                        "Something is wrong with your puzzle size (most be 4x4 or 3x3)\n"
-                        + examples
-                    )
-                    await message.channel.send(examples)
+                h = int(groups["height"])
+
+            # get the distribution
+            dist = distributions.get_distribution(w, h)
+
+            # check if from-to or comparison, and calculate probability
+            moves_range = groups["range"]
+            if groups["comparison"] is None:
+                start = int(groups["moves_from"])
+                end = int(groups["moves_to"])
+                prob_one = dist.prob_range(start, end)
+            else:
+                comp = comparison.from_string(groups["comparison"])
+                moves = int(groups["moves"])
+                prob_one = dist.prob(moves, comp)
+
+            # number of repetitions
+            if groups["repetitions"] is None:
+                reps = 1
+            else:
+                reps = int(groups["repetitions"])
+
+            # compute the probability of a scramble appearing at least once
+            prob = 1 - (1 - prob_one)**reps
+
+            # write the message
+            msg = f"Probability of {w}x{h} having an optimal solution of {moves_range} moves is {prob_one}\n"
+            msg += f"Probability of at least one scramble out of {reps} within that range is {prob}"
+            await message.channel.send(msg)
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
