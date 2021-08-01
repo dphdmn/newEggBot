@@ -13,6 +13,7 @@ class Comparison(Flag):
 def from_string(str):
     dict = {
         "<"  : Comparison.LessThan,
+        ""   : Comparison.Equal,
         "="  : Comparison.Equal,
         ">"  : Comparison.GreaterThan,
         "<=" : Comparison.LessThanOrEqual,
