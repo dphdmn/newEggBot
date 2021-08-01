@@ -1,4 +1,4 @@
-from distribution import Distribution
+from probability.distribution import Distribution
 
 distributions = {
     (2, 2) : Distribution([1, 2, 2, 2, 2, 2, 1]),
