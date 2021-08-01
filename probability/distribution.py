@@ -3,12 +3,14 @@ from numpy.polynomial.polynomial import polypow
 from enum import Flag
 
 class Comparison(Flag):
-    LessThan = 1
-    Equal = 2
-    GreaterThan = 4
-    LessThanOrEqual = LessThan | Equal
+    Null               = 0
+    LessThan           = 1
+    Equal              = 2
+    GreaterThan        = 4
+    LessThanOrEqual    = LessThan | Equal
     GreaterThanOrEqual = GreaterThan | Equal
-    NotEqual = LessThan | GreaterThan
+    NotEqual           = LessThan | GreaterThan
+    All                = LessThan | Equal | GreaterThan
 
 # represents a discrete probability distribution on the points 0, 1, ..., n
 class Distribution:
