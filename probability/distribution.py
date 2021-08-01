@@ -21,6 +21,8 @@ class Distribution:
 
         if end < start:
             return 0
+        if start == 0 and end == self.n:
+            return 1
 
         return sum(self.arr[start:end+1])
 
