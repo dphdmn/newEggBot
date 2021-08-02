@@ -75,9 +75,15 @@ def results_table():
             if result["user"] != user:
                 continue
 
-            # fill in the entry in the table
             category = result["category"]
-            row[category] = result["time"]
+
+            # fill in the entry in the table.
+            # we need the min() because the user might have times with
+            # keyboard and mouse, and we have to choose the faster time
+            if row[category] is None:
+                row[category] = result["time"]
+            else:
+                row[category] = min(row[category], result["time"])
 
         # add the users results to the table
         table[user] = row
