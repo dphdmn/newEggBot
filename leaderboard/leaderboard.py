@@ -23,18 +23,18 @@ def get_leaderboard(width=-1, height=-1, solvetype="any", avglen=-1, user=""):
     leaderboard = []
     for row in data:
         leaderboard.append({
-            "width"       : row[0],
-            "height"      : row[1],
+            "width"       : int(row[0]),
+            "height"      : int(row[1]),
             "solvetype"   : row[2],
             "displaytype" : row[3],
             "user"        : row[4],
-            "time"        : row[5],
-            "moves"       : row[6],
-            "tps"         : row[7],
-            "avglen"      : row[8],
+            "time"        : int(row[5]),
+            "moves"       : int(row[6]),
+            "tps"         : int(row[7]),
+            "avglen"      : int(row[8]),
             "controls"    : row[9],
             "pbtype"      : row[10],
-            "timestamp"   : row[12]
+            "timestamp"   : int(row[12])
         })
 
     return leaderboard
