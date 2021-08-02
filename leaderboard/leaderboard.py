@@ -107,4 +107,10 @@ def result_tier(category_index, time):
     return len(tiers)-1
 
 def power(results_list):
-    return sum(tiers[result_tier(i, result)]["power"] for i, result in enumerate(results_list))
+    total = 0
+    for i, result in enumerate(results_list):
+        tier = result_tier(i, result)
+        if tier is None:
+            continue
+        total += tiers[tier]["power"]
+    return total
