@@ -1,6 +1,7 @@
 import os
 import requests
 from categories import categories
+from tiers import tiers
 
 def get_leaderboard(width=-1, height=-1, solvetype="any", avglen=-1, user=""):
     url = os.environ['slidysim']
@@ -89,3 +90,18 @@ def results_table():
         table[user] = row
 
     return table
+
+def result_tier(category_index, time):
+    for i, tier in enumerate(tiers):
+        if time > tier["times"][category_index]:
+            # if the result doesn't make the first tier, return None
+            # otherwise, return the previous tier
+            if i == 0:
+                return None
+            return i-1
+
+    # highest tier
+    return len(tiers)-1
+
+def power(results_list):
+    return sum(tiers[result_tier(i, result)]["power"] for i, result in enumerate(results_list))
