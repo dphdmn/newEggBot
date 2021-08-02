@@ -48,10 +48,38 @@ def get_category_results():
     entries = ["width", "height", "solvetype", "avglen"]
     for result in lb:
         result_category = {x : result[x] for x in entries}
-        if result_category in categories:
+        try:
+            # add the category index for convenience
+            index = categories.index(result_category)
+            result["category"] = index
             filtered_lb.append(result)
+        except ValueError as e:
+            continue
 
     # sort by username
     filtered_lb.sort(key=lambda x: x["user"])
 
     return filtered_lb
+
+def results_table():
+    results = get_category_results()
+    users = sorted(set(x["user"] for x in results))
+
+    table = {}
+
+    for user in users:
+        # create an empty row with one entry per category
+        row = [None]*len(categories)
+
+        for result in results:
+            if result["user"] != user:
+                continue
+
+            # fill in the entry in the table
+            category = result["category"]
+            row[category] = result["time"]
+
+        # add the users results to the table
+        table[user] = row
+
+    return table
