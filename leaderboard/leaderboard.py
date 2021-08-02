@@ -92,6 +92,9 @@ def results_table():
     return table
 
 def result_tier(category_index, time):
+    if time is None:
+        return None
+
     for i, tier in enumerate(tiers):
         if time > tier["times"][category_index]:
             # if the result doesn't make the first tier, return None
