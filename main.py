@@ -754,6 +754,9 @@ async def on_message(message):
         my_string = matching[0]
         my_string = my_string.split("\t")
 
+        if len(contentArray) == 2:
+            contentArray.append("4")
+
         # print(my_string)
         bad = False
         try:
@@ -916,6 +919,9 @@ async def on_message(message):
         my_string = matching[0]
         my_string = my_string.split("\t")
         # print(my_string)
+
+        if len(contentArray) == 2:
+            contentArray.append("4")
 
         bad = False
         try:
