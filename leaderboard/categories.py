@@ -1,4 +1,4 @@
-with open("data/categories.txt", "r") as f:
+with open("leaderboard/data/categories.txt", "r") as f:
     data = f.read().strip()
     f.close()
 

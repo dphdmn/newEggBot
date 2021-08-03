@@ -1,18 +1,18 @@
-from categories import categories
+from leaderboard.categories import categories
 
-with open("data/tier_names.txt", "r") as f:
+with open("leaderboard/data/tier_names.txt", "r") as f:
     tier_names = f.read().strip().split("\n")
     f.close()
 
-with open("data/tier_power.txt", "r") as f:
+with open("leaderboard/data/tier_power.txt", "r") as f:
     tier_power = [int(x) for x in f.read().strip().split("\n")]
     f.close()
 
-with open("data/tier_limits.txt", "r") as f:
+with open("leaderboard/data/tier_limits.txt", "r") as f:
     tier_limits = [int(x) for x in f.read().strip().split("\n")]
     f.close()
 
-with open("data/tier_times.txt", "r") as f:
+with open("leaderboard/data/tier_times.txt", "r") as f:
     tier_times = [[int(x) for x in row.split(",")] for row in f.read().strip().split("\n")]
     f.close()
 

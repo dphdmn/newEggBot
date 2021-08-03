@@ -1,7 +1,7 @@
 import os
 import requests
-from categories import categories
-from tiers import tiers
+from leaderboard.categories import categories
+from leaderboard.tiers import tiers
 
 def get_leaderboard(width=-1, height=-1, solvetype="any", avglen=-1, user=""):
     url = os.environ['slidysim']
