@@ -36,7 +36,11 @@ def update_webpage():
         pickled_table = zlib.decompress(compressed_table)
         table = pickle.loads(pickled_table)
         table_str = lb.format_results_table(table)
-        file += table_str + ","
+
+        # compress the table string and convert to base 64
+        compressed_str = zlib.compress(table_str.encode(), level=9)
+        base64_str = base64.b64encode(compressed_str).decode()
+        file += "\"" + base64_str + "\","
 
     file = file[:-1] + "];\n"
 
