@@ -114,3 +114,18 @@ def power(results_list):
             continue
         total += tiers[tier]["power"]
     return total
+
+def format_results_table(results_table):
+    users = results_table.keys()
+
+    # sort users by power
+    user_power = dict(sorted([(user, power(results_table[user])) for user in users], key=lambda x: (-x[1], x[0])))
+    sorted_users = user_power.keys()
+
+    table = []
+    for i, user in enumerate(sorted_users):
+        results_str = [format(x/1000, ".3f") if x is not None else "" for x in results_table[user]]
+        row = [user, i+1, user_power[user]] + results_str
+        table.append(row)
+
+    return str(table)
