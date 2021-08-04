@@ -755,7 +755,13 @@ async def on_message(message):
         my_string = my_string.split("\t")
 
         if len(contentArray) == 2:
-            contentArray.append("4")
+            ids = [800468752905797664, 800468727324737586, 800468938629972038, 800468948939309117,
+                   800468960348733461, 818585243560312852, 818585257393389658, 818585267924893706]
+            if message.channel.id in ids:
+                n = ids.index(message.channel.id)+3
+            else:
+                n = 4
+            contentArray.append(str(n))
 
         # print(my_string)
         bad = False
@@ -921,7 +927,13 @@ async def on_message(message):
         # print(my_string)
 
         if len(contentArray) == 2:
-            contentArray.append("4")
+            ids = [800468752905797664, 800468727324737586, 800468938629972038, 800468948939309117,
+                   800468960348733461, 818585243560312852, 818585257393389658, 818585267924893706]
+            if message.channel.id in ids:
+                n = ids.index(message.channel.id)+3
+            else:
+                n = 4
+            contentArray.append(str(n))
 
         bad = False
         try:
