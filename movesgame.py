@@ -1,4 +1,5 @@
 import asyncio
+import time
 import os
 from solver import solvers
 import scrambler
@@ -59,6 +60,7 @@ class MovesGame:
             # store scramble and moves in db
             db[self.db_path + "scramble"] = scramble.to_string()
             db[self.db_path + "good_moves"] = good_moves
+            db[self.db_path + "timestamp"] = int(time.time())
 
             # post start message
             with open("scramble.png", "rb") as f:
@@ -83,11 +85,13 @@ class MovesGame:
 
             db[self.db_path + f"history/{round}/scramble"] = db[self.db_path + "scramble"]
             db[self.db_path + f"history/{round}/good_moves"] = db[self.db_path + "good_moves"]
+            db[self.db_path + f"history/{round}/timestamp"] = db[self.db_path + "timestamp"]
             for id in results:
                 db[self.db_path + f"history/{round}/results/{id}"] = db[self.db_path + f"results/{id}"]
 
             del db[self.db_path + "scramble"]
             del db[self.db_path + "good_moves"]
+            del db[self.db_path + "timestamp"]
             for id in results:
                 del db[self.db_path + f"results/{id}"]
 
