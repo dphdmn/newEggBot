@@ -30,6 +30,7 @@ from algorithm import Algorithm
 from analyse import analyse
 from draw_state import draw_state
 from daily_fmc import DailyFMC
+from movesgame import MovesGame
 from probability import comparison, distributions
 from replit import db
 
@@ -573,7 +574,7 @@ def mod_date(path_to_file):
 async def on_ready():
     print(f"We have logged in as {client.user}")
 
-    #check for message to send after a restart/update
+    # check for message to send after a restart/update
     if "restart/channel_id" in db.keys() and "restart/message" in db.keys():
         channel_id = db["restart/channel_id"]
         channel = client.get_channel(channel_id)
@@ -582,10 +583,14 @@ async def on_ready():
         del db["restart/channel_id"]
         del db["restart/message"]
 
-    #start daily fmc
+    # start daily fmc
     global fmc
     fmc = DailyFMC(client, int(os.environ["daily_fmc_channel"]), int(os.environ["daily_fmc_results_channel"]))
     fmc.start()
+
+    # create movesgame
+    global movesgame
+    movesgame = MovesGame(client, int(os.environ["movesgame_channel"]))
 
 @client.event
 async def on_message(message):
