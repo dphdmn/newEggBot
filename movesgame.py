@@ -12,6 +12,7 @@ class MovesGame:
         self.client = client
         self.channel = client.get_channel(channel_id)
         self.db_path = f"{self.channel.guild.id}/movesgame/{self.channel.id}/"
+        self.delay = 8
 
         # if there is no key in the db showing how many rounds there have been
         # then this must be the first time we are running movesgame
@@ -66,8 +67,8 @@ class MovesGame:
                 await self.channel.send(msg, file=img)
             os.remove("scramble.png")
 
-            # wait 10 seconds for people to submit moves and then close
-            await asyncio.sleep(10)
+            # wait for people to submit moves and then close
+            await asyncio.sleep(self.delay)
             await self.close()
 
     async def close(self):
