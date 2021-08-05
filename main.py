@@ -8,11 +8,9 @@ from discord.ext import tasks
 import urllib.request
 import html2text
 import traceback
-import time
 from time import perf_counter
 import datetime
 import math
-from decimal import Decimal
 import numpy as np
 import cv2
 import sys
@@ -20,7 +18,6 @@ import requests
 import glob
 import zlib
 import re
-import asyncio
 import bot
 import time_format
 import move
