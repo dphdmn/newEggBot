@@ -94,11 +94,10 @@ class MovesGame:
 
             if len(results) == 0:
                 msg += "No one joined :("
-                await self.channel.send(msg)
             else:
                 winners = []
-                for (id, move) in results.items():
-                    if move in good_moves:
+                for (id, m) in results.items():
+                    if m in good_moves:
                         user = self.client.get_user(id)
                         winners.append(user.name)
                 
@@ -106,6 +105,8 @@ class MovesGame:
                     msg += "Everyone was wrong :egglet:"
                 else:
                     msg += "Winners: " + ", ".join(winners)
+
+            await self.channel.send(msg)
 
     def submit(self, user, move):
         db[self.db_path + f"results/{user.id}"] = move
