@@ -4,6 +4,7 @@ from solver import solvers
 import scrambler
 import move
 from draw_state import draw_state
+import discord
 from replit import db
 
 class MovesGame:
@@ -61,7 +62,8 @@ class MovesGame:
             # post start message
             with open("scramble.png", "rb") as f:
                 msg = f"Scramble: {scramble.to_string()}"
-                await self.channel.send(msg)
+                img = discord.File(f)
+                await self.channel.send(msg, file=img)
             os.remove("scramble.png")
 
             # wait 10 seconds for people to submit moves and then close
