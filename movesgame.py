@@ -107,5 +107,5 @@ class MovesGame:
                 else:
                     msg += "Winners: " + ", ".join(winners)
 
-    async def submit(self, user, move):
+    def submit(self, user, move):
         db[self.db_path + f"results/{user.id}"] = move
