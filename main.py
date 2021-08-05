@@ -1274,29 +1274,8 @@ async def on_message(message):
             db["file2.txt"] = dbcomp(text)
             await message.channel.send("Probably updated")
     if message.content.startswith("!movesgame"):
-        scramble = scrambler.getScramble(4)
-        img = draw_state(scramble)
-        img.save('scramble.png', 'PNG')
-        with open("scramble.png", "rb") as f:
-            picture = discord.File(f)
-            await message.channel.send("Check this: https://dphdmn.github.io/movesgame/\nFind good move at this scramble: \n" + scramble.to_string() + "\nYou will get answer in few seconds", file=picture)
-        os.remove("scramble.png")
-
-        # time the solve
-        start_time = time.time()
-        good_moves = [move.to_string(sol.first()) for sol in solvers[4].solveGood(scramble)]
-        elapsed = time.time() - start_time
-
-        # wait until 5s has elapsed, including solve time
-        await asyncio.sleep(5 - elapsed)
-
-        msg = ""
-        for m in "ULDR":
-            if m in good_moves:
-                msg += f"**{m}** \tis \t**OK!**\t move\n"
-            else:
-                msg += f"{m} \tis \tbad\t move\n"
-        await message.channel.send("||" + msg + "||")
+        if message.channel.id == movesgame.channel.id:
+            await movesgame.open()
     if message.content.startswith("!goodm"):
         try:
             scramble = PuzzleState(message.content[7:])
