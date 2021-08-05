@@ -629,8 +629,9 @@ async def on_message(message):
             msg = "No results yet"
         else:
             msg = ""
-            for (name, result) in results.items():
-                msg += f"{name}: {result.length()}\n"
+            for (id, result) in results.items():
+                user = client.get_user(id)
+                msg += f"{user.name}: {result.length()}\n"
         await message.channel.send(msg)
     if message.content.startswith("!getlb"):
         await makeTmpSend("prettylb.txt", db["prettylb.txt"], "Leaderboard for ranks: ", message.channel)
