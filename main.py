@@ -1429,6 +1429,13 @@ async def on_message(message):
             bot.update()
             bot.restart()
 
+    # check for movesgame submissions
+    if message.channel.id == movesgame.channel.id:
+        if movesgame.is_open():
+            m = message.content.upper()
+            if len(m) == 1 and m in "ULDR":
+                movesgame.submit(message.author, m)
+
 @tasks.loop(seconds=1)
 async def spam(chan, msg):
     await chan.send(msg)
