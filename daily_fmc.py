@@ -37,6 +37,10 @@ class DailyFMC:
     def remaining(self):
         return max(0, 86400 - self.elapsed())
 
+    def date_string(self):
+        start = db[self.db_path + "start_time"]
+        return dt.datetime.utcfromtimestamp(start).strftime("%Y-%m-%d")
+
     def result(self, name):
         key = self.db_path + "results/" + name
         if key in db:
@@ -95,10 +99,10 @@ class DailyFMC:
             pass
         else:
             results = self.results()
+            date = self.date_string()
             scramble = self.scramble()
             optSolution = self.solution()
             optLength = optSolution.length()
-            start = int(db[self.db_path + "start_time"])
 
             db[self.db_path + "status"] = 0
             del db[self.db_path + "scramble"]
@@ -109,7 +113,7 @@ class DailyFMC:
             del db[self.db_path + "one_hour_warning"]
 
             msg = "Daily FMC results!\n"
-            msg += "Date: " + dt.datetime.utcfromtimestamp(start).strftime("%Y-%m-%d") + "\n"
+            msg += "Date: " + date + "\n"
             msg += "Scramble: " + scramble.to_string() + "\n"
             msg += f"Optimal solution [{optLength}]: {optSolution.to_string()}"
 
