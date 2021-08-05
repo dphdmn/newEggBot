@@ -107,7 +107,7 @@ class MovesGame:
                         winners.append(user.name)
                 
                 if len(winners) == 0:
-                    msg += "Everyone was wrong :egglet:"
+                    msg += "Everyone was wrong :egg:"
                 else:
                     msg += "Winners: " + ", ".join(winners)
 
