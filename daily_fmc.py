@@ -99,7 +99,11 @@ class DailyFMC:
             optSolution = self.solution()
             optLength = optSolution.length()
 
-            db[self.db_path + "status"] = 0
+            db[self.db_path + f"history/{date}/scramble"] = db[self.db_path + "scramble"]
+            db[self.db_path + f"history/{date}/solution"] = db[self.db_path + "solution"]
+            for name in results:
+                db[self.db_path + f"history/{date}/results/{name}"] = db[self.db_path + "results/" + name]
+
             del db[self.db_path + "scramble"]
             del db[self.db_path + "solution"]
             for name in results:
