@@ -33,7 +33,9 @@ from daily_fmc import DailyFMC
 from probability import comparison, distributions
 from replit import db
 
-client = discord.Client()
+intents = discord.Intents.default()
+intents.members = True
+client = discord.Client(intents=intents)
 
 async def makeTmpSend(filename, filedata, messagewith, msgchn):
     f = open(filename, "w+")
