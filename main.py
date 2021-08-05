@@ -616,9 +616,8 @@ async def on_message(message):
             return
         try:
             await message.delete()
-            name = message.author.name
             solution = Algorithm(message.content[8:])
-            await fmc.submit(name, solution)
+            await fmc.submit(message.author, solution)
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")

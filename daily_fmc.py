@@ -38,19 +38,20 @@ class DailyFMC:
         start = db[self.db_path + "start_time"]
         return dt.datetime.utcfromtimestamp(start).strftime("%Y-%m-%d")
 
-    def result(self, name):
-        key = self.db_path + "results/" + name
+    def result(self, id):
+        key = self.db_path + f"results/{id}"
         if key in db:
             return Algorithm(db[key])
         else:
-            raise ValueError(f"name \"{name}\" has not submitted a solution")
+            user = self.client.get_user(id)
+            raise ValueError(f"user \"{user.name}\" (id={id}) has not submitted a solution")
 
     def results(self):
-        names = [x.split("/")[-1] for x in db.keys() if x.startswith(self.db_path + "results/")]
+        ids = [int(x.split("/")[-1]) for x in db.keys() if x.startswith(self.db_path + "results/")]
 
         results = {}
-        for name in names:
-            results[name] = self.result(name)
+        for id in ids:
+            results[id] = self.result(id)
 
         sorted_results = dict(sorted(results.items(), key=lambda x: x[1].length()))
 
@@ -101,13 +102,13 @@ class DailyFMC:
 
             db[self.db_path + f"history/{date}/scramble"] = db[self.db_path + "scramble"]
             db[self.db_path + f"history/{date}/solution"] = db[self.db_path + "solution"]
-            for name in results:
-                db[self.db_path + f"history/{date}/results/{name}"] = db[self.db_path + "results/" + name]
+            for id in results:
+                db[self.db_path + f"history/{date}/results/{id}"] = db[self.db_path + f"results/{id}"]
 
             del db[self.db_path + "scramble"]
             del db[self.db_path + "solution"]
-            for name in results:
-                del db[self.db_path + "results/" + name]
+            for id in results:
+                del db[self.db_path + f"results/{id}"]
             del db[self.db_path + "start_time"]
             del db[self.db_path + "one_hour_warning"]
 
@@ -125,9 +126,10 @@ class DailyFMC:
                 table.field_names = ["Username", "Moves", "To optimal", "Solution"]
 
                 # organise results in an array
-                for (user, solution) in results.items():
+                for (id, solution) in results.items():
+                    user = self.client.get_user(id)
                     length = solution.length()
-                    table.add_row([user, length, length - optLength, solution.to_string()])
+                    table.add_row([user.name, length, length - optLength, solution.to_string()])
 
                 with open("results.txt", "w+") as f:
                     f.write(table.get_string())
@@ -151,19 +153,22 @@ class DailyFMC:
                 await self.channel.send("", file=picture)
             os.remove("movie.webm")
 
-    async def submit(self, name, solution):
+    async def submit(self, user, solution):
         # check that the solution works
         scramble = self.scramble()
         scramble.apply(solution)
         if not scramble.solved():
             raise ValueError(f"solution does not solve scramble \"{scramble.to_string()}\"")
 
-        result_key = self.db_path + "results/" + name
+        name = user.name
+        id = user.id
+
+        result_key = self.db_path + f"results/{id}"
         if result_key not in db:
             db[result_key] = solution.to_string()
             await self.channel.send(f"[{solution.length()}] Solution added for {name}")
         else:
-            previous = self.result(name)
+            previous = self.result(id)
             previous_length = previous.length()
             new_length = solution.length()
             if new_length < previous_length:
