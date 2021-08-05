@@ -19,11 +19,8 @@ class DailyFMC:
         self.results_channel = client.get_channel(results_channel_id)
         self.db_path = f"{self.channel.guild.id}/fmc/{self.channel.id}/"
 
-        if self.db_path + "status" not in db:
-            db[self.db_path + "status"] = 0
-
-    def status(self):
-        return db[self.db_path + "status"]
+    def is_open(self):
+        return self.db_path + "start_time" in db
 
     def scramble(self):
         return PuzzleState(db[self.db_path + "scramble"])
@@ -63,7 +60,7 @@ class DailyFMC:
         self.loop.start()
 
     async def open(self):
-        if self.status() == 1:
+        if self.is_open():
             pass
         else:
             await self.channel.send("Starting daily FMC, please wait!")
@@ -92,10 +89,8 @@ class DailyFMC:
             id = os.environ["fmc_role_id"]
             await self.channel.send(f"<@&{id}>")
 
-            db[self.db_path + "status"] = 1
-
     async def close(self):
-        if self.status() == 0:
+        if not self.is_open():
             pass
         else:
             results = self.results()
@@ -175,7 +170,7 @@ class DailyFMC:
 
     @tasks.loop(seconds=10)
     async def loop(self):
-        if self.status() == 0:
+        if not self.is_open():
             await self.open()
         elif self.elapsed() >= 86400:
             # close and open, but set the start time to exactly 86400 seconds after the previous

@@ -603,14 +603,14 @@ async def on_message(message):
                 msg += shit + " "
             spam.start(message.channel, msg[:2000])
     if message.content.startswith("!fmc"):
-        if message.channel.id != fmc.channel.id or fmc.status() == 0:
+        if message.channel.id != fmc.channel.id or not fmc.is_open():
             return
         msg = "Current FMC scramble: " + fmc.scramble().to_string() + "\n"
         msg += "Optimal solution length: " + str(fmc.solution().length()) + "\n"
         msg += "Time remaining: " + time_format.format(fmc.remaining())
         await message.channel.send(msg)
     if message.content.startswith("!submit"):
-        if message.channel.id != fmc.channel.id or fmc.status() == 0:
+        if message.channel.id != fmc.channel.id or not fmc.is_open():
             return
         try:
             await message.delete()
@@ -621,7 +621,7 @@ async def on_message(message):
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
     if message.content.startswith("!results"):
-        if message.channel.id != fmc.channel.id or fmc.status() == 0:
+        if message.channel.id != fmc.channel.id or not fmc.is_open():
             return
         results = fmc.results()
         if len(results) == 0:
@@ -1331,7 +1331,7 @@ async def on_message(message):
             size = scramble.size()
 
             # don't allow daily fmc scramble
-            if fmc.status() == 1:
+            if fmc.is_open():
                 daily_fmc_scramble = fmc.scramble()
                 if scramble == daily_fmc_scramble:
                     name = message.author.name
