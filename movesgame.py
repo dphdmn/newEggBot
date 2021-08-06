@@ -43,19 +43,9 @@ class MovesGame:
         return results
 
     def lifetime_results(self):
-        keys = db.prefix(self.db_path + "lifetime_results")
-
-        correct = {}
-        incorrect = {}
-        for key in keys:
-            id = int(key.split("/")[-2])
-            result = key.split("/")[-1]
-            if result == "correct":
-                correct[id] = db[key]
-            else:
-                incorrect[id] = db[key]
-
-        return correct, incorrect
+        key = self.db_path + "lifetime_results"
+        results = serialize.deserialize(db.prefix(key))
+        return results
 
     async def open(self):
         if self.is_open():
@@ -134,27 +124,34 @@ class MovesGame:
 
             msg = "Good moves: " + ", ".join(good_moves) + "\n"
 
+            # find winners and update lifetime results
+            lifetime_results = self.lifetime_results()
             if len(results) == 0:
                 msg += "No one joined :("
             else:
                 winners = []
                 for (id, m) in results.items():
                     # if this is the users first movesgame, create lifetime results entries
-                    if self.db_path + f"lifetime_results/{id}/correct" not in db:
-                        db[self.db_path + f"lifetime_results/{id}/correct"] = 0
-                        db[self.db_path + f"lifetime_results/{id}/incorrect"] = 0
+                    if id not in lifetime_results:
+                        lifetime_results[id] = {
+                            "correct"   : 0,
+                            "incorrect" : 0
+                        }
 
                     if m in good_moves:
                         user = self.client.get_user(id)
                         winners.append(user.name)
-                        db[self.db_path + f"lifetime_results/{id}/correct"] += 1
+                        lifetime_results[id]["correct"] += 1
                     else:
-                        db[self.db_path + f"lifetime_results/{id}/incorrect"] += 1
+                        lifetime_results[id]["incorrect"] += 1
                 
                 if len(winners) == 0:
                     msg += "Everyone was wrong :egg:"
                 else:
                     msg += "Winners: " + ", ".join(winners)
+
+            # store the updated lifetime results
+            db[self.db_path + "lifetime_results"] = serialize.serialize(lifetime_results)
 
             await self.channel.send(msg)
 
