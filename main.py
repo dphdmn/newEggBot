@@ -638,24 +638,24 @@ async def on_message(message):
             await message.channel.send(msg)
         # movesgame results
         elif message.channel.id == movesgame.channel.id:
-            correct, incorrect = movesgame.lifetime_results()
-            ids = correct.keys()
+            results = movesgame.lifetime_results()
+            ids = results.keys()
 
             # sort users by fraction of correct results
             fractions = {}
             for id in ids:
-                good = correct[id]
-                total = correct[id] + incorrect[id]
-                fractions[id] = good/total
+                good = results[id]["correct"]
+                bad = results[id]["incorrect"]
+                fractions[id] = good/(good+bad)
             sorted_ids = [x[0] for x in sorted(fractions.items(), key=lambda x: -x[1])]
 
             msg = ""
             for id in sorted_ids:
                 user = client.get_user(id)
-                good = correct[id]
-                total = correct[id] + incorrect[id]
-                formatted = format(100*good/total, ".2f") + "%"
-                msg += f"{user.name}: {good}/{total} = {formatted}\n"
+                good = results[id]["correct"]
+                bad = results[id]["incorrect"]
+                formatted = format(100*good/(good+bad), ".2f") + "%"
+                msg += f"{user.name}: {good}/{good+bad} = {formatted}\n"
 
             await message.channel.send(msg)
 
