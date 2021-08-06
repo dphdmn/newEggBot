@@ -21,11 +21,6 @@ class MovesGame:
         # number of rounds to store in each "block" in the database, using a single key
         self.block_size = 100
 
-        # if there is no key in the db showing how many rounds there have been
-        # then this must be the first time we are running movesgame
-        if self.db_path + "round_number" not in db:
-            db[self.db_path + "round_number"] = 0
-
         db[self.db_path + "status"] = "closed"
 
     def is_open(self):
@@ -67,7 +62,13 @@ class MovesGame:
             pass
         else:
             db[self.db_path + "status"] = "open"
-            db[self.db_path + "round_number"] += 1
+
+            # if there is no key in the db showing how many rounds there have been
+            # then this must be the first time we are running movesgame
+            if self.db_path + "round_number" not in db:
+                db[self.db_path + "round_number"] = 0
+            else:
+                db[self.db_path + "round_number"] += 1
 
             # generate scramble and calculate good moves
             scramble = scrambler.getScramble(4)
@@ -113,14 +114,12 @@ class MovesGame:
             }
 
             # store the history in blocks of n rounds per key
-            # the block of the current round is 1+floor((round-1)/n)
-            # and the index in the block is 1+(round-1)%n
-            block       = 1 + (round - 1) // self.block_size
-            block_round = 1 + (round - 1)  % self.block_size
+            block       = round // self.block_size
+            block_round = round  % self.block_size
 
             # get the block and add the round to it
             block_path = self.db_path + f"history/round_blocks/{block}"
-            if block_round == 1:
+            if block_round == 0:
                 block_dict = {}
             else:
                 block_dict = serialize.deserialize(db[block_path])
