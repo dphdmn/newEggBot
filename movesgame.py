@@ -5,6 +5,7 @@ from solver import solvers
 import scrambler
 import move
 from draw_state import draw_state
+from helper import serialize
 import discord
 from replit import db
 
@@ -13,7 +14,12 @@ class MovesGame:
         self.client = client
         self.channel = client.get_channel(channel_id)
         self.db_path = f"{self.channel.guild.id}/movesgame/{self.channel.id}/"
+
+        # time per round in seconds
         self.delay = 8
+
+        # number of rounds to store in each "block" in the database, using a single key
+        self.block_size = 100
 
         # if there is no key in the db showing how many rounds there have been
         # then this must be the first time we are running movesgame
@@ -98,11 +104,28 @@ class MovesGame:
             round = self.round_number()
             good_moves = self.good_moves()
 
-            db[self.db_path + f"history/{round}/scramble"] = db[self.db_path + "scramble"]
-            db[self.db_path + f"history/{round}/good_moves"] = db[self.db_path + "good_moves"]
-            db[self.db_path + f"history/{round}/timestamp"] = db[self.db_path + "timestamp"]
-            for id in results:
-                db[self.db_path + f"history/{round}/results/{id}"] = db[self.db_path + f"results/{id}"]
+            # store the data from the round in a dict
+            round_dict = {
+                "scramble"   : db[self.db_path + "scramble"],
+                "good_moves" : db[self.db_path + "good_moves"],
+                "timestamp"  : db[self.db_path + "timestamp"],
+                "results"    : results
+            }
+
+            # store the history in blocks of n rounds per key
+            # the block of the current round is 1+floor((round-1)/n)
+            # and the index in the block is 1+(round-1)%n
+            block       = 1 + (round - 1) // self.block_size
+            block_round = 1 + (round - 1)  % self.block_size
+
+            # get the block and add the round to it
+            block_path = self.db_path + f"history/round_blocks/{block}"
+            if block_round == 1:
+                block_dict = {}
+            else:
+                block_dict = serialize.deserialize(db[block_path])
+            block_dict[block_round] = round_dict
+            db[block_path] = serialize.serialize(block_dict)
 
             del db[self.db_path + "scramble"]
             del db[self.db_path + "good_moves"]
