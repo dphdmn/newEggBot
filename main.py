@@ -624,17 +624,17 @@ async def on_message(message):
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
     if message.content.startswith("!results"):
-        if message.channel.id != fmc.channel.id or not fmc.is_open():
-            return
-        results = fmc.results()
-        if len(results) == 0:
-            msg = "No results yet"
-        else:
-            msg = ""
-            for (id, result) in results.items():
-                user = client.get_user(id)
-                msg += f"{user.name}: {result.length()}\n"
-        await message.channel.send(msg)
+        # fmc results
+        if message.channel.id == fmc.channel.id and fmc.is_open():
+            results = fmc.results()
+            if len(results) == 0:
+                msg = "No results yet"
+            else:
+                msg = ""
+                for (id, result) in results.items():
+                    user = client.get_user(id)
+                    msg += f"{user.name}: {result.length()}\n"
+            await message.channel.send(msg)
     if message.content.startswith("!getlb"):
         await makeTmpSend("prettylb.txt", db["prettylb.txt"], "Leaderboard for ranks: ", message.channel)
     if message.content.startswith("!wrupdate"):
