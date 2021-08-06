@@ -21,6 +21,7 @@ import re
 import bot
 import time_format
 import move
+import helper.serialize as serialize
 from animate import make_video
 from puzzle_state import PuzzleState
 from algorithm import Algorithm
@@ -1448,6 +1449,13 @@ async def on_message(message):
             db["restart/message"] = "Updated!"
             bot.update()
             bot.restart()
+    if message.content.startswith("!dbdump"):
+        owner = int(os.environ["owner"])
+        if message.author.id == owner:
+            my_db = {}
+            for key in db.keys():
+                my_db[key] = db[key]
+            await makeTmpSend("db.txt", serialize.serialize(my_db), "", message.channel)
 
     # check for movesgame submissions
     if message.channel.id == movesgame.channel.id:
