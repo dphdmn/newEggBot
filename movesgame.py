@@ -125,9 +125,17 @@ class MovesGame:
             else:
                 winners = []
                 for (id, m) in results.items():
+                    # if this is the users first movesgame, create lifetime results entries
+                    if self.db_path + f"lifetime_results/{id}/correct" not in db:
+                        db[self.db_path + f"lifetime_results/{id}/correct"] = 0
+                        db[self.db_path + f"lifetime_results/{id}/incorrect"] = 0
+
                     if m in good_moves:
                         user = self.client.get_user(id)
                         winners.append(user.name)
+                        db[self.db_path + f"lifetime_results/{id}/correct"] += 1
+                    else:
+                        db[self.db_path + f"lifetime_results/{id}/incorrect"] += 1
                 
                 if len(winners) == 0:
                     msg += "Everyone was wrong :egg:"
