@@ -41,6 +41,29 @@ class MovesGame:
 
         return results
 
+    def lifetime_results(self):
+        rounds = self.round_number()
+        correct = {}
+        incorrect = {}
+        for i in range(1, rounds+1):
+            good_moves = db[self.db_path + f"history/{i}/good_moves"]
+            keys = db.prefix(self.db_path + f"history/{i}/results")
+            for key in keys:
+                id = int(key.split("/")[-1])
+                m = db[key]
+
+                if id not in correct:
+                    correct[id] = 0
+                if id not in incorrect:
+                    incorrect[id] = 0
+
+                if m in good_moves:
+                    correct[id] += 1
+                else:
+                    incorrect[id] += 1
+
+        return correct, incorrect
+
     async def open(self):
         if self.is_open():
             pass
