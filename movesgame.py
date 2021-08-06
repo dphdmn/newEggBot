@@ -44,8 +44,7 @@ class MovesGame:
 
     def lifetime_results(self):
         key = self.db_path + "lifetime_results"
-        results = serialize.deserialize(db.prefix(key))
-        return results
+        return serialize.deserialize(db[key])
 
     async def open(self):
         if self.is_open():
