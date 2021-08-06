@@ -635,6 +635,29 @@ async def on_message(message):
                     user = client.get_user(id)
                     msg += f"{user.name}: {result.length()}\n"
             await message.channel.send(msg)
+        # movesgame results
+        elif message.channel.id == movesgame.channel.id:
+            correct, incorrect = movesgame.lifetime_results()
+            ids = correct.keys()
+
+            # sort users by fraction of correct results
+            fractions = {}
+            for id in ids:
+                good = correct[id]
+                total = correct[id] + incorrect[id]
+                fractions[id] = good/total
+            sorted_ids = [x[0] for x in sorted(fractions.items(), key=lambda x: -x[1])]
+
+            msg = ""
+            for id in sorted_ids:
+                user = client.get_user(id)
+                good = correct[id]
+                total = correct[id] + incorrect[id]
+                formatted = format(100*good/total, ".2f") + "%"
+                msg += f"{user.name}: {good}/{total} = {formatted}\n"
+
+            await message.channel.send(msg)
+
     if message.content.startswith("!getlb"):
         await makeTmpSend("prettylb.txt", db["prettylb.txt"], "Leaderboard for ranks: ", message.channel)
     if message.content.startswith("!wrupdate"):
