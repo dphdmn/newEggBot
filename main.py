@@ -655,7 +655,10 @@ async def on_message(message):
                 good = results[id]["correct"]
                 bad = results[id]["incorrect"]
                 formatted = format(100*good/(good+bad), ".2f") + "%"
-                msg += f"{user.name}: {good}/{good+bad} = {formatted}\n"
+
+                # only show results for people with at least 10 rounds
+                if good+bad >= 10:
+                    msg += f"{user.name}: {good}/{good+bad} = {formatted}\n"
 
             await message.channel.send(msg)
 
