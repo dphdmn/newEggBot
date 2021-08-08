@@ -76,7 +76,7 @@ class MovesGameRound:
 
         # return the round info as a dict
         return {
-            "scramble"   : scramble,
+            "scramble"   : scramble.to_string(),
             "good_moves" : good_moves,
             "timestamp"  : timestamp,
             "results"    : results
