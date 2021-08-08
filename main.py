@@ -29,6 +29,7 @@ from analyse import analyse
 from draw_state import draw_state
 from daily_fmc import DailyFMC
 from movesgame.movesgame import MovesGame
+from movesgame.tournament import MovesGameTournament
 from probability import comparison, distributions
 from replit import db
 
@@ -587,8 +588,9 @@ async def on_ready():
     fmc.start()
 
     # create movesgame
-    global movesgame
+    global movesgame, movesgame_tournament
     movesgame = MovesGame(bot, int(os.environ["movesgame_channel"]))
+    movesgame_tournament = MovesGameTournament(bot, int(os.environ["movesgame_tournament_channel"]))
 
 @bot.listen()
 async def on_message(message):
@@ -1300,6 +1302,9 @@ async def on_message(message):
     if message.content.startswith("!movesgame"):
         if message.channel.id == movesgame.channel.id:
             await movesgame.start()
+    if message.content.startswith("!tournament"):
+        if message.channel.id == movesgame_tournament.channel.id:
+            await movesgame_tournament.run()
     if message.content.startswith("!goodm"):
         try:
             scramble = PuzzleState(message.content[7:])
