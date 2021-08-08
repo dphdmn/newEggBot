@@ -33,6 +33,11 @@ class Tournament:
             if round_num == 0:
                 players = list(round["results"].keys())
                 still_in = {x : 1 for x in players}
+
+                # if <2 players, we can't run a tournament
+                if len(players) < 2:
+                    await self.channel.send("Sorry, can't run a tournament with fewer than 2 players")
+                    return None
             # if not the first round, delete the results of anyone who isn't still in
             else:
                 results = round["results"]
