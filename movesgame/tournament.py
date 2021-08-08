@@ -77,39 +77,40 @@ class Tournament:
                     still_in[id] = 0
             losers = still_in_before_round.difference(winners)
 
-            # find the most common correct move suggestion
-            winner_moves = {id: move for (id, move) in round["results"].items() if id in winners}
-            move_amounts = Counter(winner_moves.values())
-            max_frequency = max(move_amounts.values())
-            commonest_moves = [move for move in "ULDR" if move_amounts[move] == max_frequency]
-
-            # if there are multiple commonest moves, pick one at random
-            next_move = random.choice(commonest_moves)
-            scramble.apply(Algorithm(next_move))
-
             # check a few conditions for the tournament to be over
             tournament_over = False
-            if scramble.solved():
-                msg += "The puzzle is solved!\n"
-                msg += "The winners are " + ", ".join(["**" + name(id) + "**" for id in winners]) + "!"
-                tournament_over = True
-            elif len(winners) == 0:
+            if len(winners) == 0:
                 msg += "Everyone was eliminated!\n"
                 if round_num == 0:
                     msg += "There are no winners."
                 else:
                     msg += "The winners are " + ", ".join(["**" + name(id) + "**" for id in still_in_before_round])
                 tournament_over = True
-            elif len(losers) == 0:
-                msg += f"Everyone continues to round {round_num+2}!"
-            elif len(winners) == 1:
-                winner = list(winners)[0]
-                msg += f"**{name(winner)}** is the winner!\n"
-                msg += "Everyone else was eliminated"
-                tournament_over = True
             else:
-                msg += ", ".join(["**" + name(id) + "**" for id in winners]) + f" continue to round {round_num+2}!\n"
-                msg += ", ".join([name(id) for id in losers]) + " were eliminated"
+                # find the most common correct move suggestion
+                winner_moves = {id: move for (id, move) in round["results"].items() if id in winners}
+                move_amounts = Counter(winner_moves.values())
+                max_frequency = max(move_amounts.values())
+                commonest_moves = [move for move in "ULDR" if move_amounts[move] == max_frequency]
+
+                # if there are multiple commonest moves, pick one at random
+                next_move = random.choice(commonest_moves)
+                scramble.apply(Algorithm(next_move))
+
+                if scramble.solved():
+                    msg += "The puzzle is solved!\n"
+                    msg += "The winners are " + ", ".join(["**" + name(id) + "**" for id in winners]) + "!"
+                    tournament_over = True
+                elif len(losers) == 0:
+                    msg += f"Everyone continues to round {round_num+2}!"
+                elif len(winners) == 1:
+                    winner = list(winners)[0]
+                    msg += f"**{name(winner)}** is the winner!\n"
+                    msg += "Everyone else was eliminated"
+                    tournament_over = True
+                else:
+                    msg += ", ".join(["**" + name(id) + "**" for id in winners]) + f" continue to round {round_num+2}!\n"
+                    msg += ", ".join([name(id) for id in losers]) + " were eliminated"
 
             await self.channel.send(msg)
 
