@@ -56,7 +56,7 @@ class MovesGameTournament:
             # we store the timestamp at the beginning of the tournament, and the scramble and moves that were applied
             del round["timestamp"]
             del round["scramble"]
-            
+
             # the players in the tournament are whoever submitted in the first round
             if round_num == 0:
                 players = list(round["results"].keys())
