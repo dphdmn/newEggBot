@@ -21,7 +21,9 @@ class MovesGame:
         # number of rounds to store in each "block" in the database, using a single key
         self.block_size = 100
 
+        # initialize db keys
         db[self.db_path + "status"] = "closed"
+        db[self.db_path + "lifetime_results"] = serialize.serialize({})
 
     def is_open(self):
         return db[self.db_path + "status"] == "open"
