@@ -79,7 +79,7 @@ class Tournament:
 
             # find the most common correct move suggestion
             winner_moves = {id: move for (id, move) in round["results"].items() if id in winners}
-            move_amounts = Counter(winner_moves)
+            move_amounts = Counter(winner_moves.values())
             max_frequency = max(move_amounts.values())
             commonest_moves = [move for move in "ULDR" if move_amounts[move] == max_frequency]
 
