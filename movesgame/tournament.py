@@ -84,8 +84,10 @@ class Tournament:
                 msg += "Everyone was eliminated!\n"
                 if round_num == 0:
                     msg += "There are no winners."
+                    tournament_winners = []
                 else:
                     msg += "The winners are " + ", ".join(["**" + name(id) + "**" for id in still_in_before_round])
+                    tournament_winners = still_in_before_round
                 tournament_over = True
             else:
                 # find the most common correct move suggestion
@@ -101,6 +103,7 @@ class Tournament:
                 if scramble.solved():
                     msg += "The puzzle is solved!\n"
                     msg += "The winners are " + ", ".join(["**" + name(id) + "**" for id in winners]) + "!"
+                    tournament_winners = winners
                     tournament_over = True
                 elif len(losers) == 0:
                     msg += f"Everyone continues to round {round_num+2}!"
@@ -108,6 +111,7 @@ class Tournament:
                     winner = list(winners)[0]
                     msg += f"**{name(winner)}** is the winner!\n"
                     msg += "Everyone else was eliminated"
+                    tournament_winners = winners
                     tournament_over = True
                 else:
                     msg += ", ".join(["**" + name(id) + "**" for id in winners]) + f" continue to round {round_num+2}!\n"
@@ -124,8 +128,6 @@ class Tournament:
             await self.channel.send("Next round will start in 5 seconds")
             await asyncio.sleep(5)
 
-        self.running = False
-
         # store in the db
         db[self.db_path + "tournament_number"] += 1
         tournament_num = self.tournament_number()
@@ -138,5 +140,10 @@ class Tournament:
             block_dict = {}
         else:
             block_dict = serialize.deserialize(db[block_path])
-        block_dict[block_round] = rounds
+        block_dict[block_round] = {
+            "rounds"  : rounds,
+            "winners" : tournament_winners
+        }
         db[block_path] = serialize.serialize(block_dict)
+
+        self.running = False
