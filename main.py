@@ -28,7 +28,7 @@ from algorithm import Algorithm
 from analyse import analyse
 from draw_state import draw_state
 from daily_fmc import DailyFMC
-from movesgame import MovesGame
+from movesgame.movesgame import MovesGame
 from probability import comparison, distributions
 from replit import db
 
@@ -1299,7 +1299,7 @@ async def on_message(message):
             await message.channel.send("Probably updated")
     if message.content.startswith("!movesgame"):
         if message.channel.id == movesgame.channel.id:
-            await movesgame.open()
+            await movesgame.start()
     if message.content.startswith("!goodm"):
         try:
             scramble = PuzzleState(message.content[7:])
@@ -1462,7 +1462,7 @@ async def on_message(message):
 
     # check for movesgame submissions
     if message.channel.id == movesgame.channel.id:
-        if movesgame.is_open():
+        if movesgame.running:
             m = message.content.upper()
             if len(m) == 1 and m in "ULDR":
                 movesgame.submit(message.author, m)
