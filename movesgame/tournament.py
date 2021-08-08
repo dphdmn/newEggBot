@@ -60,7 +60,7 @@ class Tournament:
             tournament_over = False
             if len(winners) == 0:
                 names = [self.bot.get_user(id).name for id in still_in_before_round]
-                msg += "Everyone was eliminated!"
+                msg += "Everyone was eliminated!\n"
                 msg += "The winners are " + ", ".join(["**" + name + "**" for name in names])
                 tournament_over = True
             elif len(losers) == 0:
