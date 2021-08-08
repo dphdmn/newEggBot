@@ -590,7 +590,7 @@ async def on_ready():
     global movesgame
     movesgame = MovesGame(bot, int(os.environ["movesgame_channel"]))
 
-@bot.event
+@bot.listen()
 async def on_message(message):
     if message.author == bot.user:
         return
