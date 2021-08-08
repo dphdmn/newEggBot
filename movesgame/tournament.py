@@ -1,6 +1,7 @@
 from collections import Counter
 import random
 import asyncio
+import time
 import scrambler
 from helper import serialize
 from movesgame.round import MovesGameRound
@@ -28,6 +29,8 @@ class Tournament:
         if self.running:
             return
 
+        timestamp = int(time.time())
+
         # helper function to get username from id
         def name(id):
             return self.bot.get_user(id).name
@@ -37,6 +40,9 @@ class Tournament:
         # generate a scramble to use
         scramble = scrambler.getScramble(4)
 
+        # initialize an empty solution algorithm
+        solution = Algorithm("")
+
         # start running the rounds
         round_num = 0
         rounds = {}
@@ -45,6 +51,11 @@ class Tournament:
 
             # run the round
             round = await MovesGameRound(self.bot, self.channel, scramble=scramble).run()
+
+            # don't need to store timestamp or scramble for every single round
+            # we store the timestamp at the beginning of the tournament, and the scramble and moves that were applied
+            del round["timestamp"]
+            del round["scramble"]
             
             # the players in the tournament are whoever submitted in the first round
             if round_num == 0:
@@ -98,7 +109,9 @@ class Tournament:
 
                 # if there are multiple commonest moves, pick one at random
                 next_move = random.choice(commonest_moves)
-                scramble.apply(Algorithm(next_move))
+                next_move_alg = Algorithm(next_move)
+                scramble.apply(next_move_alg)
+                solution += next_move_alg
 
                 if scramble.solved():
                     msg += "The puzzle is solved!\n"
@@ -141,8 +154,10 @@ class Tournament:
         else:
             block_dict = serialize.deserialize(db[block_path])
         block_dict[block_round] = {
-            "rounds"  : rounds,
-            "winners" : tournament_winners
+            "scramble" : scramble.to_string(),
+            "solution" : solution.to_string(),
+            "rounds"   : rounds,
+            "winners"  : tournament_winners
         }
         db[block_path] = serialize.serialize(block_dict)
 
