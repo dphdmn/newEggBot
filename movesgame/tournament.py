@@ -54,7 +54,8 @@ class Tournament:
                 # if <2 players, we can't run a tournament
                 if len(players) < 2:
                     await self.channel.send("Sorry, can't run a tournament with fewer than 2 players")
-                    return None
+                    self.running = False
+                    return
             # if not the first round, delete the results of anyone who isn't still in
             else:
                 results = round["results"]
