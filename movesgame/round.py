@@ -13,6 +13,7 @@ class MovesGameRound:
         self.bot = bot
         self.channel = channel
         self.db_path = f"{self.channel.guild.id}/movesgame/{self.channel.id}/"
+        self.running = False
 
         # time per round in seconds
         self.delay = 8
@@ -21,7 +22,15 @@ class MovesGameRound:
         self.scramble = scramble
         self.good_moves = good_moves
 
+        # add on_message function as a listener
+        bot.add_listener(self.on_message)
+
     async def run(self):
+        if self.running:
+            return
+
+        self.running = True
+
         # timestamp at the start of the round
         timestamp = int(time.time())
 
@@ -63,6 +72,8 @@ class MovesGameRound:
             id = int(key.split("/")[-1])
             results[id] = db[key]
 
+        self.running = False
+
         # return the round info as a dict
         return {
             "scramble"   : scramble,
@@ -70,3 +81,15 @@ class MovesGameRound:
             "timestamp"  : timestamp,
             "results"    : results
         }
+
+    def submit(self, user, move):
+        db[self.db_path + f"current/results/{user.id}"] = move
+
+    async def on_message(self, message):
+        if message.channel.id != self.channel.id:
+            return
+
+        if self.running:
+            m = message.content.upper()
+            if len(m) == 1 and m in "ULDR":
+                self.submit(message.author, m)

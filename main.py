@@ -1460,17 +1460,9 @@ async def on_message(message):
                 my_db[key] = db[key]
             await makeTmpSend("db.txt", serialize.serialize(my_db), "", message.channel)
 
-    # check for movesgame submissions
-    if message.channel.id == movesgame.channel.id:
-        if movesgame.running:
-            m = message.content.upper()
-            if len(m) == 1 and m in "ULDR":
-                movesgame.submit(message.author, m)
-
 @tasks.loop(seconds=1)
 async def spam(chan, msg):
     await chan.send(msg)
-
 
 keep_alive()
 try:

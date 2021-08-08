@@ -38,6 +38,9 @@ class MovesGame:
         # run the round
         round = await MovesGameRound(self.bot, self.channel).run()
 
+        # increment the round number
+        db[self.db_path + "round_number"] += 1
+
         # store the history in blocks of n rounds per key
         round_num = self.round_number()
         block       = round_num // self.block_size
@@ -86,6 +89,3 @@ class MovesGame:
         await self.channel.send(msg)
 
         self.running = False
-
-    def submit(self, user, move):
-        db[self.db_path + f"current/results/{user.id}"] = move
