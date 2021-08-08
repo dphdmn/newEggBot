@@ -68,7 +68,10 @@ class Tournament:
             tournament_over = False
             if len(winners) == 0:
                 msg += "Everyone was eliminated!\n"
-                msg += "The winners are " + ", ".join(["**" + name(id) + "**" for id in still_in_before_round])
+                if round_num == 0:
+                    msg += "There are no winners."
+                else:
+                    msg += "The winners are " + ", ".join(["**" + name(id) + "**" for id in still_in_before_round])
                 tournament_over = True
             elif len(losers) == 0:
                 msg += f"Everyone continues to round {round_num+2}!"
