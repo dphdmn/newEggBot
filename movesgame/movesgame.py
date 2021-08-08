@@ -9,9 +9,6 @@ class MovesGame:
         self.db_path = f"{self.channel.guild.id}/movesgame/{self.channel.id}/"
         self.running = False
 
-        # time per round in seconds
-        self.delay = 8
-
         # number of rounds to store in each "block" in the database, using a single key
         self.block_size = 100
 
