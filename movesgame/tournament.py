@@ -8,7 +8,7 @@ from movesgame.round import MovesGameRound
 from algorithm import Algorithm
 from replit import db
 
-class Tournament:
+class MovesGameTournament:
     def __init__(self, bot, channel_id):
         self.bot = bot
         self.channel = bot.get_channel(channel_id)
