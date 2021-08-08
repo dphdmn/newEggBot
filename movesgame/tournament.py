@@ -77,9 +77,23 @@ class Tournament:
                     still_in[id] = 0
             losers = still_in_before_round.difference(winners)
 
+            # find the most common correct move suggestion
+            winner_moves = {id: move for (id, move) in round["results"].items() if id in winners}
+            move_amounts = Counter(winner_moves)
+            max_frequency = max(move_amounts.values())
+            commonest_moves = [move for move in "ULDR" if move_amounts[move] == max_frequency]
+
+            # if there are multiple commonest moves, pick one at random
+            next_move = random.choice(commonest_moves)
+            scramble.apply(Algorithm(next_move))
+
             # check a few conditions for the tournament to be over
             tournament_over = False
-            if len(winners) == 0:
+            if scramble.solved():
+                msg += "The puzzle is solved!\n"
+                msg += "The winners are " + ", ".join(["**" + name(id) + "**" for id in winners]) + "!"
+                tournament_over = True
+            elif len(winners) == 0:
                 msg += "Everyone was eliminated!\n"
                 if round_num == 0:
                     msg += "There are no winners."
@@ -101,16 +115,6 @@ class Tournament:
 
             if tournament_over:
                 break
-
-            # find the most common correct move suggestion
-            winner_moves = {id: move for (id, move) in round["results"].items() if id in winners}
-            move_amounts = Counter(winner_moves)
-            max_frequency = max(move_amounts.values())
-            commonest_moves = [move for move in "ULDR" if move_amounts[move] == max_frequency]
-
-            # if there are multiple commonest moves, pick one at random
-            next_move = random.choice(commonest_moves)
-            scramble.apply(Algorithm(next_move))
 
             # increment the round number
             round_num += 1
