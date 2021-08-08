@@ -13,10 +13,10 @@ from discord.ext import tasks
 from prettytable import PrettyTable
 
 class DailyFMC:
-    def __init__(self, client, channel_id, results_channel_id):
-        self.client = client
-        self.channel = client.get_channel(channel_id)
-        self.results_channel = client.get_channel(results_channel_id)
+    def __init__(self, bot, channel_id, results_channel_id):
+        self.bot = bot
+        self.channel = bot.get_channel(channel_id)
+        self.results_channel = bot.get_channel(results_channel_id)
         self.db_path = f"{self.channel.guild.id}/fmc/{self.channel.id}/"
 
     def is_open(self):
@@ -43,7 +43,7 @@ class DailyFMC:
         if key in db:
             return Algorithm(db[key])
         else:
-            user = self.client.get_user(id)
+            user = self.bot.get_user(id)
             raise ValueError(f"user \"{user.name}\" (id={id}) has not submitted a solution")
 
     def results(self):
@@ -127,7 +127,7 @@ class DailyFMC:
 
                 # organise results in an array
                 for (id, solution) in results.items():
-                    user = self.client.get_user(id)
+                    user = self.bot.get_user(id)
                     length = solution.length()
                     table.add_row([user.name, length, length - optLength, solution.to_string()])
 

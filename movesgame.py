@@ -10,9 +10,9 @@ import discord
 from replit import db
 
 class MovesGame:
-    def __init__(self, client, channel_id):
-        self.client = client
-        self.channel = client.get_channel(channel_id)
+    def __init__(self, bot, channel_id):
+        self.bot = bot
+        self.channel = bot.get_channel(channel_id)
         self.db_path = f"{self.channel.guild.id}/movesgame/{self.channel.id}/"
 
         # time per round in seconds
@@ -140,7 +140,7 @@ class MovesGame:
                         }
 
                     if m in good_moves:
-                        user = self.client.get_user(id)
+                        user = self.bot.get_user(id)
                         winners.append(user.name)
                         lifetime_results[id]["correct"] += 1
                     else:

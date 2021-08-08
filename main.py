@@ -4,7 +4,7 @@ import os
 from keep_alive import keep_alive
 from prettytable import PrettyTable
 import discord
-from discord.ext import tasks
+from discord.ext import tasks, commands
 import urllib.request
 import html2text
 import traceback
@@ -18,7 +18,7 @@ import requests
 import glob
 import zlib
 import re
-import bot
+import bot as bot_helper
 import time_format
 import move
 import helper.serialize as serialize
@@ -34,7 +34,7 @@ from replit import db
 
 intents = discord.Intents.default()
 intents.members = True
-client = discord.Client(intents=intents)
+bot = commands.Bot(command_prefix="!", intents=intents)
 
 async def makeTmpSend(filename, filedata, messagewith, msgchn):
     f = open(filename, "w+")
@@ -568,14 +568,14 @@ def mod_date(path_to_file):
     return datetime.datetime.fromtimestamp(stat.st_mtime)
 
 #____________________________discord started
-@client.event
+@bot.event
 async def on_ready():
-    print(f"We have logged in as {client.user}")
+    print(f"We have logged in as {bot.user}")
 
     # check for message to send after a restart/update
     if "restart/channel_id" in db.keys() and "restart/message" in db.keys():
         channel_id = db["restart/channel_id"]
-        channel = client.get_channel(channel_id)
+        channel = bot.get_channel(channel_id)
         message = db["restart/message"]
         await channel.send(message)
         del db["restart/channel_id"]
@@ -583,20 +583,20 @@ async def on_ready():
 
     # start daily fmc
     global fmc
-    fmc = DailyFMC(client, int(os.environ["daily_fmc_channel"]), int(os.environ["daily_fmc_results_channel"]))
+    fmc = DailyFMC(bot, int(os.environ["daily_fmc_channel"]), int(os.environ["daily_fmc_results_channel"]))
     fmc.start()
 
     # create movesgame
     global movesgame
-    movesgame = MovesGame(client, int(os.environ["movesgame_channel"]))
+    movesgame = MovesGame(bot, int(os.environ["movesgame_channel"]))
 
-@client.event
+@bot.event
 async def on_message(message):
-    if message.author == client.user:
+    if message.author == bot.user:
         return
     if "pls" in message.content.lower():
         await message.add_reaction("eff:803888415858098217")
-    if client.user in message.mentions:
+    if bot.user in message.mentions:
         await message.channel.send("You are egg, " + message.author.mention)
     if "fuck you" in message.content.lower():
         await message.channel.send("no u, " + message.author.mention)
@@ -633,7 +633,7 @@ async def on_message(message):
             else:
                 msg = ""
                 for (id, result) in results.items():
-                    user = client.get_user(id)
+                    user = bot.get_user(id)
                     msg += f"{user.name}: {result.length()}\n"
             await message.channel.send(msg)
         # movesgame results
@@ -651,7 +651,7 @@ async def on_message(message):
 
             msg = ""
             for id in sorted_ids:
-                user = client.get_user(id)
+                user = bot.get_user(id)
                 good = results[id]["correct"]
                 bad = results[id]["incorrect"]
                 formatted = format(100*good/(good+bad), ".2f") + "%"
@@ -1438,20 +1438,20 @@ async def on_message(message):
         )
     if message.content.startswith("!git"):
         if message.author.guild_permissions.administrator:
-            await message.channel.send(bot.git_info)
+            await message.channel.send(bot_helper.git_info)
     if message.content.startswith("!restart"):
         if message.author.guild_permissions.administrator:
             await message.channel.send("Restarting...")
             db["restart/channel_id"] = message.channel.id
             db["restart/message"] = "Restarted"
-            bot.restart()
+            bot_helper.restart()
     if message.content.startswith("!botupdate"):
         if message.author.guild_permissions.administrator:
             await message.channel.send("Updating...")
             db["restart/channel_id"] = message.channel.id
             db["restart/message"] = "Updated!"
-            bot.update()
-            bot.restart()
+            bot_helper.update()
+            bot_helper.restart()
     if message.content.startswith("!dbdump"):
         owner = int(os.environ["owner"])
         if message.author.id == owner:
@@ -1474,7 +1474,7 @@ async def spam(chan, msg):
 
 keep_alive()
 try:
-    client.run(os.environ["eggkey"])
+    bot.run(os.environ["eggkey"])
 except:
     req = requests.get("https://discord.com/api/path/to/the/endpoint")
     print(req.text)
