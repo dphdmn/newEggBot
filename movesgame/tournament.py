@@ -70,9 +70,9 @@ class MovesGameTournament:
             # if not the first round, delete the results of anyone who isn't still in
             else:
                 results = round["results"]
-                for id in results:
-                    if id not in players or not still_in[id]:
-                        del results[id]
+                entries_to_delete = [id for id in results if id not in players or not still_in[id]]
+                for id in entries_to_delete:
+                    del results[id]
                 round["results"] = results
 
             # store the round in rounds
