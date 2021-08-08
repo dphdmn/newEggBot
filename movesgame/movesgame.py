@@ -16,7 +16,11 @@ class MovesGame:
         self.block_size = 100
 
         # initialize db keys
-        db[self.db_path + "lifetime_results"] = serialize.serialize({})
+        if self.db_path + "lifetime_results" not in db:
+            db[self.db_path + "lifetime_results"] = serialize.serialize({})
+        if self.db_path + "round_number" not in db:
+            # -1 so that the first round is round 0
+            db[self.db_path + "round_number"] = -1
 
     def round_number(self):
         return db[self.db_path + "round_number"]
