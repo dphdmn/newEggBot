@@ -2,14 +2,27 @@ from collections import Counter
 import random
 import asyncio
 import scrambler
+from helper import serialize
 from movesgame.round import MovesGameRound
 from algorithm import Algorithm
+from replit import db
 
 class Tournament:
     def __init__(self, bot, channel_id):
         self.bot = bot
         self.channel = bot.get_channel(channel_id)
+        self.db_path = f"{self.channel.guild.id}/movesgame_tournament/{self.channel.id}/"
         self.running = False
+
+        # number of tournaments per block
+        self.block_size = 25
+
+        if self.db_path + "tournament_number" not in db:
+            # -1 so that the first tournament is 0
+            db[self.db_path + "tournament_number"] = -1
+
+    def tournament_number(self):
+        return db[self.db_path + "tournament_number"]
 
     async def run(self):
         if self.running:
@@ -107,4 +120,17 @@ class Tournament:
 
         self.running = False
 
-        return rounds
+        # store in the db
+        db[self.db_path + "tournament_number"] += 1
+        tournament_num = self.tournament_number()
+
+        block       = tournament_num // self.block_size
+        block_round = tournament_num  % self.block_size
+
+        block_path = self.db_path + f"history/blocks/{block}"
+        if block_round == 0:
+            block_dict = {}
+        else:
+            block_dict = serialize.deserialize(db[block_path])
+        block_dict[block_round] = rounds
+        db[block_path] = serialize.serialize(block_dict)
