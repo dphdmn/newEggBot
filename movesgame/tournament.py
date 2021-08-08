@@ -15,6 +15,10 @@ class Tournament:
         if self.running:
             return
 
+        # helper function to get username from id
+        def name(id):
+            return self.bot.get_user(id).name
+
         self.running = True
 
         # generate a scramble to use
@@ -54,9 +58,8 @@ class Tournament:
             winners = set()
             still_in_before_round = set([id for id in players if still_in[id]])
             for (id, m) in round["results"].items():
-                user = self.bot.get_user(id)
                 if m in round["good_moves"]:
-                    winners.add(user.name)
+                    winners.add(id)
                 else:
                     still_in[id] = 0
             losers = still_in_before_round.difference(winners)
@@ -64,20 +67,19 @@ class Tournament:
             # check a few conditions for the tournament to be over
             tournament_over = False
             if len(winners) == 0:
-                names = [self.bot.get_user(id).name for id in still_in_before_round]
                 msg += "Everyone was eliminated!\n"
-                msg += "The winners are " + ", ".join(["**" + name + "**" for name in names])
+                msg += "The winners are " + ", ".join(["**" + name(id) + "**" for id in still_in_before_round])
                 tournament_over = True
             elif len(losers) == 0:
                 msg += f"Everyone continues to round {round_num+2}!"
             elif len(winners) == 1:
                 winner = list(winners)[0]
-                msg += f"**{winner}** is the winner!\n"
+                msg += f"**{name(winner)}** is the winner!\n"
                 msg += "Everyone else was eliminated"
                 tournament_over = True
             else:
-                msg += ", ".join(["**" + name + "**" for name in winners]) + f" continue to round {round_num+2}\n"
-                msg += ", ".join(losers) + " were eliminated!"
+                msg += ", ".join(["**" + name(id) + "**" for id in winners]) + f" continue to round {round_num+2}!\n"
+                msg += ", ".join([name(id) for id in losers]) + " were eliminated"
 
             await self.channel.send(msg)
 
@@ -86,8 +88,8 @@ class Tournament:
 
             # find the most common correct move suggestion
             winner_moves = {id: move for (id, move) in round["results"].items() if id in winners}
-            move_amounts = winner_moves.values()
-            max_frequency = max(Counter(winner_moves).values())
+            move_amounts = Counter(winner_moves)
+            max_frequency = max(move_amounts.values())
             commonest_moves = [move for move in "ULDR" if move_amounts[move] == max_frequency]
 
             # if there are multiple commonest moves, pick one at random
