@@ -95,7 +95,7 @@ class MovesGameTournament:
                 msg += "Everyone was eliminated!\n"
                 if round_num == 0:
                     msg += "There are no winners."
-                    tournament_winners = []
+                    tournament_winners = set()
                 else:
                     msg += "The winners are " + ", ".join(["**" + name(id) + "**" for id in still_in_before_round])
                     tournament_winners = still_in_before_round
