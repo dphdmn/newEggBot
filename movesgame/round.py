@@ -6,13 +6,11 @@ import scrambler
 import move
 from draw_state import draw_state
 import discord
-from replit import db
 
 class MovesGameRound:
     def __init__(self, bot, channel, scramble=None, good_moves=None):
         self.bot = bot
         self.channel = channel
-        self.db_path = f"{self.channel.guild.id}/movesgame/{self.channel.id}/"
         self.running = False
 
         # time per round in seconds
@@ -33,10 +31,6 @@ class MovesGameRound:
 
         # timestamp at the start of the round
         timestamp = int(time.time())
-
-        # delete any results from the database that were left from a previous round
-        for key in db.prefix(self.db_path + "current"):
-            del db[key]
 
         # generate scramble if not already given
         if self.scramble is None:
@@ -62,15 +56,11 @@ class MovesGameRound:
             await self.channel.send(msg, file=img)
         os.remove("scramble.png")
 
+        # prepare to collect results
+        self.results = {}
+
         # wait for people to submit moves and then close
         await asyncio.sleep(self.delay)
-
-        # get results
-        keys = db.prefix(self.db_path + "current/results")
-        results = {}
-        for key in keys:
-            id = int(key.split("/")[-1])
-            results[id] = db[key]
 
         self.running = False
 
@@ -79,11 +69,11 @@ class MovesGameRound:
             "scramble"   : scramble.to_string(),
             "good_moves" : good_moves,
             "timestamp"  : timestamp,
-            "results"    : results
+            "results"    : self.results
         }
 
     def submit(self, user, move):
-        db[self.db_path + f"current/results/{user.id}"] = move
+        self.results[user.id] = move
 
     async def on_message(self, message):
         if message.channel.id != self.channel.id:
