@@ -33,7 +33,7 @@ class DailyFMC:
         msg = "Daily FMC scramble: " + scramble.to_string() + "\n"
         msg += "Optimal solution length: " + str(solution.length()) + "\n"
         msg += "Use **!submit** command to submit solutions (You can submit multiple times!), for example:\n"
-        msg += "!submit LULD3RU2LD2LUR2UL2D2RU2RLULDR3UL2D2R2U2L2DLDRU2LDRURDL2DR2U2L2DRULDR2ULDLU\n"
+        msg += "!submit LUR2DL2URU2LDR2DLUR2D2LU3RD3LULU2RDLDR2ULDLURUL2\n"
 
         img = draw_state(scramble)
         img.save("scramble.png", "PNG")
