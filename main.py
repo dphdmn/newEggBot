@@ -27,7 +27,7 @@ from puzzle_state import PuzzleState
 from algorithm import Algorithm
 from analyse import analyse
 from draw_state import draw_state
-from daily_fmc import DailyFMC
+from fmc.daily_fmc import DailyFMC
 from movesgame.movesgame import MovesGame
 from movesgame.tournament import MovesGameTournament
 from probability import comparison, distributions
@@ -585,7 +585,7 @@ async def on_ready():
     # start daily fmc
     global fmc
     fmc = DailyFMC(bot, int(os.environ["daily_fmc_channel"]), int(os.environ["daily_fmc_results_channel"]))
-    fmc.start()
+    await fmc.start()
 
     # create movesgame
     global movesgame, movesgame_tournament
@@ -610,14 +610,14 @@ async def on_message(message):
                 msg += shit + " "
             spam.start(message.channel, msg[:2000])
     if message.content.startswith("!fmc"):
-        if message.channel.id != fmc.channel.id or not fmc.is_open():
+        if message.channel.id != fmc.channel.id or not fmc.round.running():
             return
-        msg = "Current FMC scramble: " + fmc.scramble().to_string() + "\n"
-        msg += "Optimal solution length: " + str(fmc.solution().length()) + "\n"
-        msg += "Time remaining: " + time_format.format(fmc.remaining())
+        msg = "Current FMC scramble: " + fmc.round.get_scramble().to_string() + "\n"
+        msg += "Optimal solution length: " + str(fmc.round.get_solution().length()) + "\n"
+        msg += "Time remaining: " + time_format.format(fmc.round.remaining())
         await message.channel.send(msg)
     if message.content.startswith("!submit"):
-        if message.channel.id != fmc.channel.id or not fmc.is_open():
+        if message.channel.id != fmc.channel.id:
             return
         try:
             await message.delete()
@@ -628,8 +628,8 @@ async def on_message(message):
             await message.channel.send(f"```\n{repr(e)}\n```")
     if message.content.startswith("!results"):
         # fmc results
-        if message.channel.id == fmc.channel.id and fmc.is_open():
-            results = fmc.results()
+        if message.channel.id == fmc.channel.id and fmc.round.running():
+            results = fmc.round.results()
             if len(results) == 0:
                 msg = "No results yet"
             else:
@@ -1346,8 +1346,8 @@ async def on_message(message):
             size = scramble.size()
 
             # don't allow daily fmc scramble
-            if fmc.is_open():
-                daily_fmc_scramble = fmc.scramble()
+            if fmc.round.running():
+                daily_fmc_scramble = fmc.round.get_scramble()
                 if scramble == daily_fmc_scramble:
                     name = message.author.name
                     await message.channel.send(f"No cheating, {name}!")
