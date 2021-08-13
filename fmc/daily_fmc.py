@@ -17,7 +17,7 @@ class DailyFMC:
         self.results_channel = bot.get_channel(results_channel_id)
         self.db_path = f"{self.channel.guild.id}/fmc/{self.channel.id}/"
 
-        self.round = FMCRound(channel_id, warnings=[23*3600], on_close=self.on_close)
+        self.round = FMCRound(channel_id, warnings=[23*3600], on_close=self.on_close, on_warning=self.on_warning)
 
     async def start(self):
         if self.round.running():
@@ -107,7 +107,11 @@ class DailyFMC:
         await self.start()
 
         timestamp = round_dict["timestamp"]
-        db[self.round.db_path + "start_time"] = timestamp + 86400
+        db[self.round.db_path + "start_time"] = timestamp + self.round.duration
+
+    async def on_warning(self, warning):
+        if warning == 23*3600:
+            await self.channel.send("One hour remaining!")
 
     async def submit(self, user, solution):
         id = user.id

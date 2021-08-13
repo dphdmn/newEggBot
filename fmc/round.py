@@ -8,12 +8,13 @@ from discord.ext import tasks
 from replit import db
 
 class FMCRound:
-    def __init__(self, round_id, scramble=None, duration=86400, warnings=[], on_close=None):
+    def __init__(self, round_id, scramble=None, duration=86400, warnings=[], on_close=None, on_warning=None):
         self.db_path = f"fmc/{round_id}/"
         self.scramble = scramble
         self.duration = duration
         self.warnings = warnings
         self.on_close = on_close
+        self.on_warning  = on_warning
 
         self.loop.start()
 
@@ -67,6 +68,10 @@ class FMCRound:
         db[self.db_path + "solution"] = solution.to_string()
         db[self.db_path + "start_time"] = int(time.time())
 
+        # initialize warning db entries
+        for warning in self.warnings:
+            db[self.db_path + f"warnings/{warning}"] = False
+
     def close(self):
         if not self.running():
             return
@@ -111,7 +116,17 @@ class FMCRound:
         if not self.running():
             return
 
-        if self.elapsed() >= self.duration:
+        elapsed = self.elapsed()
+
+        # check for any time warnings that need to be emitted
+        if self.on_warning is not None:
+            for warning in self.warnings:
+                key = self.db_path + f"warnings/{warning}"
+                if elapsed >= warning and not db[key]:
+                    db[key] = True
+                    await self.on_warning(warning)
+
+        if elapsed >= self.duration:
             round_dict = self.close()
             if self.on_close is not None:
                 await self.on_close(round_dict)
