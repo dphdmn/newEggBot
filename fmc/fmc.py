@@ -117,7 +117,7 @@ class FMC:
     async def on_warning(self, warning):
         if warning == 60*5:
             await self.channel.send("5 minutes remaining!")
-        elif warning == 60*5:
+        elif warning == 60*9:
             await self.channel.send("One minute remaining!")
 
     async def submit(self, user, solution):
