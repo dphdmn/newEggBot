@@ -584,10 +584,14 @@ async def on_ready():
         del db["restart/message"]
 
     # create fmc
-    global daily_fmc, fmc
+    global daily_fmc, short_fmc
     daily_fmc = DailyFMC(bot, int(os.environ["daily_fmc_channel"]), int(os.environ["daily_fmc_results_channel"]))
-    fmc = FMC(bot, int(os.environ["fmc_channel"]))
+    short_fmc = FMC(bot, int(os.environ["fmc_channel"]))
     await daily_fmc.start()
+
+    # dict of fmc objects by id
+    global fmcs
+    fmcs = {x.channel.id : x for x in [daily_fmc, short_fmc]}
 
     # create movesgame
     global movesgame, movesgame_tournament
@@ -612,36 +616,35 @@ async def on_message(message):
                 msg += shit + " "
             spam.start(message.channel, msg[:2000])
     if message.content.startswith("!fmc"):
-        if message.channel.id != daily_fmc.channel.id or not daily_fmc.round.running():
-            return
-        msg = "Current FMC scramble: " + daily_fmc.round.get_scramble().to_string() + "\n"
-        msg += "Optimal solution length: " + str(daily_fmc.round.get_solution().length()) + "\n"
-        msg += "Time remaining: " + time_format.format(daily_fmc.round.remaining())
-        await message.channel.send(msg)
-    if message.content.startswith("!submit"):
-        fmcs = {
-            daily_fmc.channel.id : daily_fmc,
-            fmc.channel.id : fmc
-        }
-
         if message.channel.id not in fmcs:
             return
-        my_fmc = fmcs[message.channel.id]
-
-        if not my_fmc.round.running():
+        fmc = fmcs[message.channel.id]
+        if not fmc.round.running():
             return
-
+        msg = "Current FMC scramble: " + fmc.round.get_scramble().to_string() + "\n"
+        msg += "Optimal solution length: " + str(fmc.round.get_solution().length()) + "\n"
+        msg += "Time remaining: " + time_format.format(fmc.round.remaining())
+        await message.channel.send(msg)
+    if message.content.startswith("!submit"):
+        if message.channel.id not in fmcs:
+            return
+        fmc = fmcs[message.channel.id]
+        if not fmc.round.running():
+            return
         try:
             await message.delete()
             solution = Algorithm(message.content[8:])
-            await my_fmc.submit(message.author, solution)
+            await fmc.submit(message.author, solution)
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
     if message.content.startswith("!results"):
         # fmc results
-        if message.channel.id == daily_fmc.channel.id and daily_fmc.round.running():
-            results = daily_fmc.round.results()
+        if message.channel.id in fmcs:
+            fmc = fmcs[message.channel.id]
+            if not fmc.round.running():
+                return
+            results = fmc.round.results()
             if len(results) == 0:
                 msg = "No results yet"
             else:
