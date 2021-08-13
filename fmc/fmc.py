@@ -85,7 +85,6 @@ class FMC:
         if len(results) == 0:
             msg += "\n\nNo one joined :("
             await self.channel.send(msg)
-            await self.results_channel.send(msg)
         else:
             table = PrettyTable()
             table.field_names = ["Username", "Moves", "To optimal", "Solution"]
@@ -103,11 +102,6 @@ class FMC:
             with open("results.txt", "rb") as f:
                 txt = discord.File(f)
                 await self.channel.send(msg, file=txt)
-                f.close()
-
-            with open("results.txt", "rb") as f:
-                txt = discord.File(f)
-                await self.results_channel.send(msg, file=txt)
                 f.close()
 
             os.remove("results.txt")
