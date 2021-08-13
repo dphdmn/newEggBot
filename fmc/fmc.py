@@ -1,4 +1,5 @@
 import os
+import copy
 from animate import make_video
 from draw_state import draw_state
 from puzzle_state import PuzzleState
@@ -68,7 +69,13 @@ class FMC:
             block_dict = {}
         else:
             block_dict = serialize.deserialize(db[block_path])
-        block_dict[block_round] = round_dict
+
+        # same as round_dict, but we convert the solutions to strings
+        round_dict2 = copy.deepcopy(round_dict)
+        for id in round_dict2["results"]:
+            round_dict2["results"][id] = round_dict2["results"][id].to_string()
+
+        block_dict[block_round] = round_dict2
         db[block_path] = serialize.serialize(block_dict)
 
         msg = "FMC results\n"
