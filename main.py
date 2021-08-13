@@ -1364,12 +1364,13 @@ async def on_message(message):
             size = scramble.size()
 
             # don't allow daily fmc scramble
-            if daily_fmc.round.running():
-                daily_fmc_scramble = daily_fmc.round.get_scramble()
-                if scramble == daily_fmc_scramble:
-                    name = message.author.name
-                    await message.channel.send(f"No cheating, {name}!")
-                    return
+            for fmc in fmcs:
+                if fmc.round.running():
+                    fmc_scramble = fmc.round.get_scramble()
+                    if scramble == fmc_scramble:
+                        name = message.author.name
+                        await message.channel.send(f"No cheating, {name}!")
+                        return
 
             if size != (3, 3) and size != (4, 4):
                 raise ValueError(f"puzzle size {size} must be 3x3 or 4x4")
