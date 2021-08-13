@@ -1,5 +1,4 @@
 import os
-import datetime as dt
 from animate import make_video
 from draw_state import draw_state
 from puzzle_state import PuzzleState
