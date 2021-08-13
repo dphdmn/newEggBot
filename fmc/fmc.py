@@ -69,7 +69,7 @@ class FMC:
             block_dict = {}
         else:
             block_dict = serialize.deserialize(db[block_path])
-        block_dict[block_round] = round
+        block_dict[block_round] = round_dict
         db[block_path] = serialize.serialize(block_dict)
 
         msg = "FMC results\n"
