@@ -679,9 +679,9 @@ async def on_message(message):
 
             await message.channel.send(msg)
     if message.content.startswith("!startfmc"):
-        if message.channel.id != fmc.channel.id or fmc.round.running():
+        if message.channel.id != short_fmc.channel.id or short_fmc.round.running():
             return
-        await fmc.start()
+        await short_fmc.start()
     if message.content.startswith("!getlb"):
         await makeTmpSend("prettylb.txt", db["prettylb.txt"], "Leaderboard for ranks: ", message.channel)
     if message.content.startswith("!wrupdate"):
