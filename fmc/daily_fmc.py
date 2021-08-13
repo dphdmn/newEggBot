@@ -16,7 +16,7 @@ class DailyFMC:
         self.results_channel = bot.get_channel(results_channel_id)
         self.db_path = f"{self.channel.guild.id}/fmc/{self.channel.id}/"
 
-        self.round = FMCRound(channel_id, warnings=[23*3600], on_close=self.on_close, on_warning=self.on_warning)
+        self.round = FMCRound(self.db_path, warnings=[23*3600], on_close=self.on_close, on_warning=self.on_warning)
 
     async def start(self):
         if self.round.running():

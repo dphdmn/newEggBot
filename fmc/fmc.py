@@ -17,7 +17,7 @@ class FMC:
         self.db_path = f"{self.channel.guild.id}/fmc/{self.channel.id}/"
         self.block_size = 100
 
-        self.round = FMCRound(channel_id, duration=600, warnings=[60*5, 60*9], on_close=self.on_close, on_warning=self.on_warning)
+        self.round = FMCRound(self.db_path, duration=600, warnings=[60*5, 60*9], on_close=self.on_close, on_warning=self.on_warning)
 
         if self.db_path + "round_number" not in db:
             # -1 so that the first round is round 0

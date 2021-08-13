@@ -8,8 +8,8 @@ from discord.ext import tasks
 from replit import db
 
 class FMCRound:
-    def __init__(self, round_id, scramble=None, duration=86400, warnings=[], on_close=None, on_warning=None):
-        self.db_path = f"fmc/{round_id}/"
+    def __init__(self, db_path, scramble=None, duration=86400, warnings=[], on_close=None, on_warning=None):
+        self.db_path = db_path + "current/"
         self.scramble = scramble
         self.duration = duration
         self.warnings = warnings
