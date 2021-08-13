@@ -28,6 +28,7 @@ from algorithm import Algorithm
 from analyse import analyse
 from draw_state import draw_state
 from fmc.daily_fmc import DailyFMC
+from fmc.fmc import FMC
 from movesgame.movesgame import MovesGame
 from movesgame.tournament import MovesGameTournament
 from probability import comparison, distributions
@@ -582,9 +583,10 @@ async def on_ready():
         del db["restart/channel_id"]
         del db["restart/message"]
 
-    # start daily fmc
-    global daily_fmc
+    # create fmc
+    global daily_fmc, fmc
     daily_fmc = DailyFMC(bot, int(os.environ["daily_fmc_channel"]), int(os.environ["daily_fmc_results_channel"]))
+    fmc = FMC(bot, int(os.environ["fmc_channel"]))
     await daily_fmc.start()
 
     # create movesgame
@@ -617,12 +619,22 @@ async def on_message(message):
         msg += "Time remaining: " + time_format.format(daily_fmc.round.remaining())
         await message.channel.send(msg)
     if message.content.startswith("!submit"):
-        if message.channel.id != daily_fmc.channel.id:
+        fmcs = {
+            daily_fmc.channel.id : daily_fmc,
+            fmc.channel.id : fmc
+        }
+
+        if message.channel.id not in fmcs:
             return
+        my_fmc = fmcs[message.channel.id]
+
+        if not my_fmc.round.running():
+            return
+
         try:
             await message.delete()
             solution = Algorithm(message.content[8:])
-            await daily_fmc.submit(message.author, solution)
+            await my_fmc.submit(message.author, solution)
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
