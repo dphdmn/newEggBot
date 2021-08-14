@@ -18,6 +18,7 @@ import requests
 import glob
 import zlib
 import re
+import regex
 import bot as bot_helper
 import time_format
 import move
@@ -890,8 +891,11 @@ async def on_message(message):
     if message.content.startswith("!animate"):
         try:
             # !animate [optional scramble] [solution] [optional tps]
-            regex = re.compile("!animate\s*(?P<scramble>[0-9][0-9 /]*[0-9])?\s*(?P<moves>([ULDR][0-9]* *)*[ULDR][0-9]*)\s*(?P<tps>[0-9]{1,})?")
-            match = regex.fullmatch(message.content)
+            scr_reg = regex.puzzle_state("scramble")
+            mov_reg = regex.algorithm("moves")
+            tps_reg = regex.positive_integer("tps")
+            reg = re.compile(f"!animate\s*{scr_reg}?\s*{mov_reg}\s*{tps_reg}?")
+            match = reg.fullmatch(message.content)
 
             if match is None:
                 raise SyntaxError(f"failed to parse arguments")
@@ -1063,8 +1067,10 @@ async def on_message(message):
     if message.content.startswith("!getprob"):
         try:
             # !getprob [size: N or WxH] [moves: a-b or e.g. >=m, <m, =m, etc.] [repetitions: optional]
-            regex = re.compile("!getprob\s+(?P<width>[0-9]+)(x(?P<height>[0-9]+))?\s+(?P<range>((?P<moves_from>[0-9]+)-(?P<moves_to>[0-9]+))|((?P<comparison>[<>]?=?)(?P<moves>[0-9]*)))(\s+(?P<repetitions>[0-9]*))?")
-            match = regex.fullmatch(message.content)
+            size_reg = regex.size("width", "height")
+            reps_reg = regex.positive_integer("repetitions")
+            reg = re.compile(f"!getprob\s+{size_reg}\s+(?P<range>((?P<moves_from>[0-9]+)-(?P<moves_to>[0-9]+))|((?P<comparison>[<>]?=?)(?P<moves>[0-9]*)))(\s+{reps_reg})?")
+            match = reg.fullmatch(message.content)
 
             if match is None:
                 raise SyntaxError(f"failed to parse arguments")
