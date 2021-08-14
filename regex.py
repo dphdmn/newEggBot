@@ -13,3 +13,11 @@ def mtm_move(name=None):
 def algorithm(name=None):
     m = mtm_move()
     return format(f"({m} *)+{m}?", name)
+
+def positive_integer(name=None):
+    return format("[1-9][0-9]*", name)
+
+def size(wname=None, hname=None, name=None):
+    w = positive_integer(wname)
+    h = positive_integer(hname)
+    return format(f"{w}(x{h})?", name)
