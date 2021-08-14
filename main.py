@@ -938,9 +938,12 @@ async def on_message(message):
             # write message
             opt_str = format(opt_total/n, ".3f")
             user_str = format(user_total/n, ".3f")
+            diff_str = format((user_total-opt_total)/n, ".3f")
+
             msg = f"Optimal mean of {n}: {opt_str}\n"
-            msg += f"Your mean: {user_str}\n"
+            msg += f"Your mean: {user_str} (+{diff_str})\n"
             msg += "\n".join([f"+{k}: {v}" for (k, v) in sorted(results.items())])
+
             await message.channel.send(msg)
         except Exception as e:
             traceback.print_exc()
