@@ -912,7 +912,7 @@ async def on_message(message):
                 groups = match.groupdict()
 
                 solution = Algorithm(groups["solution"])
-                if "scramble" in groups:
+                if groups["scramble"] is not None:
                     scramble = PuzzleState(groups["scramble"])
                 else:
                     scramble = PuzzleState()
