@@ -603,12 +603,17 @@ async def on_ready():
 async def on_message(message):
     if message.author == bot.user:
         return
+
     if "pls" in message.content.lower():
         await message.add_reaction("eff:803888415858098217")
     if bot.user in message.mentions:
         await message.channel.send("You are egg, " + message.author.mention)
     if "fuck you" in message.content.lower():
         await message.channel.send("no u, " + message.author.mention)
+    if "scrable" in message.content.lower():
+        await message.channel.send("Infinity tps, " + message.author.mention + "?")
+        await message.add_reaction("0️⃣")
+
     if message.content.startswith("!spam"):
         if message.author.guild_permissions.administrator:
             shit = message.content[6:]
@@ -616,7 +621,7 @@ async def on_message(message):
             for x in range(3000):
                 msg += shit + " "
             spam.start(message.channel, msg[:2000])
-    if message.content.startswith("!fmc"):
+    elif message.content.startswith("!fmc"):
         if message.channel.id not in fmcs:
             return
         fmc = fmcs[message.channel.id]
@@ -626,7 +631,7 @@ async def on_message(message):
         msg += "Optimal solution length: " + str(fmc.round.get_solution().length()) + "\n"
         msg += "Time remaining: " + time_format.format(fmc.round.remaining())
         await message.channel.send(msg)
-    if message.content.startswith("!submit"):
+    elif message.content.startswith("!submit"):
         if message.channel.id not in fmcs:
             return
         fmc = fmcs[message.channel.id]
@@ -639,7 +644,7 @@ async def on_message(message):
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
-    if message.content.startswith("!results"):
+    elif message.content.startswith("!results"):
         # fmc results
         if message.channel.id in fmcs:
             fmc = fmcs[message.channel.id]
@@ -679,13 +684,13 @@ async def on_message(message):
                     msg += f"{user.name}: {good}/{good+bad} = {formatted}\n"
 
             await message.channel.send(msg)
-    if message.content.startswith("!startfmc"):
+    elif message.content.startswith("!startfmc"):
         if message.channel.id != short_fmc.channel.id or short_fmc.round.running():
             return
         await short_fmc.start()
-    if message.content.startswith("!getlb"):
+    elif message.content.startswith("!getlb"):
         await makeTmpSend("prettylb.txt", db["prettylb.txt"], "Leaderboard for ranks: ", message.channel)
-    if message.content.startswith("!wrupdate"):
+    elif message.content.startswith("!wrupdate"):
         url = os.environ["updateURL"]
         x = requests.get(url).text
         if x == "":
@@ -695,7 +700,7 @@ async def on_message(message):
                 "WRs (moves): http://slidysim.000webhostapp.com/leaderboard/records_moves.html\n" + \
                 "WRs (moves, all): http://slidysim.000webhostapp.com/leaderboard/records_all_moves.html"
         await message.channel.send(x)
-    if message.content.startswith("!update"):
+    elif message.content.startswith("!update"):
         await message.channel.send("Wait for it!")
         try:
             getLeaderboard()
@@ -706,10 +711,10 @@ async def on_message(message):
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
-    if message.content.startswith("!stop"):
+    elif message.content.startswith("!stop"):
         if message.author.guild_permissions.administrator:
             spam.cancel()
-    if message.content.startswith("!getreal"):
+    elif message.content.startswith("!getreal"):
         await message.channel.send("Generating scramble!")
 
         state = scrambler.getScramble(4)
@@ -726,7 +731,7 @@ async def on_message(message):
             picture = discord.File(f)
             await message.channel.send(scrambleState.to_string() + "\n" + scramble.to_string(), file=picture)
         os.remove("scramble.png")
-    if message.content.startswith("!getscramble"):
+    elif message.content.startswith("!getscramble"):
         contentArray = message.content.lower().split(" ")
         n = 4
         if len(contentArray)>1:
@@ -741,7 +746,7 @@ async def on_message(message):
             os.remove("scramble.png")
         else:
             await message.channel.send("Random scramble for " + str(n) + "x" + str(n) + " puzzle\n" + scramble.to_string())
-    if message.content.startswith("!getwr"):
+    elif message.content.startswith("!getwr"):
         try:
             fp = urllib.request.urlopen(
                 "http://slidysim.000webhostapp.com/leaderboard/records_all.html"
@@ -763,7 +768,7 @@ async def on_message(message):
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
-    if message.content.startswith("!wrsby"):
+    elif message.content.startswith("!wrsby"):
         try:
             fp = urllib.request.urlopen(
                 "http://slidysim.000webhostapp.com/leaderboard/records_all.html"
@@ -795,7 +800,7 @@ async def on_message(message):
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
-    if message.content.startswith("!getpb"):
+    elif message.content.startswith("!getpb"):
         mystr=db["leaderboard.txt"].lower()
         # print(mystr)
         mystr = mystr.splitlines()
@@ -888,7 +893,7 @@ async def on_message(message):
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"Please specify the puzzle size, for example: !getpb dphdmn 4x4\n```\n{repr(e)}\n```")
-    if message.content.startswith("!animate"):
+    elif message.content.startswith("!animate"):
         try:
             # !animate [optional scramble] [solution] [optional tps]
             scr_reg = regex.puzzle_state("scramble")
@@ -934,7 +939,7 @@ async def on_message(message):
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
-    if message.content.startswith("!analyse"):
+    elif message.content.startswith("!analyse"):
         await message.channel.send("Working on it!")
         try:
             contentArray = message.content.split(" ")
@@ -955,7 +960,7 @@ async def on_message(message):
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
-    if message.content.startswith("!draw"):
+    elif message.content.startswith("!draw"):
         try:
             state = PuzzleState(message.content[6:])
             if state.size() != (4, 4):
@@ -969,7 +974,7 @@ async def on_message(message):
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
-    if message.content.startswith("!getreq"):
+    elif message.content.startswith("!getreq"):
         mystr = db["tiers.txt"].lower()
         # print(mystr)
         mystr = mystr.splitlines()
@@ -1064,7 +1069,7 @@ async def on_message(message):
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"Please specify the puzzle size, for example: !getreq ascended 4x4```\n{repr(e)}\n```")
-    if message.content.startswith("!getprob"):
+    elif message.content.startswith("!getprob"):
         try:
             # !getprob [size: N or WxH] [moves: a-b or e.g. >=m, <m, =m, etc.] [repetitions: optional]
             size_reg = regex.size("width", "height")
@@ -1116,10 +1121,7 @@ async def on_message(message):
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
-    if "scrable" in message.content.lower():
-        await message.channel.send("Infinity tps, " + message.author.mention + "?")
-        await message.add_reaction("0️⃣")
-    if message.content.startswith("!paint"):
+    elif message.content.startswith("!paint"):
         good = False
         try:
             img_data = requests.get(message.attachments[0].url).content
@@ -1226,15 +1228,15 @@ async def on_message(message):
                     file=discord.File(f, "scramble.txt"),
                 )
             os.remove("scramble.txt")
-    if message.content.startswith("!rev"):
+    elif message.content.startswith("!rev"):
         alg = Algorithm(message.content[5:])
         alg.invert()
         await message.channel.send(alg.to_string())
-    if message.content.startswith("!not"):
+    elif message.content.startswith("!not"):
         alg = Algorithm(message.content[5:])
         alg.invert().revert()
         await message.channel.send(alg.to_string())
-    if message.content.startswith("!tti"):
+    elif message.content.startswith("!tti"):
         try:
             words = message.content[5:]
             r = requests.post(
@@ -1256,14 +1258,14 @@ async def on_message(message):
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
-    if message.content.startswith("!savecmp"):
+    elif message.content.startswith("!savecmp"):
         if message.author.guild_permissions.administrator:
             today = str(datetime.datetime.today().strftime('%Y-%m-%d'))
             db["SMARTanon"] = db["SMART"+today]
             await message.channel.send("Saved to anon!")
         else:
             await message.channel.send("Sorry, you are not admin")
-    if message.content.startswith("!anoncmp"):
+    elif message.content.startswith("!anoncmp"):
         date1 = "SMARTanon"
         date2 = "SMART" + str(datetime.datetime.today().strftime('%Y-%m-%d'))
         out = comparelist(date1, date2)
@@ -1274,7 +1276,7 @@ async def on_message(message):
             txt = discord.File(f)
             await message.channel.send("Your cmp to last anon: ", file=txt)
         os.remove("compare.txt")
-    if message.content.startswith("!datecompare"):
+    elif message.content.startswith("!datecompare"):
         contentArray = message.content.lower().split(" ")
         if len(contentArray) != 3:
             await message.channel.send("Sorry your dates are wrong. Format:\n!datecompare 2021-06-13 2021-06-14")
@@ -1289,7 +1291,7 @@ async def on_message(message):
                 txt = discord.File(f)
                 await message.channel.send("Your cmp: ", file=txt)
             os.remove("compare.txt")
-    if message.content.startswith("!compare"):
+    elif message.content.startswith("!compare"):
         out = comparelist("file1.txt", "file2.txt")
         if len(out) > 1900:
             f = open("compare.txt", "w+")
@@ -1301,7 +1303,7 @@ async def on_message(message):
             os.remove("compare.txt")
         else:
             await message.channel.send("```" + out + "```")
-    if message.content.startswith("!cmp1"):
+    elif message.content.startswith("!cmp1"):
         good = False
         try:
             text = requests.get(message.attachments[0].url).content.decode("utf-8")
@@ -1312,7 +1314,7 @@ async def on_message(message):
         if good:
             db["file1.txt"] = dbcomp(text)
             await message.channel.send("Probably updated")
-    if message.content.startswith("!cmp2"):
+    elif message.content.startswith("!cmp2"):
         good = False
         try:
             text = requests.get(message.attachments[0].url).content.decode("utf-8")
@@ -1323,13 +1325,13 @@ async def on_message(message):
         if good:
             db["file2.txt"] = dbcomp(text)
             await message.channel.send("Probably updated")
-    if message.content.startswith("!movesgame"):
+    elif message.content.startswith("!movesgame"):
         if message.channel.id == movesgame.channel.id:
             await movesgame.start()
-    if message.content.startswith("!tournament"):
+    elif message.content.startswith("!tournament"):
         if message.channel.id == movesgame_tournament.channel.id:
             await movesgame_tournament.run()
-    if message.content.startswith("!goodm"):
+    elif message.content.startswith("!goodm"):
         try:
             scramble = PuzzleState(message.content[7:])
             size = scramble.size()
@@ -1342,7 +1344,7 @@ async def on_message(message):
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
-    if message.content.startswith("!eggsolve"):
+    elif message.content.startswith("!eggsolve"):
         scramble = PuzzleState(message.content[10:])
         size = scramble.size()
         if size == (3, 3) or size == (4, 4):
@@ -1362,7 +1364,7 @@ async def on_message(message):
         else:
             print(len(scramble))
             await message.channel.send("Your scramble is wrong.")
-    if message.content.startswith("!solve") or message.content.startswith("!video"):
+    elif message.content.startswith("!solve") or message.content.startswith("!video"):
         try:
             video = message.content.startswith("!video")
 
@@ -1411,7 +1413,7 @@ async def on_message(message):
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
-    if message.content.startswith("!simplify"):
+    elif message.content.startswith("!simplify"):
         try:
             alg = Algorithm(message.content[10:])
             old_len = alg.length()
@@ -1422,7 +1424,7 @@ async def on_message(message):
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
-    if message.content.startswith("!solvable"):
+    elif message.content.startswith("!solvable"):
         try:
             pos = PuzzleState(message.content[10:])
             if pos.solvable():
@@ -1433,7 +1435,7 @@ async def on_message(message):
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
-    if message.content.startswith("!8fmc"):
+    elif message.content.startswith("!8fmc"):
         try:
             if len(message.content) == 5:
                 n = 100
@@ -1459,30 +1461,30 @@ async def on_message(message):
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
-    if message.content == "!egg":
+    elif message.content == "!egg":
         egg = readFilenormal("misc/egg.txt")
         await message.channel.send("```" + egg + "```")
-    if message.content.startswith("!help"):
+    elif message.content.startswith("!help"):
         await message.channel.send(
             "Egg bot commands: https://github.com/dphdmn/newEggBot/blob/master/README.md"
         )
-    if message.content.startswith("!git"):
+    elif message.content.startswith("!git"):
         if message.author.guild_permissions.administrator:
             await message.channel.send(bot_helper.git_info)
-    if message.content.startswith("!restart"):
+    elif message.content.startswith("!restart"):
         if message.author.guild_permissions.administrator:
             await message.channel.send("Restarting...")
             db["restart/channel_id"] = message.channel.id
             db["restart/message"] = "Restarted"
             bot_helper.restart()
-    if message.content.startswith("!botupdate"):
+    elif message.content.startswith("!botupdate"):
         if message.author.guild_permissions.administrator:
             await message.channel.send("Updating...")
             db["restart/channel_id"] = message.channel.id
             db["restart/message"] = "Updated!"
             bot_helper.update()
             bot_helper.restart()
-    if message.content.startswith("!dbdump"):
+    elif message.content.startswith("!dbdump"):
         owner = int(os.environ["owner"])
         if message.author.id == owner:
             my_db = {}
