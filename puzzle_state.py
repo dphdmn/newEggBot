@@ -45,7 +45,11 @@ class PuzzleState:
     def __eq__(self, other):
         return self.arr == other.arr
 
-    def reset(self, w, h):
+    def reset(self, w, h=None):
+        # if only one parameter given, assume square
+        if h is None:
+            h = w
+
         arr = list(range(1, w*h)) + [0]
         self.arr = [arr[w*i : w*(i+1)] for i in range(h)]
 
