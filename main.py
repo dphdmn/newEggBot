@@ -1364,7 +1364,7 @@ async def on_message(message):
             size = scramble.size()
 
             # don't allow daily fmc scramble
-            for fmc in fmcs:
+            for fmc in fmcs.values():
                 if fmc.round.running():
                     fmc_scramble = fmc.round.get_scramble()
                     if scramble == fmc_scramble:
