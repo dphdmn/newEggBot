@@ -893,6 +893,45 @@ async def on_message(message):
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"Please specify the puzzle size, for example: !getpb dphdmn 4x4\n```\n{repr(e)}\n```")
+    elif message.content.startswith("!analyse3x3"):
+        try:
+            if len(message.attachments) != 1:
+                raise Exception("no attached file found")
+
+            text = await message.attachments[0].read()
+            text = text.decode()
+
+            # each solve is given as [scramble (optional)] [solution]
+            scr_reg = regex.puzzle_state("scramble")
+            sol_reg = regex.algorithm("solution")
+            reg = re.compile(f"({scr_reg}\s*)?{sol_reg}")
+
+            # solve each scramble and tally up the results
+            results = {}
+            for match in reg.finditer(text):
+                groups = match.groupdict()
+
+                solution = Algorithm(groups["solution"])
+                if "scramble" in groups:
+                    scramble = PuzzleState(groups["scramble"])
+                else:
+                    scramble = PuzzleState()
+                    scramble.reset(3)
+                    scramble.apply(solution.inverse())
+
+                opt_len = solvers[3].solveOne(scramble).length()
+                user_len = solution.length()
+                diff = user_len - opt_len
+                if diff not in results:
+                    results[diff] = 0
+                results[diff] += 1
+
+            # write message
+            msg = "\n".join([f"+{k}: {v}" for (k, v) in sorted(results.items())])
+            await message.channel.send(msg)
+        except Exception as e:
+            traceback.print_exc()
+            await message.channel.send(f"```\n{repr(e)}\n```")
     elif message.content.startswith("!animate"):
         try:
             # !animate [optional scramble] [solution] [optional tps]
