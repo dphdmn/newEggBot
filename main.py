@@ -908,7 +908,12 @@ async def on_message(message):
 
             # solve each scramble and tally up the results
             results = {}
+            opt_total = 0
+            user_total = 0
+            n = 0
             for match in reg.finditer(text):
+                n += 1
+
                 groups = match.groupdict()
 
                 solution = Algorithm(groups["solution"])
@@ -921,13 +926,21 @@ async def on_message(message):
 
                 opt_len = solvers[3].solveOne(scramble).length()
                 user_len = solution.length()
+
+                opt_total += opt_len
+                user_total += user_len
+
                 diff = user_len - opt_len
                 if diff not in results:
                     results[diff] = 0
                 results[diff] += 1
 
             # write message
-            msg = "\n".join([f"+{k}: {v}" for (k, v) in sorted(results.items())])
+            opt_str = format(opt_total/n, ".3f")
+            user_str = format(user_total/n, ".3f")
+            msg = f"Optimal mean of {n}: {opt_str}\n"
+            msg += f"Your mean: {user_str}\n"
+            msg += "\n".join([f"+{k}: {v}" for (k, v) in sorted(results.items())])
             await message.channel.send(msg)
         except Exception as e:
             traceback.print_exc()
