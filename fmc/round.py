@@ -100,6 +100,8 @@ class FMCRound:
         scramble = self.get_scramble()
         scramble.apply(solution)
         if not scramble.solved():
+            # scramble has been modified, so get a new copy of the scramble from the db to print
+            scramble = self.get_scramble()
             raise ValueError(f"solution does not solve scramble \"{scramble.to_string()}\"")
 
         # add the new result if it's better than any previous result
