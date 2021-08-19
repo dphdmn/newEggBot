@@ -1467,9 +1467,7 @@ async def on_message(message):
         egg = readFilenormal("misc/egg.txt")
         await message.channel.send("```" + egg + "```")
     elif message.content.startswith("!help"):
-        await message.channel.send(
-            "Egg bot commands: https://github.com/dphdmn/newEggBot/blob/master/README.md"
-        )
+        await message.channel.send("Egg bot commands: https://github.com/benwh1/eggbot/blob/master/README.md")
     elif message.content.startswith("!git"):
         if message.author.guild_permissions.administrator:
             await message.channel.send(bot_helper.git_info)
