@@ -23,6 +23,7 @@ import bot as bot_helper
 import time_format
 import move
 import helper.serialize as serialize
+import helper.discord as dh
 from animate import make_video
 from puzzle_state import PuzzleState
 from algorithm import Algorithm
@@ -38,15 +39,6 @@ from replit import db
 intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix="!", intents=intents)
-
-async def makeTmpSend(filename, filedata, messagewith, msgchn):
-    f = open(filename, "w+")
-    f.write(filedata)
-    f.close()
-    with open(filename, "rb") as f:
-        myfile = discord.File(f)
-        await msgchn.send(messagewith, file=myfile)
-    os.remove(filename)
 
 def readFilenormal(name):
     with open(name, "r") as file:
@@ -726,11 +718,8 @@ async def on_message(message):
         scrambleState.apply(scramble)
 
         img = draw_state(scrambleState)
-        img.save('scramble.png', 'PNG')
-        with open("scramble.png", "rb") as f:
-            picture = discord.File(f)
-            await message.channel.send(scrambleState.to_string() + "\n" + scramble.to_string(), file=picture)
-        os.remove("scramble.png")
+        msg = scrambleState.to_string() + "\n" + scramble.to_string()
+        await dh.send_image(img, "scramble.png", msg, message.channel)
     elif message.content.startswith("!getscramble"):
         contentArray = message.content.lower().split(" ")
         n = 4
@@ -739,11 +728,8 @@ async def on_message(message):
         scramble = scrambler.getScramble(n)
         if n == 4:
             img = draw_state(scramble)
-            img.save('scramble.png', 'PNG')
-            with open("scramble.png", "rb") as f:
-                picture = discord.File(f)
-                await message.channel.send("Your random 4x4 scramble: \n" + scramble.to_string(), file=picture)
-            os.remove("scramble.png")
+            msg = "Your random 4x4 scramble: \n" + scramble.to_string()
+            await dh.send_image(img, "scramble.png", msg, message.channel)
         else:
             await message.channel.send("Random scramble for " + str(n) + "x" + str(n) + " puzzle\n" + scramble.to_string())
     elif message.content.startswith("!getwr"):
@@ -788,13 +774,7 @@ async def on_message(message):
                 )
             else:
                 if len(my_string) > 1950:
-                    f = open("wrsby.txt", "w+")
-                    f.write(my_string)
-                    f.close()
-                    with open("wrsby.txt", "rb") as f:
-                        txt = discord.File(f)
-                        await message.channel.send("WR list: ", file=txt)
-                    os.remove("wrsby.txt")
+                    await dh.send_as_file(my_string, "wrsby.txt", "WR list:", message.channel)
                 else:
                     await message.channel.send("```" + my_string + "```")
         except Exception as e:
@@ -1021,11 +1001,7 @@ async def on_message(message):
             if state.size() != (4, 4):
                 raise ValueError(f"puzzle size {state.size()} must be 4x4")
             img = draw_state(state)
-            img.save('scramble.png', 'PNG')
-            with open("scramble.png", "rb") as f:
-                picture = discord.File(f)
-                await message.channel.send("Your scramble: ", file=picture)
-            os.remove("scramble.png")
+            await dh.send_image(img, "scramble.png", "Your scramble:", message.channel)
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
@@ -1269,20 +1245,9 @@ async def on_message(message):
                 mystr = mystr[:-1]
                 mystr = mystr + "/"
             mystr = mystr[:-1]
-            f = open("scramble.txt", "w+")
-            f.write(mystr)
-            f.close()
-            puzzleSize = str(puzzleSize)
-            with open("scramble.txt", "rb") as f:
-                await message.channel.send(
-                    "Your scramble is ("
-                    + puzzleSize
-                    + "x"
-                    + puzzleSize
-                    + " sliding puzzle)\n(download file if its large):",
-                    file=discord.File(f, "scramble.txt"),
-                )
-            os.remove("scramble.txt")
+            s = str(puzzleSize)
+            msg = "Your scramble is ({s}x{s} sliding puzzle)\n(download file if its large):"
+            await dh.send_as_file(mystr, "scramble.txt", msg, message.channel)
     elif message.content.startswith("!rev"):
         alg = Algorithm(message.content[5:])
         alg.invert()
@@ -1324,13 +1289,7 @@ async def on_message(message):
         date1 = "SMARTanon"
         date2 = "SMART" + str(datetime.datetime.today().strftime('%Y-%m-%d'))
         out = comparelist(date1, date2)
-        f = open("compare.txt", "w+")
-        f.write(out)
-        f.close()
-        with open("compare.txt", "rb") as f:
-            txt = discord.File(f)
-            await message.channel.send("Your cmp to last anon: ", file=txt)
-        os.remove("compare.txt")
+        await dh.send_as_file(out, "compare.txt", "Your cmp to last anon:", message.channel)
     elif message.content.startswith("!datecompare"):
         contentArray = message.content.lower().split(" ")
         if len(contentArray) != 3:
@@ -1339,23 +1298,11 @@ async def on_message(message):
             date1 = "SMART"+contentArray[1]
             date2 = "SMART"+contentArray[2]
             out = comparelist(date1, date2)
-            f = open("compare.txt", "w+")
-            f.write(out)
-            f.close()
-            with open("compare.txt", "rb") as f:
-                txt = discord.File(f)
-                await message.channel.send("Your cmp: ", file=txt)
-            os.remove("compare.txt")
+            await dh.send_as_file(out, "compare.txt", "Your cmp:", message.channel)
     elif message.content.startswith("!compare"):
         out = comparelist("file1.txt", "file2.txt")
         if len(out) > 1900:
-            f = open("compare.txt", "w+")
-            f.write(out)
-            f.close()
-            with open("compare.txt", "rb") as f:
-                txt = discord.File(f)
-                await message.channel.send("Your cmp: ", file=txt)
-            os.remove("compare.txt")
+            await dh.send_as_file(out, "compare.txt", "Your cmp:", message.channel)
         else:
             await message.channel.send("```" + out + "```")
     elif message.content.startswith("!cmp1"):

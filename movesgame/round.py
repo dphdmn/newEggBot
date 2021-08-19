@@ -6,6 +6,7 @@ import scrambler
 import move
 from draw_state import draw_state
 import discord
+import helper.discord as dh
 
 class MovesGameRound:
     def __init__(self, bot, channel, scramble=None, good_moves=None):
@@ -50,11 +51,8 @@ class MovesGameRound:
         img.save("scramble.png", "PNG")
 
         # post start message
-        with open("scramble.png", "rb") as f:
-            msg = f"Scramble: {scramble.to_string()}"
-            img = discord.File(f)
-            await self.channel.send(msg, file=img)
-        os.remove("scramble.png")
+        msg = f"Scramble: {scramble.to_string()}"
+        dh.send_image(img, "scramble.png", msg, self.channel)
 
         # prepare to collect results
         self.results = {}

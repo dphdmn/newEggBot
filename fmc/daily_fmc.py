@@ -8,6 +8,7 @@ from replit import db
 import discord
 from prettytable import PrettyTable
 from fmc.round import FMCRound
+import helper.discord as dh
 
 class DailyFMC:
     def __init__(self, bot, channel_id, results_channel_id):
@@ -35,12 +36,7 @@ class DailyFMC:
         msg += "!submit LUR2DL2URU2LDR2DLUR2D2LU3RD3LULU2RDLDR2ULDLURUL2\n"
 
         img = draw_state(scramble)
-        img.save("scramble.png", "PNG")
-
-        with open("scramble.png", "rb") as f:
-            picture = discord.File(f)
-            await self.channel.send(msg, file=picture)
-        os.remove("scramble.png")
+        dh.send_image(img, "scramble.png", msg, self.channel)
 
         # ping fmc role
         id = os.environ["fmc_role_id"]
@@ -77,21 +73,8 @@ class DailyFMC:
                 length = solution.length()
                 table.add_row([user.name, length, length - optLength, solution.to_string()])
 
-            with open("results.txt", "w+") as f:
-                f.write(table.get_string())
-                f.close()
-
-            with open("results.txt", "rb") as f:
-                txt = discord.File(f)
-                await self.channel.send(msg, file=txt)
-                f.close()
-
-            with open("results.txt", "rb") as f:
-                txt = discord.File(f)
-                await self.results_channel.send(msg, file=txt)
-                f.close()
-
-            os.remove("results.txt")
+            dh.send_as_file(table.get_string(), "results.txt", msg, self.channel)
+            dh.send_as_file(table.get_string(), "results.txt", msg, self.results_channel)
 
         make_video(scramble, optSolution, 8)
         with open("movie.webm", "rb") as f:
