@@ -681,7 +681,7 @@ async def on_message(message):
             return
         await short_fmc.start()
     elif message.content.startswith("!getlb"):
-        await makeTmpSend("prettylb.txt", db["prettylb.txt"], "Leaderboard for ranks: ", message.channel)
+        await dh.send_as_file(db["prettylb.txt"], "prettylb.txt", "Leaderboard for ranks: ", message.channel)
     elif message.content.startswith("!wrupdate"):
         url = os.environ["updateURL"]
         x = requests.get(url).text
@@ -698,7 +698,7 @@ async def on_message(message):
             getLeaderboard()
             webpage = os.environ["webpage"]
             msg = f"Check this: {webpage}\nProbably updated! Try !getpb command:"
-            await makeTmpSend("smartboard.txt", db["smartboard.txt"], msg, message.channel)
+            await dh.send_as_file(db["smartboard.txt"], "smartboard.txt", msg, message.channel)
             db["lastupdate"] = datetime.datetime.now().timestamp()
         except Exception as e:
             traceback.print_exc()
@@ -991,7 +991,7 @@ async def on_message(message):
             msg += f"Optimal solution [{optSolution.length()}]: {optSolution.to_string()}\n"
             msg += "Analysis:"
 
-            await makeTmpSend("analysis.txt", analysis, msg, message.channel)
+            await dh.send_as_file(analysis, "analysis.txt", msg, message.channel)
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
@@ -1359,7 +1359,7 @@ async def on_message(message):
                 string += "Amount of solutions: " + str(len(solutions)) + "\n"
                 string += "Len: " + str(solutions[0].length()) + "\n"
                 string += '\n'.join([s.to_string() for s in solutions])
-                await makeTmpSend("Solutions.txt", string, "All solutions for scramble " + scramble.to_string(), message.channel)
+                await dh.send_as_file(string, "solutions.txt", "All solutions for scramble " + scramble.to_string(), message.channel)
             except Exception as e:
                 traceback.print_exc()
                 await message.channel.send(f"```\n{repr(e)}\n```")
@@ -1459,7 +1459,7 @@ async def on_message(message):
             msg += "Longest: " + str(max(l)) + "\n"
             msg += "Shortest: " + str(min(l))
 
-            await makeTmpSend("8fmc.txt", data, msg, message.channel)
+            await dh.send_as_file(data, "8fmc.txt", msg, message.channel)
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
@@ -1492,7 +1492,7 @@ async def on_message(message):
             my_db = {}
             for key in db.keys():
                 my_db[key] = db[key]
-            await makeTmpSend("db.txt", serialize.serialize(my_db), "", message.channel)
+            await dh.send_as_file(serialize.serialize(my_db), "db.txt", "", message.channel)
 
 @tasks.loop(seconds=1)
 async def spam(chan, msg):
