@@ -1,4 +1,4 @@
-# newEggBot
+# eggbot
 Egg bot for sliding puzzle discord server
 https://discord.gg/7vXrWAS3yZ
 
