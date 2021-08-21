@@ -34,6 +34,7 @@ from fmc.fmc import FMC
 from movesgame.movesgame import MovesGame
 from movesgame.tournament import MovesGameTournament
 from probability import comparison, distributions
+from probability.format import format_prob
 from replit import db
 
 intents = discord.Intents.default()
@@ -1151,9 +1152,9 @@ async def on_message(message):
             prob = 1 - (1 - prob_one)**reps
 
             # write the message
-            msg = f"Probability of {w}x{h} having an optimal solution of {moves_range} moves is {prob_one}\n"
+            msg = f"Probability of {w}x{h} having an optimal solution of {moves_range} moves is {format_prob(prob_one)}\n"
             if reps > 1:
-                msg += f"Probability of at least one scramble out of {reps} within that range is {prob}"
+                msg += f"Probability of at least one scramble out of {reps} within that range is {format_prob(prob)}"
 
             await message.channel.send(msg)
         except Exception as e:
