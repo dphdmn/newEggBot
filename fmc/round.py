@@ -41,7 +41,7 @@ class FMCRound:
         if key in db:
             return Algorithm(db[key])
         else:
-            raise ValueError(f"userq id {id} has not submitted a solution")
+            raise ValueError(f"user id {id} has not submitted a solution")
 
     def results(self):
         ids = [int(x.split("/")[-1]) for x in db.prefix(self.db_path + "results/")]
