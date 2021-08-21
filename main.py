@@ -627,8 +627,8 @@ async def on_message(message):
         fmc = fmcs[message.channel.id]
         if not fmc.round.running():
             return
-        msg = "Current FMC scramble: " + fmc.round.get_scramble().to_string() + "\n"
-        msg += "Optimal solution length: " + str(fmc.round.get_solution().length()) + "\n"
+        msg  = f"Current FMC scramble: {fmc.round.get_scramble()}\n"
+        msg += f"Optimal solution length: {len(fmc.round.get_solution())}\n"
         msg += "Time remaining: " + time_format.format(fmc.round.remaining())
         await message.channel.send(msg)
     elif command.startswith("!submit"):
@@ -657,7 +657,7 @@ async def on_message(message):
                 msg = ""
                 for (id, result) in results.items():
                     user = bot.get_user(id)
-                    msg += f"{user.name}: {result.length()}\n"
+                    msg += f"{user.name}: {len(result)}\n"
             await message.channel.send(msg)
         # movesgame results
         elif message.channel.id == movesgame.channel.id:
@@ -726,7 +726,7 @@ async def on_message(message):
         scrambleState.apply(scramble)
 
         img = draw_state(scrambleState)
-        msg = scrambleState.to_string() + "\n" + scramble.to_string()
+        msg = str(scrambleState) + "\n" + str(scramble)
         await dh.send_image(img, "scramble.png", msg, message.channel)
     elif command.startswith("!getscramble"):
         contentArray = command.lower().split(" ")
@@ -736,10 +736,10 @@ async def on_message(message):
         scramble = scrambler.getScramble(n)
         if n == 4:
             img = draw_state(scramble)
-            msg = "Your random 4x4 scramble: \n" + scramble.to_string()
+            msg = f"Your random 4x4 scramble: \n{scramble}"
             await dh.send_image(img, "scramble.png", msg, message.channel)
         else:
-            await message.channel.send("Random scramble for " + str(n) + "x" + str(n) + " puzzle\n" + scramble.to_string())
+            await message.channel.send(f"Random scramble for {n}x{n} puzzle\n{scramble}")
     elif command.startswith("!getwr"):
         try:
             fp = urllib.request.urlopen(
@@ -912,8 +912,8 @@ async def on_message(message):
                     scramble.reset(3)
                     scramble.apply(solution.inverse())
 
-                opt_len = solvers[3].solveOne(scramble).length()
-                user_len = solution.length()
+                opt_len = len(solvers[3].solveOne(scramble))
+                user_len = len(solution)
 
                 opt_total += opt_len
                 user_total += user_len
@@ -965,13 +965,14 @@ async def on_message(message):
                 tps = 8
             else:
                 tps = int(groups["tps"])
+            time = round(len(moves)/tps, 3)
 
             await message.channel.send("Working on it! It may take some time, please wait")
 
-            msg = scramble.to_string() + "\n"
-            msg += moves.to_string() + " (" + str(moves.length()) + " moves)\n"
-            msg += "TPS (playback): " + str(tps) + "\n"
-            msg += "Time (playback): " + str(round(moves.length()/tps, 3))
+            msg  = f"{scramble}\n"
+            msg += f"{moves} [{len(moves)}]\n"
+            msg += f"TPS (playback): {tps}\n"
+            msg += f"Time (playback): {time}"
 
             make_video(scramble, moves, tps)
             await dh.send_binary_file("movie.webm", msg, message.channel)
@@ -990,9 +991,9 @@ async def on_message(message):
             scramble.apply(solution.inverse())
             optSolution = solvers[4].solveOne(scramble)
 
-            msg = f"Scramble: {scramble.to_string()}\n"
-            msg += f"Your solution [{solution.length()}]: {solution.to_string()}\n"
-            msg += f"Optimal solution [{optSolution.length()}]: {optSolution.to_string()}\n"
+            msg  = f"Scramble: {scramble}}\n"
+            msg += f"Your solution [{len(solution)}]: {solution}\n"
+            msg += f"Optimal solution [{len(optSolution)}]: {optSolution}\n"
             msg += "Analysis:"
 
             await dh.send_as_file(analysis, "analysis.txt", msg, message.channel)
@@ -1255,11 +1256,11 @@ async def on_message(message):
     elif command.startswith("!rev"):
         alg = Algorithm(command[5:])
         alg.invert()
-        await message.channel.send(alg.to_string())
+        await message.channel.send(str(alg))
     elif command.startswith("!not"):
         alg = Algorithm(command[5:])
         alg.invert().revert()
-        await message.channel.send(alg.to_string())
+        await message.channel.send(str(alg))
     elif command.startswith("!tti"):
         try:
             words = command[5:]
@@ -1344,7 +1345,11 @@ async def on_message(message):
             if size == (3, 3) or size == (4, 4):
                 solver = solvers[size[0]]
                 good_moves = [move.to_string(sol.first()) for sol in solver.solveGood(scramble)]
-                await message.channel.send("Your scramble:\n" + scramble.to_string() + "\nGood moves for your scramble: " + ", ".join(good_moves))
+                good_moves_str = ", ".join(good_moves)
+
+                msg  = f"Scramble: {scramble}\n"
+                msg += f"Good moves: {good_moves_str}"
+                await message.channel.send(msg)
             else:
                 raise ValueError(f"puzzle size {scramble.size()} must be 3x3 or 4x4")
         except Exception as e:
@@ -1358,12 +1363,13 @@ async def on_message(message):
                 a = perf_counter()
                 solutions = solvers[size[0]].solveAll(scramble)
                 b = perf_counter()
-                string = ""
-                string += "Time: " + str(round((b - a), 3)) + "\n"
-                string += "Amount of solutions: " + str(len(solutions)) + "\n"
-                string += "Len: " + str(solutions[0].length()) + "\n"
-                string += '\n'.join([s.to_string() for s in solutions])
-                await dh.send_as_file(string, "solutions.txt", "All solutions for scramble " + scramble.to_string(), message.channel)
+
+                string  = f"Time: {round(b - a, 3)}\n"
+                string += f"Number of solutions: {len(solutions)}\n"
+                string += f"Length: {len(solutions[0])}\n"
+                string += "\n".join([str(s) for s in solutions])
+
+                await dh.send_as_file(string, "solutions.txt", f"Scramble: {scramble}", message.channel)
             except Exception as e:
                 traceback.print_exc()
                 await message.channel.send(f"```\n{repr(e)}\n```")
@@ -1397,12 +1403,12 @@ async def on_message(message):
             b = perf_counter()
 
             # solution of solved puzzle = egg
-            solution_str = solution.to_string()
+            solution_str = str(solution)
             if solution_str == "":
                 solution_str = ":egg:"
 
-            msg = f"Scramble: {scramble.to_string()}\n"
-            msg += f"Solution [{solution.length()}]: ||{solution_str}||\n"
+            msg  = f"Scramble: {scramble}\n"
+            msg += f"Solution [{len(solution)}]: ||{solution_str}||\n"
             msg += f"Time: {round((b - a), 3)}"
 
             if video:
@@ -1419,11 +1425,10 @@ async def on_message(message):
     elif command.startswith("!simplify"):
         try:
             alg = Algorithm(command[10:])
-            old_len = alg.length()
+            old_len = len(alg)
             alg.simplify()
-            new_len = alg.length()
-            alg_str = alg.to_string()
-            await message.channel.send(f"[{old_len} -> {new_len}] {alg_str}")
+            new_len = len(alg)
+            await message.channel.send(f"[{old_len} -> {new_len}] {alg}")
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
@@ -1451,14 +1456,14 @@ async def on_message(message):
             for i in range(n):
                 scramble = scrambler.getScramble(3)
                 solution = solvers[3].solveOne(scramble)
-                length = solution.length()
+                length = len(solution)
 
                 l.append(length)
-                data += scramble.to_string() + "\t" + str(length) + "\n"
+                data += f"{scramble}\t{length}\n"
 
-            msg = "Average: " + str(round(sum(l)/n, 3)) + "\n"
-            msg += "Longest: " + str(max(l)) + "\n"
-            msg += "Shortest: " + str(min(l))
+            msg  = f"Average: {round(sum(l)/n, 3)}\n"
+            msg += f"Longest: {max(l)}\n"
+            msg += f"Shortest: {min(l)}"
 
             await dh.send_as_file(data, "8fmc.txt", msg, message.channel)
         except Exception as e:

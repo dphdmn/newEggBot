@@ -30,10 +30,10 @@ class DailyFMC:
         scramble = self.round.get_scramble()
         solution = self.round.get_solution()
 
-        msg = "Daily FMC scramble: " + scramble.to_string() + "\n"
-        msg += "Optimal solution length: " + str(solution.length()) + "\n"
-        msg += "Use **!submit** command to submit solutions (You can submit multiple times!), for example:\n"
-        msg += "!submit LUR2DL2URU2LDR2DLUR2D2LU3RD3LULU2RDLDR2ULDLURUL2\n"
+        msg  = f"Daily FMC scramble: {scramble}\n"
+        msg += f"Optimal solution length: {len(solution)}\n"
+        msg +=  "Use **!submit** command to submit solutions (You can submit multiple times!), for example:\n"
+        msg +=  "!submit LUR2DL2URU2LDR2DLUR2D2LU3RD3LULU2RDLDR2ULDLURUL2"
 
         img = draw_state(scramble)
         await dh.send_image(img, "scramble.png", msg, self.channel)
@@ -47,17 +47,17 @@ class DailyFMC:
         date = dt.datetime.utcfromtimestamp(round_dict["timestamp"]).strftime("%Y-%m-%d")
         scramble = PuzzleState(round_dict["scramble"])
         optSolution = Algorithm(round_dict["solution"])
-        optLength = optSolution.length()
+        optLength = len(optSolution)
 
-        db[self.db_path + f"history/{date}/scramble"] = scramble.to_string()
-        db[self.db_path + f"history/{date}/solution"] = optSolution.to_string()
+        db[self.db_path + f"history/{date}/scramble"] = str(scramble)
+        db[self.db_path + f"history/{date}/solution"] = str(optSolution)
         for id in results:
-            db[self.db_path + f"history/{date}/results/{id}"] = results[id].to_string()
+            db[self.db_path + f"history/{date}/results/{id}"] = str(results[id])
 
-        msg = "Daily FMC results!\n"
-        msg += "Date: " + date + "\n"
-        msg += "Scramble: " + scramble.to_string() + "\n"
-        msg += f"Optimal solution [{optLength}]: {optSolution.to_string()}"
+        msg  =  "Daily FMC results!\n"
+        msg += f"Date: {date}\n"
+        msg += f"Scramble: {scramble}\n"
+        msg += f"Optimal solution [{optLength}]: {optSolution}"
 
         if len(results) == 0:
             msg += "\n\nNo one joined :("
@@ -70,8 +70,8 @@ class DailyFMC:
             # organise results in an array
             for (id, solution) in results.items():
                 user = self.bot.get_user(id)
-                length = solution.length()
-                table.add_row([user.name, length, length - optLength, solution.to_string()])
+                length = len(solution)
+                table.add_row([user.name, length, length - optLength, str(solution)])
 
             await dh.send_as_file(table.get_string(), "results.txt", msg, self.channel)
             await dh.send_as_file(table.get_string(), "results.txt", msg, self.results_channel)
@@ -98,10 +98,10 @@ class DailyFMC:
 
         # check if the user has already submitted a solution
         if self.round.has_result(id):
-            previous_length = self.round.result(id).length()
+            previous_length = len(self.round.result(id))
         else:
             previous_length = None
-        new_length = solution.length()
+        new_length = len(solution)
 
         # submit the new solution
         self.round.submit(id, solution)

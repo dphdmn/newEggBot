@@ -93,7 +93,7 @@ class PuzzleState:
                 good = True
 
         if not good:
-            raise ValueError(f"move \"{move.to_string(m)}\" can not be applied to puzzle state \"{self.to_string()}\"")
+            raise ValueError(f"move \"{move.to_string(m)}\" can not be applied to puzzle state \"{self}\"")
 
     def undo_move(self, m):
         self.move(move.inverse(m))
@@ -107,9 +107,9 @@ class PuzzleState:
                     p.move(direction)
             self.arr = p.arr
         except ValueError as e:
-            raise ValueError(f"algorithm \"{alg.to_string()}\" can not be applied to puzzle state \"{self.to_string()}\"")
+            raise ValueError(f"algorithm \"{alg}\" can not be applied to puzzle state \"{self}\"")
 
-    def to_string(self):
+    def __str__(self):
         return "/".join([" ".join([str(x) for x in row]) for row in self.arr])
 
     def solvable(self):

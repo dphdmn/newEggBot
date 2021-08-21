@@ -158,8 +158,8 @@ class MovesGameTournament:
         else:
             block_dict = serialize.deserialize(db[block_path])
         block_dict[block_round] = {
-            "scramble" : scramble.to_string(),
-            "solution" : solution.to_string(),
+            "scramble" : str(scramble),
+            "solution" : str(solution),
             "rounds"   : rounds,
             "winners"  : tournament_winners
         }

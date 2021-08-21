@@ -15,7 +15,7 @@ def analyse(solution):
     # the optimal solution of the scramble
     opt_end = solvers[4].solveOne(scramble)
 
-    for i in range(1, solution.length()):
+    for i in range(1, len(solution)):
         # the first i moves of our solution
         user_start = solution.take(i)
 
@@ -31,24 +31,24 @@ def analyse(solution):
         user_end = solution.drop(i)
 
         # the optimal solution length increased, so this is a mistake
-        if opt_end.length() == last_opt_end.length() + 1:
+        if len(opt_end) == len(last_opt_end) + 1:
             N = i
 
             scramble.undo_move(next_move)
-            state = scramble.to_string()
+            state = str(scramble)
             scramble.move(next_move)
             
-            setup = user_start.rdrop(1).to_string()
+            setup = str(user_start.rdrop(1))
             bad_move = move.to_string(next_move)
             better = move.to_string(last_opt_end.first())
-            your_ending = solution.drop(i-1).to_string()
-            better_ending = last_opt_end.to_string()
+            your_ending = str(solution.drop(i-1))
+            better_ending = str(last_opt_end)
             your_plus_opt = setup + better_ending
 
             table.add_row([N, state, setup, bad_move, better, your_ending, better_ending, your_plus_opt])
 
         # user end is optimal, so we don't need to calculate any further
-        if opt_end.length() == user_end.length():
+        if len(opt_end) == len(user_end):
             break
 
     return table.get_string()

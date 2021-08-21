@@ -98,10 +98,10 @@ class Algorithm:
         a.moves = arr
         return a
 
-    def length(self):
+    def __len__(self):
         return sum([m[1] for m in self.moves])
 
-    def to_string(self):
+    def __str__(self):
         def to_string(t):
             # if amount = 1, just write e.g. "R" instead of "R1"
             if t[1] == 1:
@@ -132,7 +132,7 @@ class Algorithm:
         return a
 
     def at(self, n):
-        if n < 0 or n >= self.length():
+        if n < 0 or n >= len(self):
             raise ValueError(f"index {n} out of range")
         total = 0
         for (direction, amount) in self.moves:
@@ -165,10 +165,10 @@ class Algorithm:
         return self.inverse().take(n).inverse()
 
     def drop(self, n):
-        return self.rtake(self.length()-n)
+        return self.rtake(len(self)-n)
 
     def rdrop(self, n):
-        return self.take(self.length()-n)
+        return self.take(len(self)-n)
 
     def first(self):
         if self.moves == []:

@@ -38,10 +38,10 @@ class FMC:
         scramble = self.round.get_scramble()
         solution = self.round.get_solution()
 
-        msg = "FMC scramble: " + scramble.to_string() + "\n"
-        msg += "Optimal solution length: " + str(solution.length()) + "\n"
-        msg += "Use **!submit** command to submit solutions (You can submit multiple times!), for example:\n"
-        msg += "!submit LUR2DL2URU2LDR2DLUR2D2LU3RD3LULU2RDLDR2ULDLURUL2\n"
+        msg  = f"FMC scramble: {scramble}\n"
+        msg += f"Optimal solution length: {len(solution)}\n"
+        msg +=  "Use **!submit** command to submit solutions (You can submit multiple times!), for example:\n"
+        msg +=  "!submit LUR2DL2URU2LDR2DLUR2D2LU3RD3LULU2RDLDR2ULDLURUL2"
 
         img = draw_state(scramble)
         await dh.send_image(img, "scramble.png", msg, self.channel)
@@ -50,7 +50,7 @@ class FMC:
         results = round_dict["results"]
         scramble = PuzzleState(round_dict["scramble"])
         optSolution = Algorithm(round_dict["solution"])
-        optLength = optSolution.length()
+        optLength = len(optSolution)
 
         db[self.db_path + "round_number"] += 1
 
@@ -69,14 +69,14 @@ class FMC:
         # same as round_dict, but we convert the solutions to strings
         round_dict2 = copy.deepcopy(round_dict)
         for id in round_dict2["results"]:
-            round_dict2["results"][id] = round_dict2["results"][id].to_string()
+            round_dict2["results"][id] = str(round_dict2["results"][id])
 
         block_dict[block_round] = round_dict2
         db[block_path] = serialize.serialize(block_dict)
 
-        msg = "FMC results\n"
-        msg += "Scramble: " + scramble.to_string() + "\n"
-        msg += f"Optimal solution [{optLength}]: {optSolution.to_string()}"
+        msg  =  "FMC results\n"
+        msg += f"Scramble: {scramble}\n"
+        msg += f"Optimal solution [{optLength}]: {optSolution}"
 
         if len(results) == 0:
             msg += "\n\nNo one joined :("
@@ -88,8 +88,8 @@ class FMC:
             # organise results in an array
             for (id, solution) in results.items():
                 user = self.bot.get_user(id)
-                length = solution.length()
-                table.add_row([user.name, length, length - optLength, solution.to_string()])
+                length = len(solution)
+                table.add_row([user.name, length, length - optLength, str(solution)])
 
             await dh.send_as_file(table.get_string(), "results.txt", msg, self.channel)
 
@@ -114,10 +114,10 @@ class FMC:
 
         # check if the user has already submitted a solution
         if self.round.has_result(id):
-            previous_length = self.round.result(id).length()
+            previous_length = len(self.round.result(id))
         else:
             previous_length = None
-        new_length = solution.length()
+        new_length = len(solution)
 
         # submit the new solution
         self.round.submit(id, solution)

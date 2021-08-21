@@ -21,7 +21,7 @@ def make_video(scramble, solution, tps):
     write_frame()
 
     # draw the rest of the frames
-    for i in range(solution.length()):
+    for i in range(len(solution)):
         pos.move(solution.at(i))
         write_frame()
 
