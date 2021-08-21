@@ -52,7 +52,7 @@ class MovesGameRound:
 
         # post start message
         msg = f"Scramble: {scramble.to_string()}"
-        dh.send_image(img, "scramble.png", msg, self.channel)
+        await dh.send_image(img, "scramble.png", msg, self.channel)
 
         # prepare to collect results
         self.results = {}

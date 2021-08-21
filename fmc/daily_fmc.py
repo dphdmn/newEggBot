@@ -36,7 +36,7 @@ class DailyFMC:
         msg += "!submit LUR2DL2URU2LDR2DLUR2D2LU3RD3LULU2RDLDR2ULDLURUL2\n"
 
         img = draw_state(scramble)
-        dh.send_image(img, "scramble.png", msg, self.channel)
+        await dh.send_image(img, "scramble.png", msg, self.channel)
 
         # ping fmc role
         id = os.environ["fmc_role_id"]
@@ -73,8 +73,8 @@ class DailyFMC:
                 length = solution.length()
                 table.add_row([user.name, length, length - optLength, solution.to_string()])
 
-            dh.send_as_file(table.get_string(), "results.txt", msg, self.channel)
-            dh.send_as_file(table.get_string(), "results.txt", msg, self.results_channel)
+            await dh.send_as_file(table.get_string(), "results.txt", msg, self.channel)
+            await dh.send_as_file(table.get_string(), "results.txt", msg, self.results_channel)
 
         make_video(scramble, optSolution, 8)
         with open("movie.webm", "rb") as f:
