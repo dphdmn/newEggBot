@@ -991,7 +991,7 @@ async def on_message(message):
             scramble.apply(solution.inverse())
             optSolution = solvers[4].solveOne(scramble)
 
-            msg  = f"Scramble: {scramble}}\n"
+            msg  = f"Scramble: {scramble}\n"
             msg += f"Your solution [{len(solution)}]: {solution}\n"
             msg += f"Optimal solution [{len(optSolution)}]: {optSolution}\n"
             msg += "Analysis:"
