@@ -968,17 +968,13 @@ async def on_message(message):
 
             await message.channel.send("Working on it! It may take some time, please wait")
 
-            make_video(scramble, moves, tps)
-
             msg = scramble.to_string() + "\n"
             msg += moves.to_string() + " (" + str(moves.length()) + " moves)\n"
             msg += "TPS (playback): " + str(tps) + "\n"
             msg += "Time (playback): " + str(round(moves.length()/tps, 3))
 
-            with open("movie.webm", "rb") as f:
-                picture = discord.File(f)
-                await message.channel.send(msg, file=picture)
-            os.remove("movie.webm")
+            make_video(scramble, moves, tps)
+            await dh.send_binary_file("movie.webm", msg, message.channel)
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
@@ -1416,10 +1412,7 @@ async def on_message(message):
 
             if video:
                 make_video(scramble, solution, 8)
-                with open("movie.webm", "rb") as f:
-                    video = discord.File(f)
-                    await message.channel.send("", file=video)
-                os.remove("movie.webm")
+                await dh.send_binary_file("movie.webm", "", message.channel)
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")

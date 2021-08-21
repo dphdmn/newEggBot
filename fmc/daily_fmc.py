@@ -77,10 +77,7 @@ class DailyFMC:
             await dh.send_as_file(table.get_string(), "results.txt", msg, self.results_channel)
 
         make_video(scramble, optSolution, 8)
-        with open("movie.webm", "rb") as f:
-            picture = discord.File(f)
-            await self.channel.send("", file=picture)
-        os.remove("movie.webm")
+        await dh.send_binary_file("movie.webm", "", self.channel)
 
     async def on_close(self, round_dict):
         # close and open, but set the start time to exactly 86400 seconds after the previous
