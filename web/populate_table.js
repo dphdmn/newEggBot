@@ -1,3 +1,5 @@
+import { dates, data } from "./data.js";
+
 const tiers = ["gamma", "aleph", "ascended", "nova", "grandmaster", "master", "diamond", "platinum", "gold", "silver", "bronze", "beginner", "unranked"];
 const num_tiers = tiers.length;
 const num_categories = 30;
