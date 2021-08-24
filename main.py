@@ -680,8 +680,8 @@ async def on_message(message):
                 bad = results[id]["incorrect"]
                 formatted = format(100*good/(good+bad), ".2f") + "%"
 
-                # only show results for people with at least 10 rounds
-                if good+bad >= 10:
+                # only show results for people with enough rounds
+                if good+bad >= 30:
                     results_msg += f"{user.name}: {good}/{good+bad} = {formatted}\n"
                 else:
                     provisional_msg += f"({user.name}: {good}/{good+bad} = {formatted})\n"
