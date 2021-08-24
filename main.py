@@ -672,7 +672,8 @@ async def on_message(message):
                 fractions[id] = good/(good+bad)
             sorted_ids = [x[0] for x in sorted(fractions.items(), key=lambda x: -x[1])]
 
-            msg = ""
+            results_msg = ""
+            provisional_msg = ""
             for id in sorted_ids:
                 user = bot.get_user(id)
                 good = results[id]["correct"]
@@ -681,9 +682,11 @@ async def on_message(message):
 
                 # only show results for people with at least 10 rounds
                 if good+bad >= 10:
-                    msg += f"{user.name}: {good}/{good+bad} = {formatted}\n"
+                    results_msg += f"{user.name}: {good}/{good+bad} = {formatted}\n"
+                else:
+                    provisional_msg += f"({user.name}: {good}/{good+bad} = {formatted})\n"
 
-            await message.channel.send(msg)
+            await message.channel.send(results_msg + provisional_msg)
     elif command.startswith("!startfmc"):
         if message.channel.id != short_fmc.channel.id or short_fmc.round.running():
             return
