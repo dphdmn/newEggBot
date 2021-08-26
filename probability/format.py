@@ -1,5 +1,7 @@
 def format_prob(p):
-    if p < 0.01:
+    if p == 0:
+        return "0"
+    elif p < 0.01:
         n = round(1/p)
         return f"1/{n}"
     else:
