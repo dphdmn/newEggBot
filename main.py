@@ -953,7 +953,12 @@ async def on_message(message):
 
             groups = match.groupdict()
 
+            # make sure the algorithm isn't too long
             moves = Algorithm(groups["moves"])
+            num_moves = len(moves)
+            max_moves = 150
+            if num_moves > max_moves:
+                raise ValueError(f"number of moves ({num_moves}) must be at most {max_moves}")
 
             # if no scramble given, use the inverse of the moves
             if groups["scramble"] is None:
@@ -968,12 +973,12 @@ async def on_message(message):
                 tps = 8
             else:
                 tps = int(groups["tps"])
-            time = round(len(moves)/tps, 3)
+            time = round(num_moves/tps, 3)
 
             await message.channel.send("Working on it! It may take some time, please wait")
 
             msg  = f"{scramble}\n"
-            msg += f"{moves} [{len(moves)}]\n"
+            msg += f"{moves} [{num_moves}]\n"
             msg += f"TPS (playback): {tps}\n"
             msg += f"Time (playback): {time}"
 
