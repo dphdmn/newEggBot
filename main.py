@@ -1511,8 +1511,4 @@ async def spam(chan, msg):
     await chan.send(msg)
 
 keep_alive()
-try:
-    bot.run(os.environ["eggkey"])
-except:
-    req = requests.get("https://discord.com/api/path/to/the/endpoint")
-    print(req.text)
+bot.run(os.environ["eggkey"])
