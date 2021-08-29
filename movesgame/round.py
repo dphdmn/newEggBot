@@ -48,7 +48,6 @@ class MovesGameRound:
 
         # draw image
         img = draw_state(scramble)
-        img.save("scramble.png", "PNG")
 
         # post start message
         msg = f"Scramble: {scramble}"
