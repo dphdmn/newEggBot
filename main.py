@@ -1350,6 +1350,16 @@ async def on_message(message):
         try:
             scramble = PuzzleState(command[7:])
             size = scramble.size()
+
+            # don't allow daily fmc scramble
+            for fmc in fmcs.values():
+                if fmc.round.running():
+                    fmc_scramble = fmc.round.get_scramble()
+                    if scramble == fmc_scramble:
+                        name = message.author.name
+                        await message.channel.send(f"No cheating, {name}!")
+                        return
+
             if size == (3, 3) or size == (4, 4):
                 solver = solvers[size[0]]
                 good_moves = [move.to_string(sol.first()) for sol in solver.solveGood(scramble)]
@@ -1366,6 +1376,16 @@ async def on_message(message):
     elif command.startswith("!eggsolve"):
         scramble = PuzzleState(command[10:])
         size = scramble.size()
+
+        # don't allow daily fmc scramble
+        for fmc in fmcs.values():
+            if fmc.round.running():
+                fmc_scramble = fmc.round.get_scramble()
+                if scramble == fmc_scramble:
+                    name = message.author.name
+                    await message.channel.send(f"No cheating, {name}!")
+                    return
+
         if size == (3, 3) or size == (4, 4):
             try:
                 a = perf_counter()
