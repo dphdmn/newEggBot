@@ -1178,14 +1178,20 @@ async def on_message(message):
             # compute the probability of a scramble appearing at least once
             prob = 1 - (1 - prob_one)**reps
 
-            # we rounded the range of moves, so we should display the rounded interval instead of the original.
+            # we rounded the range of moves, so we should display the rounded range instead of the original.
             # otherwise we would have messages like:
             # "Probability of 4x4 having an optimal solution of 52.1-52.9 moves is 14.80%"
             # even though we rounded 52.1 and 52.9 to 52 and 53.
+            # if the endpoints of the rounded range are integers, make them integers, otherwise round to 3dp
+            def make_str(a):
+                if a % mean_length == 0:
+                    return str(a // mean_length)
+                return format(a/mean_length, ".3f")
+
             if groups["comparison"] is None:
-                range_str = f"{start/mean_length}-{end/mean_length}"
+                range_str = f"{make_str(start)}-{make_str(end)}"
             else:
-                range_str = groups["comparison"] + str(moves/mean_length)
+                range_str = groups["comparison"] + make_str(moves)
 
             # write the message
             if mean_length == 1:
