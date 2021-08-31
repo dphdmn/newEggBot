@@ -1129,8 +1129,9 @@ async def on_message(message):
             # !getprob [size: N or WxH] [mean length: optional] [moves: a-b or e.g. >=m, <m, =m, etc.] [repetitions: optional]
             size_reg = regex.size("width", "height")
             mean_reg = "(mo" + regex.positive_integer("mean_length") + ")"
-            interval_reg = "((?P<moves_from>[0-9]+)-(?P<moves_to>[0-9]+))"
-            comparison_reg = "((?P<comparison>[<>]?=?)(?P<moves>[0-9]*))"
+            pos_real_reg = regex.positive_real()
+            interval_reg = f"((?P<moves_from>{pos_real_reg})-(?P<moves_to>{pos_real_reg}))"
+            comparison_reg = f"((?P<comparison>[<>]?=?)(?P<moves>{pos_real_reg}))"
             reps_reg = regex.positive_integer("repetitions")
             reg = re.compile(f"!getprob(\s+{size_reg})(\s+{mean_reg})?(\s+(?P<range>{interval_reg}|{comparison_reg}))(\s+{reps_reg})?")
             match = reg.fullmatch(command)
