@@ -23,4 +23,4 @@ def size(wname=None, hname=None, name=None):
     return format(f"{w}(x{h})?", name)
 
 def optionally_spoilered(regex, spoiler_name="spoiler", name=None):
-    return format(f"(?P<{spoiler_name}>(\|\|)?){regex}\k<{spoiler_name}>", name)
+    return format(f"(?P<{spoiler_name}>(\|\|)?){regex}(?P={spoiler_name})", name)
