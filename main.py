@@ -1178,13 +1178,22 @@ async def on_message(message):
             # compute the probability of a scramble appearing at least once
             prob = 1 - (1 - prob_one)**reps
 
+            # we rounded the range of moves, so we should display the rounded interval instead of the original.
+            # otherwise we would have messages like:
+            # "Probability of 4x4 having an optimal solution of 52.1-52.9 moves is 14.80%"
+            # even though we rounded 52.1 and 52.9 to 52 and 53.
+            if groups["comparison"] is None:
+                range_str = f"{start/mean_length}-{end/mean_length}"
+            else:
+                range_str = groups["comparison"] + str(moves/mean_length)
+
             # write the message
             if mean_length == 1:
-                msg = f"Probability of {w}x{h} having an optimal solution of {moves_range} moves is {format_prob(prob_one)}\n"
+                msg = f"Probability of {w}x{h} having an optimal solution of {range_str} moves is {format_prob(prob_one)}\n"
                 if reps > 1:
                     msg += f"Probability of at least one scramble out of {reps} within that range is {format_prob(prob)}"
             else:
-                msg = f"Probability of {w}x{h} mo{mean_length} having an optimal solution of {moves_range} moves is {format_prob(prob_one)}\n"
+                msg = f"Probability of {w}x{h} mo{mean_length} having an optimal solution of {range_str} moves is {format_prob(prob_one)}\n"
                 if reps > 1:
                     msg += f"Probability of at least one mean out of {reps} within that range is {format_prob(prob)}"
 
