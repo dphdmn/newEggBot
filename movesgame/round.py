@@ -80,3 +80,5 @@ class MovesGameRound:
             m = message.content.upper()
             if len(m) == 1 and m in "ULDR":
                 self.submit(message.author, m)
+            elif len(m) == 5 and m in ["||U||", "||L||", "||D||", "||R||"]:
+                self.submit(message.author, m[2])
