@@ -639,7 +639,18 @@ async def on_message(message):
             return
         try:
             await message.delete()
-            solution = Algorithm(command[8:])
+
+            # !submit [solution, optionally spoilered]
+            solution_reg = regex.optionally_spoilered(regex.algorithm("solution"))
+            reg = re.compile(f"!submit\s+{solution_reg}")
+            match = reg.fullmatch(command)
+
+            if match is None:
+                raise SyntaxError(f"failed to read solution")
+
+            groups = match.groupdict()
+
+            solution = Algorithm(groups["solution"])
             await fmc.submit(message.author, solution)
         except Exception as e:
             traceback.print_exc()
