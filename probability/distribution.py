@@ -11,6 +11,10 @@ class Distribution:
 
     # sum of n iid copies of this distribution
     def sum_distribution(self, n):
+        if n < 1:
+            raise ValueError("number of copies of the distrbution must be at least 1")
+        elif n == 1:
+            return self
         return Distribution(polypow(self.arr, n))
 
     def prob_range(self, start, end):
