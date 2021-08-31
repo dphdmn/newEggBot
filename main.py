@@ -1126,12 +1126,13 @@ async def on_message(message):
             await message.channel.send(f"Please specify the puzzle size, for example: !getreq ascended 4x4```\n{repr(e)}\n```")
     elif command.startswith("!getprob"):
         try:
-            # !getprob [size: N or WxH] [moves: a-b or e.g. >=m, <m, =m, etc.] [repetitions: optional]
+            # !getprob [size: N or WxH] [mean length: optional] [moves: a-b or e.g. >=m, <m, =m, etc.] [repetitions: optional]
             size_reg = regex.size("width", "height")
+            mean_reg = "(mo" + regex.positive_integer("mean_length") + ")"
             interval_reg = "((?P<moves_from>[0-9]+)-(?P<moves_to>[0-9]+))"
             comparison_reg = "((?P<comparison>[<>]?=?)(?P<moves>[0-9]*))"
             reps_reg = regex.positive_integer("repetitions")
-            reg = re.compile(f"!getprob(\s+{size_reg})(\s+(?P<range>{interval_reg}|{comparison_reg}))(\s+{reps_reg})?")
+            reg = re.compile(f"!getprob(\s+{size_reg})(\s+{mean_reg})?(\s+(?P<range>{interval_reg}|{comparison_reg}))(\s+{reps_reg})?")
             match = reg.fullmatch(command)
 
             if match is None:
@@ -1146,18 +1147,25 @@ async def on_message(message):
             else:
                 h = int(groups["height"])
 
-            # get the distribution
+            # get the distribution for one position
             dist = distributions.get_distribution(w, h)
+
+            # compute the sum distribution if we're using a mean
+            if groups["mean_length"] is None:
+                mean_length = 1
+            else:
+                mean_length = int(groups["mean_length"])
+                dist = dist.sum_distribution(mean_length)
 
             # check if range is given by interval or comparison, and calculate probability for one repetition
             moves_range = groups["range"]
             if groups["comparison"] is None:
-                start = int(groups["moves_from"])
-                end = int(groups["moves_to"])
+                start = round(mean_length * float(groups["moves_from"]))
+                end = round(mean_length * float(groups["moves_to"]))
                 prob_one = dist.prob_range(start, end)
             else:
                 comp = comparison.from_string(groups["comparison"])
-                moves = int(groups["moves"])
+                moves = round(mean_length * float(groups["moves"]))
                 prob_one = dist.prob(moves, comp)
 
             # number of repetitions
@@ -1170,9 +1178,14 @@ async def on_message(message):
             prob = 1 - (1 - prob_one)**reps
 
             # write the message
-            msg = f"Probability of {w}x{h} having an optimal solution of {moves_range} moves is {format_prob(prob_one)}\n"
-            if reps > 1:
-                msg += f"Probability of at least one scramble out of {reps} within that range is {format_prob(prob)}"
+            if mean_length == 1:
+                msg = f"Probability of {w}x{h} having an optimal solution of {moves_range} moves is {format_prob(prob_one)}\n"
+                if reps > 1:
+                    msg += f"Probability of at least one scramble out of {reps} within that range is {format_prob(prob)}"
+            else:
+                msg = f"Probability of {w}x{h} mo{mean_length} having an optimal solution of {moves_range} moves is {format_prob(prob_one)}\n"
+                if reps > 1:
+                    msg += f"Probability of at least one mean out of {reps} within that range is {format_prob(prob)}"
 
             await message.channel.send(msg)
         except Exception as e:
