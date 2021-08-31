@@ -1128,8 +1128,10 @@ async def on_message(message):
         try:
             # !getprob [size: N or WxH] [moves: a-b or e.g. >=m, <m, =m, etc.] [repetitions: optional]
             size_reg = regex.size("width", "height")
+            interval_reg = "((?P<moves_from>[0-9]+)-(?P<moves_to>[0-9]+))"
+            comparison_reg = "((?P<comparison>[<>]?=?)(?P<moves>[0-9]*))"
             reps_reg = regex.positive_integer("repetitions")
-            reg = re.compile(f"!getprob\s+{size_reg}\s+(?P<range>((?P<moves_from>[0-9]+)-(?P<moves_to>[0-9]+))|((?P<comparison>[<>]?=?)(?P<moves>[0-9]*)))(\s+{reps_reg})?")
+            reg = re.compile(f"!getprob(\s+{size_reg})(\s+(?P<range>{interval_reg}|{comparison_reg}))(\s+{reps_reg})?")
             match = reg.fullmatch(command)
 
             if match is None:
@@ -1147,7 +1149,7 @@ async def on_message(message):
             # get the distribution
             dist = distributions.get_distribution(w, h)
 
-            # check if from-to or comparison, and calculate probability
+            # check if range is given by interval or comparison, and calculate probability for one repetition
             moves_range = groups["range"]
             if groups["comparison"] is None:
                 start = int(groups["moves_from"])
