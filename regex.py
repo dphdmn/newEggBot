@@ -17,6 +17,9 @@ def algorithm(name=None):
 def positive_integer(name=None):
     return format("[1-9][0-9]*", name)
 
+def positive_real(name=None):
+    return format("[0-9]+(\.[0-9]+)?", name)
+
 def size(wname=None, hname=None, name=None):
     w = positive_integer(wname)
     h = positive_integer(hname)
