@@ -1,8 +1,10 @@
 import base64
 import datetime as dt
+import json
 import pickle
 import zlib
 import leaderboard.leaderboard as lb
+import leaderboard.tiers as tiers
 from replit import db
 
 def store_results():
@@ -25,8 +27,10 @@ def update_webpage():
     file = "var dates = ["
     for date in dates:
         file += "\"" + date + "\","
-
     file = file[:-1] + "];\n"
+
+    # write tiers into an array of json objects
+    file += "var tiers = " + json.dumps(tiers.tiers) + ";\n"
 
     # write table data into the js variable data
     file += "var data = ["
