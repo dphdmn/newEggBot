@@ -21,6 +21,7 @@ for(var i=num_tiers-1; i>=0; i--){
 
     // table of all results of users in this tier
     var tier_table = document.createElement("table");
+    results_table.appendChild(tier_table);
 
     // set up the header rows
     var tier_head = document.createElement("thead"); // header containing the following three rows
@@ -28,15 +29,14 @@ for(var i=num_tiers-1; i>=0; i--){
     var tier_req_row = document.createElement("tr"); // row containing the results required for the tier
     var tier_events_row = document.createElement("tr"); // row containing names of the categories
 
-    results_table.appendChild(tier_table);
+    tier_head.className = "sticky";
+    tier_req_row.className = "req-row";
+    tier_events_row.className = "events-row";
+
     tier_table.appendChild(tier_head);
     tier_head.appendChild(tier_name_row);
     tier_head.appendChild(tier_req_row);
     tier_head.appendChild(tier_events_row);
-
-    tier_head.className = "sticky";
-    tier_req_row.className = "req-row";
-    tier_events_row.className = "events-row";
 
     // add the users to the table
     while(true){
