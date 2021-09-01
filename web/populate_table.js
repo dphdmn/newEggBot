@@ -11,6 +11,7 @@ const num_tiers = tiers.length;
 const num_categories = 30;
 
 var results_table = document.getElementById("results-table");
+results_table.class_name = "results-table";
 
 // which user do we need to add to the table next?
 var next_user = 0;
@@ -35,6 +36,7 @@ for(var i=num_tiers-1; i>=0; i--){
 
     tier_head.className = "sticky";
     tier_req_row.className = "req-row";
+    tier_events_row.className = "events-row";
 
     // add the users to the table
     while(true){
@@ -54,6 +56,11 @@ for(var i=num_tiers-1; i>=0; i--){
         name_div.textContent = user[0];
         place_div.textContent = user[1];
         power_div.textContent = user[2];
+
+        user_row.className = "player-row";
+        name_div.className = "player " + tier["name"].toLowerCase();
+        place_div.className = "player-place " + tier["name"].toLowerCase();
+        power_div.className = "player-power " + tier["name"].toLowerCase();
 
         tier_table.appendChild(user_row);
         user_row.appendChild(name_div);
