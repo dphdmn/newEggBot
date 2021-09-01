@@ -47,6 +47,19 @@ for(var i=num_tiers-1; i>=0; i--){
 
     tier_name_row.appendChild(tier_name_div);
 
+    // tier requirements row
+    for(var j=0; j<3; j++){
+        tier_req_row.appendChild(document.createElement("td"));
+    }
+    tier_req_row.children[1].textContent = tier["power"];
+    tier_req_row.children[2].textContent = tier["limit"];
+
+    for(var j=0; j<num_categories; j++){
+        var div = document.createElement("td");
+        div.textContent = tier["times"][j]/1000;
+        tier_req_row.appendChild(div);
+    }
+
     // add the users to the table
     while(true){
         const user = table[next_user];
