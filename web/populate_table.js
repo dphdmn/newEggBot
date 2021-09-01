@@ -1,4 +1,4 @@
-import { dates, data } from "./data.js";
+import { dates, tiers, data } from "./data.js";
 
 function decompress(str){
     const pako = window.pako;
@@ -7,15 +7,13 @@ function decompress(str){
     return decoder.decode(arr);
 }
 
-const tiers = ["gamma", "aleph", "ascended", "nova", "grandmaster", "master", "diamond", "platinum", "gold", "silver", "bronze", "beginner", "unranked"];
 const num_tiers = tiers.length;
 const num_categories = 30;
 
 var results_table = document.getElementById("results-table");
 
-for(var i=0; i<num_tiers; i++){
-    // tier name
-    var tier = tiers[i];
+for(var i=num_tiers-1; i>=0; i--){
+    const tier = tiers[i];
 
     // table of all results of users in this tier
     var tier_table = document.createElement("table");
