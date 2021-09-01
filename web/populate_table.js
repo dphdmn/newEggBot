@@ -38,6 +38,15 @@ for(var i=num_tiers-1; i>=0; i--){
     tier_head.appendChild(tier_req_row);
     tier_head.appendChild(tier_events_row);
 
+    // tier name row
+    var tier_name_div = document.createElement("td");
+
+    // fill up the whole width of the table (columns = username, place, power, categories)
+    tier_name_div.colSpan = num_categories+3;
+    tier_name_div.textContent = tier["name"];
+
+    tier_name_row.appendChild(tier_name_div);
+
     // add the users to the table
     while(true){
         const user = table[next_user];
