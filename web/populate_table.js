@@ -12,6 +12,9 @@ const num_categories = 30;
 
 var results_table = document.getElementById("results-table");
 
+// which user do we need to add to the table next?
+var next_user = 0;
+
 for(var i=num_tiers-1; i>=0; i--){
     const tier = tiers[i];
 
@@ -32,4 +35,31 @@ for(var i=num_tiers-1; i>=0; i--){
 
     tier_head.className = "sticky";
     tier_req_row.className = "req-row";
+
+    // add the users to the table
+    while(true){
+        const user = table[next_user];
+
+        // if the user's power is too low, stop adding new rows
+        if(user[2] < tier["limit"]){
+            break;
+        }
+
+        // create a new row and the cells for the username, place, power
+        var user_row = document.createElement("tr");
+        var name_div = document.createElement("td");
+        var place_div = document.createElement("td");
+        var power_div = document.createElement("td");
+
+        name_div.textContent = user[0];
+        place_div.textContent = user[1];
+        power_div.textContent = user[2];
+
+        tier_table.appendChild(user_row);
+        user_row.appendChild(name_div);
+        user_row.appendChild(place_div);
+        user_row.appendChild(power_div);
+
+        next_user++;
+    }
 }
