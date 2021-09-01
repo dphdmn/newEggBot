@@ -1,5 +1,12 @@
 import { dates, data } from "./data.js";
 
+function decompress(str){
+    const pako = window.pako;
+    var arr = pako.inflate(atob(str));
+    var decoder = new TextDecoder();
+    return decoder.decode(arr);
+}
+
 const tiers = ["gamma", "aleph", "ascended", "nova", "grandmaster", "master", "diamond", "platinum", "gold", "silver", "bronze", "beginner", "unranked"];
 const num_tiers = tiers.length;
 const num_categories = 30;
@@ -13,7 +20,7 @@ for(var i=0; i<num_tiers; i++){
     // table of all results of users in this tier
     var tier_table = document.createElement("table");
 
-    // set up the rows
+    // set up the header rows
     var tier_head = document.createElement("thead"); // header containing the following three rows
     var tier_name_row = document.createElement("tr"); // row containing the name of the tier
     var tier_req_row = document.createElement("tr"); // row containing the results required for the tier
