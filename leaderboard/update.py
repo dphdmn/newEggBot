@@ -24,16 +24,16 @@ def update_webpage():
     dates.sort()
 
     # write dates into an array
-    file = "var dates = ["
+    file = "export const dates = ["
     for date in dates:
         file += "\"" + date + "\","
     file = file[:-1] + "];\n"
 
     # write tiers into an array of json objects
-    file += "var tiers = " + json.dumps(tiers.tiers) + ";\n"
+    file += "export const tiers = " + json.dumps(tiers.tiers) + ";\n"
 
     # write table data into the js variable data
-    file += "var data = ["
+    file += "export const data = ["
     for date in dates:
         base64_table = db["leaderboard/data/" + date]
         compressed_table = base64.b64decode(base64_table.encode())
