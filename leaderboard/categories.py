@@ -5,11 +5,19 @@ with open("leaderboard/data/categories.txt", "r") as f:
 data = [line.split(",") for line in data.split("\n")]
 
 categories = []
+category_names = []
 for row in data:
     width = int(row[0])
     height = int(row[1])
     solvetype = row[2]
     avglen = int(row[3])
+
+    categories.append({
+        "width"     : width,
+        "height"    : height,
+        "solvetype" : solvetype,
+        "avglen"    : avglen
+    })
 
     name = f"{width}x{height}"
     if solvetype[:8] == "Marathon":
@@ -22,10 +30,4 @@ for row in data:
     else:
         name += f" ao{avglen}"
 
-    categories.append({
-        "width"     : width,
-        "height"    : height,
-        "solvetype" : solvetype,
-        "avglen"    : avglen,
-        "name"      : name
-    })
+    category_names.append(name)
