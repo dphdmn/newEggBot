@@ -5,6 +5,7 @@ import pickle
 import zlib
 import leaderboard.leaderboard as lb
 import leaderboard.tiers as tiers
+import leaderboard.categories as categories
 from replit import db
 
 def store_results():
@@ -31,6 +32,9 @@ def update_webpage():
 
     # write tiers into an array of json objects
     file += "export const tiers = " + json.dumps(tiers.tiers) + ";\n"
+
+    # write categories
+    file += "export const categories = " + json.dumps(categories.categories) + ";\n"
 
     # write table data into the js variable data
     file += "export const data = ["
