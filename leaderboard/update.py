@@ -34,7 +34,7 @@ def update_webpage():
     file += "export const tiers = " + json.dumps(tiers.tiers) + ";\n"
 
     # write categories
-    file += "export const categories = " + json.dumps(categories.categories) + ";\n"
+    file += "export const categories = " + json.dumps(categories.category_names) + ";\n"
 
     # write table data into the js variable data
     file += "export const data = ["
