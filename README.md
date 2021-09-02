@@ -2,43 +2,55 @@
 Egg bot for sliding puzzle discord server
 https://discord.gg/7vXrWAS3yZ
 
-WR-related commands:
-- !getwr [NxM] - get wr for this puzzle (single)
-- !wrsby [username] - get all wrs for that username
+WR commands:
+- !getwr [NxM] - get WR single for NxM puzzle
+- !wrsby [username] - get all WRs by that username
 - !wrupdate - update WR pages
 
-FMC-competion related commands (only in daily fmc channel):
-- !fmc - get current daily fmc information
-- !submit [solution] - submit solution to current daily fmc competition
+FMC commands
+- !fmc - get current fmc information
+- !submit [solution] - submit solution to current fmc
+- !results - get results of current fmc
+- !startfmc - start new 10 minute fmc
 
-PB/ranks-related commands
-- !getpb [user] [puzzle] - get pb for one of 30 main categories in tier ranks, puzzle for 3x3 to 10x10
-- !getreq [tier] [puzzle] - get requirement for getting tier in new ranked system
-- !getlb - get current version of leaderboard (ascii style)
-- !update - updates current pbs for getpb command, also gives a file of current pbs at 30 tiers  [technical]
+Movesgame commands
+- !movesgame - start new movesgame
+- !tournament - start new movesgame tournament
+- !results - view lifetime results of movesgame
+
+PB/ranks commands
+- !getpb [user] [puzzle=NxN] - get user's PBs for 3x3 to 10x10 puzzle. default puzzle size is 4x4, or the channel size in the 3x3-10x10 channels
+- !getreq [tier] [puzzle] - get time requirement for a tier
+- !getlb - get current version of the webpage as a text file
+- !update - update the ranks webpage
 - !datecompare [date1] [date2] - compare two states of leaderboard (!datecompare 2021-06-14 2021-06-13)
 - !anoncmp - compare from last anon date to today's date
 
 Solver-related commands:
-- !solve [scramble] - solve some 4x4 or 3x3 scramble
-- !eggsolve [scramble] - solve 4x4 or 3x3 scramble and find all possible optimal solutions
-- !goodm [scramble] - find good moves for some 3x3 or 4x4 scramble
-- !video [scramble] - like !solve but also get a video
-- !getreal - returns real scramble (moves) and draws a picture of it
-- !movesgame - find a good moves for a random scramble game
-- !analyse [solution]  - analyse a solution and find mistakes
+- !solve [scramble] - optimally solve a scramble (3x3 or 4x4)
+- !eggsolve [scramble] - find all optimal solutions (3x3 or 4x4)
+- !goodm [scramble] - find good moves for a scramble (3x3 or 4x4)
+- !video [scramble] - same as !solve but also generates a video
+- !analyse [solution] - analyse a solution and find mistakes
+- !analyse3x3 - upload a file containing solutions (one per line). calculates how many were optimal, +2, +4, etc.
 
 Scramble/solution-related commands:
 - !rev [solution] - reverse the solution of scramble, use RLUD notation, you can also use numbers like in slidysim
 - !not [solution] - change notation (R = L, U = D) etc. of the solution
-- !getscramble (size-optionally) - get random puzzle for sliding puzzle with that size
-- !draw [scrambles] - draws image of your scramble
-- !animate [scramble (optional)] [solution] [tps (optional)] - makes an animation of your solve. if scramble is not given, the inverse of the solution will be used. default tps is 8.
+- !draw [scramble] - draws image of a 4x4 scramble
+- !animate [scramble=solution-inverse] [solution] [tps=8] - makes an animation of your solve (4x4 only)
+- !getreal - generates a scramble algorithm and draws a picture of it
+- !getscramble [N=4] - generates a random scramble for an NxN puzzle
+- !simplify [solution] - removes mistakes like UD or LR from a solution
+- !solvable [scramble] - check if a position is solvable
 
-Fun/stats commands:
-- !getprob [puzzle] [moves] [[moves], [amount] || [amount] - get probability of getting N moves optimal scramble, type !getprob for examples
-- !paint [[size]] - paint image into slidysim scramble, use size to  make it custom puzzles size (up to 256), you should upload image as attachment 
-- !tti [text] - funny function, gives some image, don't spam it
+Misc. commands:
+- !getprob [NxM] mo[N=1] [moves-range] [repetitions=1] - compute probability of an NxM single/mean having an optimal solution length within a given range of moves, after some number of attempts
+- !paint [size] - paint image into slidysim scramble, use size to  make it custom puzzles size (up to 256), you should upload image as attachment 
+- !8fmc [N=100] - generate N random scrambles and optimal solution lengths, for use with 8 puzzle 100x fmc
+- !egg - 🥚
+- !help - link to this file
+- !tti [text] - bad AI image generator
 
 Technical commands to compare rank pages (will be removed or changed in next updates probably):
 - !cmp1 [file] - old file to compare [technical]
