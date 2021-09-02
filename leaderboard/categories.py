@@ -20,13 +20,18 @@ for row in data:
     })
 
     name = f"{width}x{height}"
+
+    is_standard = False
     if solvetype[:8] == "Marathon":
         name += " x" + solvetype[9:]
     elif solvetype == "2-N relay":
         name += " relay"
+    else:
+        is_standard = True
 
     if avglen == 1:
-        name += " single"
+        if is_standard:
+            name += " single"
     else:
         name += f" ao{avglen}"
 
