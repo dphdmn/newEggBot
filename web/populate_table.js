@@ -1,4 +1,4 @@
-import { dates, tiers, data } from "./data.js";
+import { dates, tiers, categories, data } from "./data.js";
 
 function decompress(str){
     const pako = window.pako;
@@ -58,6 +58,20 @@ for(var i=num_tiers-1; i>=0; i--){
         var div = document.createElement("td");
         div.textContent = tier["times"][j]/1000;
         tier_req_row.appendChild(div);
+    }
+
+    // tier events row
+    for(var j=0; j<3; j++){
+        tier_events_row.appendChild(document.createElement("td"));
+    }
+    tier_events_row.children[0].textContent = "Name";
+    tier_events_row.children[1].textContent = "Place";
+    tier_events_row.children[2].textContent = "Power";
+
+    for(var j=0; j<num_categories; j++){
+        var div = document.createElement("td");
+        div.textContent = categories[j];
+        tier_events_row.appendChild(div);
     }
 
     // add the users to the table
