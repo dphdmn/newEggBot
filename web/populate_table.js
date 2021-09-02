@@ -103,6 +103,13 @@ for(var i=num_tiers-1; i>=0; i--){
         user_row.appendChild(place_div);
         user_row.appendChild(power_div);
 
+        // add the users results
+        for(var j=0; j<num_categories; j++){
+            var div = document.createElement("td");
+            div.textContent = user[j+3];
+            user_row.appendChild(div);
+        }
+
         next_user++;
     }
 }
