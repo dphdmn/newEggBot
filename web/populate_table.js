@@ -11,7 +11,6 @@ const num_tiers = tiers.length;
 const num_categories = categories.length;
 
 var results_table = document.getElementById("results-table");
-results_table.class_name = "results-table";
 
 // which user do we need to add to the table next?
 var next_user = 0;
