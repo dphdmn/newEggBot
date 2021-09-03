@@ -21,14 +21,29 @@ def store_results():
     db[f"leaderboard/data/{today}"] = base64_table
 
 def update_webpage():
+    # get sorted list of all dates that we have data for
     dates = [x[17:] for x in db.prefix("leaderboard/data/")]
     dates.sort()
 
-    # write dates into an array
-    file = "export const dates = ["
+    # create a dict of the form {date : data, ...}
+    data_dict = {}
     for date in dates:
-        file += "\"" + date + "\","
-    file = file[:-1] + "];\n"
+        # read the data from the database and uncompress it
+        base64_table = db["leaderboard/data/" + date]
+        compressed_table = base64.b64decode(base64_table.encode())
+        pickled_table = zlib.decompress(compressed_table)
+        table = pickle.loads(pickled_table)
+
+        # format and sort the data
+        table_str = lb.format_results_table(table)
+
+        # compress the table string and convert to base 64
+        compressed_str = zlib.compress(table_str.encode(), level=9)
+        base64_str = base64.b64encode(compressed_str).decode()
+
+        data_dict[date] = base64_str
+
+    file = ""
 
     # write tiers into an array of json objects
     file += "export const tiers = " + json.dumps(tiers.tiers) + ";\n"
@@ -36,21 +51,8 @@ def update_webpage():
     # write categories
     file += "export const categories = " + json.dumps(categories.category_names) + ";\n"
 
-    # write table data into the js variable data
-    file += "export const data = ["
-    for date in dates:
-        base64_table = db["leaderboard/data/" + date]
-        compressed_table = base64.b64decode(base64_table.encode())
-        pickled_table = zlib.decompress(compressed_table)
-        table = pickle.loads(pickled_table)
-        table_str = lb.format_results_table(table)
-
-        # compress the table string and convert to base 64
-        compressed_str = zlib.compress(table_str.encode(), level=9)
-        base64_str = base64.b64encode(compressed_str).decode()
-        file += "\"" + base64_str + "\","
-
-    file = file[:-1] + "];\n"
+    # write table data
+    file += "export const data = " + json.dumps(data_dict) + ";\n"
 
     # write to data file
     with open("data.js", "w") as f:
