@@ -1,5 +1,6 @@
 import os
 import requests
+import json
 from leaderboard.categories import categories
 from leaderboard.tiers import tiers
 
@@ -138,4 +139,4 @@ def format_results_table(results_table):
         row = [user, i+1, user_power[user]] + results_str
         table.append(row)
 
-    return str(table)
+    return json.dumps(table)
