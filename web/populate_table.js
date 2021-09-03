@@ -119,3 +119,9 @@ function populate_table(table){
         }
     }
 }
+
+function show_results_from_date(date){
+    const str = decompress(data[0]);
+    const table = JSON.parse(str);
+    populate_table(table);
+}
