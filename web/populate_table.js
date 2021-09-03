@@ -77,6 +77,7 @@ for(var i=num_tiers-1; i>=0; i--){
     // add the users to the table
     while(true){
         const user = table[next_user];
+        const tier_name = tier["name"].toLowerCase();
 
         // if the user's power is too low, stop adding new rows
         if(user[2] < tier["limit"]){
@@ -94,9 +95,13 @@ for(var i=num_tiers-1; i>=0; i--){
         power_div.textContent = user[2];
 
         user_row.className = "player-row";
-        name_div.className = "player " + tier["name"].toLowerCase();
-        place_div.className = "player-place " + tier["name"].toLowerCase();
-        power_div.className = "player-power " + tier["name"].toLowerCase();
+        name_div.className = "player";
+        place_div.className = "player-place";
+        power_div.className = "player-power";
+
+        name_div.setAttribute("tier", tier_name);
+        place_div.setAttribute("tier", tier_name);
+        power_div.setAttribute("tier", tier_name);
 
         tier_table.appendChild(user_row);
         user_row.appendChild(name_div);
