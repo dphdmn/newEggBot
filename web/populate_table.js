@@ -1,4 +1,4 @@
-import { dates, tiers, categories, data } from "./data.js";
+import { tiers, categories, data } from "./data.js";
 
 function decompress(str){
     const pako = window.pako;
