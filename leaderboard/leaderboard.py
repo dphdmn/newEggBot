@@ -40,6 +40,9 @@ def get_leaderboard(width=-1, height=-1, solvetype="any", avglen=-1, user=""):
 
     return leaderboard
 
+# filters the leaderboard results, removing any results that don't correspond
+# to one of our categories. each result has a "category" parameter appended
+# which is the index of the category in leaderboard.categories.categories.
 def get_category_results():
     # get the full leaderboard
     lb = get_leaderboard()
@@ -62,6 +65,9 @@ def get_category_results():
 
     return filtered_lb
 
+# creates a dict of the form {username : [list of category times]}
+# where the i'th element of the list of times is the users time in
+# the i'th category in leaderboard.categories.categories.
 def results_table():
     results = get_category_results()
     users = sorted(set(x["user"] for x in results))
@@ -78,9 +84,10 @@ def results_table():
 
             category = result["category"]
 
-            # fill in the entry in the table.
-            # we need the min() because the user might have times with
-            # keyboard and mouse, and we have to choose the faster time
+            # fill in the entry in the table with the users best time.
+            # note that there may be multiple results in the leaderboard
+            # if the user has done solves with both control schemes,
+            # so we need to choose the fastest one.
             if row[category] is None:
                 row[category] = result["time"]
             else:
@@ -115,6 +122,8 @@ def power(results_list):
         total += tiers[tier]["power"]
     return total
 
+# takes the output of results_table(), sorts the users by power
+# and formats the times as strings.
 def format_results_table(results_table):
     users = results_table.keys()
 
@@ -122,6 +131,7 @@ def format_results_table(results_table):
     user_power = dict(sorted([(user, power(results_table[user])) for user in users], key=lambda x: (-x[1], x[0])))
     sorted_users = user_power.keys()
 
+    # format the times
     table = []
     for i, user in enumerate(sorted_users):
         results_str = [format(x/1000, ".3f") if x is not None else "" for x in results_table[user]]
