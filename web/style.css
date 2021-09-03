@@ -171,16 +171,16 @@ table .player-row {
     opacity: 0.9;
 }
 
-.gamma       { background-color: #00ffff; }
-.aleph       { background-color: #00ff2a; }
-.ascended    { background-color: #ff2262; }
-.nova        { background-color: #7900ff; }
-.grandmaster { background-color: #ffd700; }
-.master      { background-color: #ec44ca; }
-.diamond     { background-color: #b9f2ff; }
-.platinum    { background-color: #2fcfc2; }
-.gold        { background-color: #cab148; }
-.silver      { background-color: #cbd9e6; }
-.bronze      { background-color: #b45f06; }
-.beginner    { background-color: #93c47d; }
-.unranked    { background-color: #666666; }
+[tier="gamma"]       { background-color: #00ffff; }
+[tier="aleph"]       { background-color: #00ff2a; }
+[tier="ascended"]    { background-color: #ff2262; }
+[tier="nova"]        { background-color: #7900ff; }
+[tier="grandmaster"] { background-color: #ffd700; }
+[tier="master"]      { background-color: #ec44ca; }
+[tier="diamond"]     { background-color: #b9f2ff; }
+[tier="platinum"]    { background-color: #2fcfc2; }
+[tier="gold"]        { background-color: #cab148; }
+[tier="silver"]      { background-color: #cbd9e6; }
+[tier="bronze"]      { background-color: #b45f06; }
+[tier="beginner"]    { background-color: #93c47d; }
+[tier="unranked"]    { background-color: #666666; }
