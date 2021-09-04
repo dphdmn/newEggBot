@@ -13,6 +13,11 @@ const num_categories = categories.length;
 function populate_table(table){
     var results_table = document.getElementById("results-table");
 
+    // remove the previous table, if there was one
+    while(results_table.hasChildNodes()){
+        results_table.removeChild(results_table.firstChild);
+    }
+
     // which user do we need to add to the table next?
     var next_user = 0;
 
