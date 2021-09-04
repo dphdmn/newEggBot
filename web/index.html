@@ -15,15 +15,10 @@
     </head>
 
     <body>
-        <button class="date-button" onclick="datepicker.show();">Change the date</button>
+        <button class="date-button" onclick="select_date();">Change the date</button>
         <div class="results-table" id="results-table"></div>
 
-        <script>
-            var datepicker = new Datepickk();
-            datepicker.maxDate = new Date();
-            datepicker.maxSelections = 1;
-            datepicker.title = "Select date:"
-        </script>
         <script src="populate_table.js" type="module"></script>
+        <script src="datepicker.js" type="module"></script>
     </body>
 </html>
