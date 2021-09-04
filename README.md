@@ -61,3 +61,10 @@ Technical commands to compare rank pages (will be removed or changed in next upd
 Spamming fun commands:
 - !spam [something] - make bot spam something many times [admin]
 - !stop - make bot stop spamming [admin]
+
+List of useful websites:
+- Ranks - https://egg.benwh1.repl.co/
+- WRs - http://slidysim.000webhostapp.com/leaderboard/records.html
+- WRs (all) - http://slidysim.000webhostapp.com/leaderboard/records_all.html
+- WRs (moves) - http://slidysim.000webhostapp.com/leaderboard/records_moves.html
+- WRs (moves, all) - http://slidysim.000webhostapp.com/leaderboard/records_all_moves.html
