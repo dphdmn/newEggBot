@@ -49,14 +49,6 @@ def readFilenormal(name):
         mystr = file.read()
     return mystr
 
-def addConstants():
-    for filename in glob.glob('Constant_Files/*.*'):
-        print(filename[15:])
-        text = readFilenormal(filename)
-        db[filename[15:]] = text
-
-addConstants()
-
 #_______________________________Auto leaderboard
 
 def getLeaderboard():
