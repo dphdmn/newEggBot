@@ -1156,6 +1156,8 @@ async def on_message(message):
                 mean_length = 1
             else:
                 mean_length = int(groups["mean_length"])
+                if mean_length > 1000:
+                    raise ValueError("mean length must be at most 1000")
                 dist = dist.sum_distribution(mean_length)
 
             # check if range is given by interval or comparison, and calculate probability for one repetition
