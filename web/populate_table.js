@@ -121,6 +121,24 @@ function populate_table(table){
                 var div = document.createElement("td");
                 div.textContent = time/1000;
                 user_row.appendChild(div);
+
+                // compute which tier the result is
+                var result_tier;
+                for(result_tier=0; result_tier<num_tiers; result_tier++){
+                    if(time == ""){
+                        break;
+                    }
+                    if(time > tiers[result_tier]["times"][j]){
+                        break;
+                    }
+                }
+                result_tier--;
+
+                // result_tier is -1 if below the first rank
+                if(result_tier != -1){
+                    const name = tiers[result_tier]["name"].toLowerCase();
+                    div.setAttribute("tier", name);
+                }
             }
 
             next_user++;
