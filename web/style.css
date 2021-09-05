@@ -86,6 +86,26 @@ table {
     font-size: 20px;
 }
 
+.menu-icon {
+    /* whole menu icon */
+    cursor: pointer;
+    display: inline-block;
+    height: 60px;
+    width: 60px;
+    margin-top: 15px;
+}
+
+.menu-icon div {
+    /* parts of the menu icon */
+    width: 30px;
+    height: 6px;
+    margin-left: 15px;
+    margin-right: 15px;
+    margin-bottom: 6px;
+    background-color: rgb(255, 255, 255);
+    border-radius: 10%;
+}
+
 /*============[ STICKY ROW (eg: Gamma + requirements + events) ]============*/
 
 /* setting up the size of the cells */
