@@ -116,8 +116,10 @@ function populate_table(table){
 
             // add the users results
             for(var j=0; j<num_categories; j++){
+                const time = user[j+3];
+
                 var div = document.createElement("td");
-                div.textContent = user[j+3];
+                div.textContent = time/1000;
                 user_row.appendChild(div);
             }
 

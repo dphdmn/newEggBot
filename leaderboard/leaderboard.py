@@ -135,7 +135,7 @@ def format_results_table(results_table):
     # format the times
     table = []
     for i, user in enumerate(sorted_users):
-        results_str = [format(x/1000, ".3f") if x is not None else "" for x in results_table[user]]
+        results_str = [x if x is not None else -1 for x in results_table[user]]
         row = [user, i+1, user_power[user]] + results_str
         table.append(row)
 
