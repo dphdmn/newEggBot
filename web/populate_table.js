@@ -23,9 +23,11 @@ function populate_table(table){
 
     for(var i=num_tiers-1; i>=0; i--){
         const tier = tiers[i];
+        const tier_name = tier["name"].toLowerCase();
 
         // table of all results of users in this tier
         var tier_table = document.createElement("table");
+        tier_table.id = tier_name + "-table";
         results_table.appendChild(tier_table);
 
         // set up the header rows
@@ -82,7 +84,6 @@ function populate_table(table){
         // add the users to the table
         while(true){
             const user = table[next_user];
-            const tier_name = tier["name"].toLowerCase();
 
             // if the user's power is too low, stop adding new rows
             if(user[2] < tier["limit"]){
