@@ -33,6 +33,7 @@ from fmc.daily_fmc import DailyFMC
 from fmc.fmc import FMC
 from movesgame.movesgame import MovesGame
 from movesgame.tournament import MovesGameTournament
+from random_game import RandomGame
 from probability import comparison, distributions
 from probability.format import format_prob
 from replit import db
@@ -591,6 +592,12 @@ async def on_ready():
     global movesgame, movesgame_tournament
     movesgame = MovesGame(bot, int(os.environ["movesgame_channel"]))
     movesgame_tournament = MovesGameTournament(bot, int(os.environ["movesgame_tournament_channel"]))
+
+    # create random game
+    global random_game
+    channels = [int(x) for x in os.environ["random_game_channels"].split(",")]
+    random_game = RandomGame(bot, channels, 181440)
+    random_game.start()
 
 @bot.listen()
 async def on_message(message):
