@@ -92,7 +92,7 @@ class RandomGame:
 
         id = db[self.db_path + "current/channel_id"]
         if message.channel.id == id:
-            if message.content == "egg":
+            if message.content.lower() == "egg":
                 await self.finish(message, timestamp)
 
     @tasks.loop(seconds=1)
