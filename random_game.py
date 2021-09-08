@@ -101,6 +101,5 @@ class RandomGame:
             return
 
         n = random.randint(1, self.freq)
-        print(f"random number: {n}")
         if n == 1:
             await self.run()
