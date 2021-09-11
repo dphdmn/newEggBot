@@ -1,0 +1,187 @@
+.menu-icon {
+    /* whole menu icon */
+    cursor: pointer;
+    display: inline-block;
+    height: var(--header_height);
+    width: var(--header_height);
+    margin-top: 15px;
+}
+
+.menu-icon div {
+    /* parts of the menu icon */
+    width: 30px;
+    height: 6px;
+    margin-left: 15px;
+    margin-right: 15px;
+    margin-bottom: 6px;
+    background-color: rgb(255, 255, 255);
+    border-radius: 10%;
+}
+
+.menu-container {
+    display: none;
+    position: fixed;
+    flex-direction: column;
+    top: 0;
+    left: 0;
+    background-color: rgb(35, 36, 39);
+    width: 20vw;
+    height: 100%;
+    z-index: 5;
+    box-shadow: 5px 5px 20px black;
+    animation: openMenu .3s;
+    overflow-y: scroll;
+}
+
+.menu-container .menu-icon-div {
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1;
+    padding-bottom: 15px;
+    background-color: rgb(35, 36, 39);
+}
+
+.menu-container::-webkit-scrollbar {
+    width: 0px;
+}
+
+/* open menu's cross */
+
+.menu-container .menu-icon div:first-child {
+    transform: translateY(12px) rotate(-45deg);
+}
+
+.menu-container .menu-icon div:last-child {
+    transform: rotate(45deg);
+}
+
+@keyframes openMenu {
+    from {
+        left: -100vw;
+    }
+    to {
+        left: 0;
+    }
+}
+
+@keyframes closeMenu {
+    from {
+        left: 0;
+    }
+    to {
+        left: -100vw;
+    }
+}
+
+.menu-links {
+    margin-top: 0;
+    width: 100%;
+    cursor: default;
+}
+
+.menu-links *::selection {
+    background-color: #0000;
+    color: inherit;
+}
+
+.menu-links h1 {
+    display: flex;
+    padding-left: 10px;
+    margin-top: 5px;
+    font-weight: 700;
+    font-size: 1.5em;
+    font-family: 'Cairo', sans-serif;
+    color: rgb(219, 219, 219);
+}
+
+.menu-links a {
+    display: block;
+    background-color: rgba(195, 195, 195, 0.027);
+    padding: 5px;
+    padding-left: 15px;
+    text-decoration: none;
+    color: rgb(173, 173, 173);
+    font-family: 'Cairo', sans-serif;
+    letter-spacing: 0.05em;
+    font-weight: 500;
+    font-size: 1.3em;
+    transition: .4s;
+}
+
+.menu-links a:hover {
+    background-color: rgb(53, 53, 56);
+    transition: .4s;
+    color: white;
+    padding-left: 20px;
+    text-decoration: none;
+}
+
+.menu-links .current-link {
+    background-color: rgb(48, 48, 49);
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+.menu-links .current-link:hover::after {
+    content: '(current)';
+    padding-left: 5px;
+    font-weight: 500;
+    color: rgb(143, 143, 143);
+}
+
+.menu-dropdown {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+}
+
+.menu-dropdown::after, .arrowDown::after {
+    margin-top: 0.5em;
+    border-style: solid;
+    border-width: 0.15em 0.15em 0 0;
+    content: '';
+    display: inline-block;
+    height: 0.45em;
+    left: 0.15em;
+    position: relative;
+    top: 0.15em;
+    transform: rotate(-45deg);
+    vertical-align: top;
+    width: 0.45em;
+    top: 0;
+    transform: rotate(135deg);
+    left: -2em;
+    transition: .2s;
+}
+
+.arrowDown::after {
+    transform: rotate(45deg);
+    transition: .2s;
+}
+
+.dropdownDisplay {
+    display: none;
+    height: auto;
+    transform-origin: top;
+    animation: dropdownAnimationDown .5s;
+}
+
+@keyframes dropdownAnimationDown {
+    from {
+        transform: scaleY(0);
+    }
+    to {
+        transform: scaleY(1);
+    }
+}
+
+@keyframes dropdownAnimationUp {
+    from {
+        transform: scaleY(1);
+    }
+    to {
+        transform: scaleY(0);
+    }
+}
