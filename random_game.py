@@ -81,7 +81,7 @@ class RandomGame:
         self.running = False
 
     async def on_message(self, message):
-        if message.author.id == self.bot.user.id:
+        if message.author.bot:
             return
 
         if not self.running:

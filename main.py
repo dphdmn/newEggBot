@@ -601,7 +601,7 @@ async def on_ready():
 
 @bot.listen()
 async def on_message(message):
-    if message.author == bot.user:
+    if message.author.bot:
         return
 
     if "pls" in message.content.lower():

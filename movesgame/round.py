@@ -73,6 +73,9 @@ class MovesGameRound:
         self.results[user.id] = move
 
     async def on_message(self, message):
+        if message.author.bot:
+            return
+
         if message.channel.id != self.channel.id:
             return
 
