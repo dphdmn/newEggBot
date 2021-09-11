@@ -624,8 +624,6 @@ async def on_message(message):
             for (name, result) in results.items():
                 msg += f"{name}: {result.length()}\n"
         await message.channel.send(msg)
-    if message.content.startswith("!getlb"):
-        await makeTmpSend("prettylb.txt", db["prettylb.txt"], "Leaderboard for ranks: ", message.channel)
     if message.content.startswith("!wrupdate"):
         url = os.environ["updateURL"]
         x = requests.get(url).text
