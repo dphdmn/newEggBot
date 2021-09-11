@@ -143,7 +143,7 @@ table {
 /* open menu's cross */
 
 .menu-container .menu-icon div:first-child {
-    transform: translateY(10px) rotate(-45deg);
+    transform: translateY(12px) rotate(-45deg);
 }
 
 .menu-container .menu-icon div:last-child {
