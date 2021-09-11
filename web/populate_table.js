@@ -1,14 +1,14 @@
 import { tiers, categories, data } from "./data.js";
 
+const num_tiers = tiers.length;
+const num_categories = categories.length;
+
 function decompress(str){
     const pako = window.pako;
     var arr = pako.inflate(atob(str));
     var decoder = new TextDecoder();
     return decoder.decode(arr);
 }
-
-const num_tiers = tiers.length;
-const num_categories = categories.length;
 
 function populate_table(table){
     var results_table = document.getElementById("results-table");
