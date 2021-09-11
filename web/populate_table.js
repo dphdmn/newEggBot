@@ -151,5 +151,9 @@ export function show_results_from_date(date){
         const str = decompress(data[date]);
         const table = JSON.parse(str);
         populate_table(table);
+
+        // show the selected date on the button
+        var date_button = document.getElementById("date-button");
+        date_button.innerHTML = date;
     }
 }
