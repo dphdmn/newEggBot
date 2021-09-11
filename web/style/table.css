@@ -31,10 +31,8 @@
 }
 
 .req-row td {
-    height: 30px;
-    font-family: 'Cairo', sans-serif;
+    height: 40px;
     font-weight: bold;
-    font-size: 1.05em;
     letter-spacing: .5px;
 }
 
@@ -46,7 +44,6 @@
 
 .player-row {
     height: 40px;
-    font-family: 'Cairo', sans-serif;
 }
 
 .player, .player-place, .player-power {
