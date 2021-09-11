@@ -41,6 +41,23 @@ function format(time){
     }
 }
 
+function result_tier(category, time){
+    if(time == -1){
+        return -1;
+    }
+
+    var tier;
+    for(tier=0; tier<num_tiers; tier++){
+        if(time == ""){
+            break;
+        }
+        if(time > tiers[tier]["times"][category]){
+            break;
+        }
+    }
+    return tier-1;
+}
+
 function populate_table(table){
     var results_table = document.getElementById("results-table");
 
@@ -153,21 +170,11 @@ function populate_table(table){
                 div.textContent = format(time);
                 user_row.appendChild(div);
 
-                // compute which tier the result is
-                var result_tier;
-                for(result_tier=0; result_tier<num_tiers; result_tier++){
-                    if(time == ""){
-                        break;
-                    }
-                    if(time > tiers[result_tier]["times"][j]){
-                        break;
-                    }
-                }
-                result_tier--;
+                const t = result_tier(j, time);
 
-                // result_tier is -1 if below the first rank
-                if(result_tier != -1){
-                    const name = tiers[result_tier]["name"].toLowerCase();
+                // tier is -1 if below the first rank
+                if(t != -1){
+                    const name = tiers[t]["name"].toLowerCase();
                     div.setAttribute("tier", name);
                 }
             }
