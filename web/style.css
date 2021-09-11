@@ -1,7 +1,8 @@
 /*============[ BASIC/GLOBAL STYLING ]============*/
 
 @import url("https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Lato:wght@700;900&display=swap");
-@import url('https://fonts.googleapis.com/icon?family=Material+Icons+Outlined');
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons+Outlined");
+@import url("style/table.css");
 
 * {
     font-weight: lighter;
@@ -20,19 +21,6 @@
 
 body {
     background-color: rgb(63, 72, 83);
-}
-
-.results-table {
-    color: rgb(220, 220, 220);
-    padding-top: var(--header_height);
-    width: 100%;
-    margin: auto;
-}
-
-table {
-    display: block;
-    width: 100%;
-    margin: auto;
 }
 
 /* custom scrollbar */
@@ -282,60 +270,7 @@ table {
     }
 }
 
-/*============[ STICKY ROW (eg: Gamma + requirements + events) ]============*/
-
-/* setting up the size of the cells */
-
-.req-row td,
-.events-row td,
-.player-row td {
-    height: 30px;
-    padding-left: 12px;
-    padding-right: 12px;
-    text-align: center;
-}
-
-.events-row {
-    height: 40px;
-}
-
-/* tier row */
-
-thead tr:first-child {
-    width: 100%;
-    height: 50px;
-}
-
-thead tr:first-child td {
-    padding-left: 15px;
-    font-weight: bold;
-    font-size: 1.5em;
-}
-
-/* sticky for each tier*/
-
-.sticky {
-    position: sticky;
-    top: var(--header_height);
-    z-index: 1;
-    left: 0;
-    background-color: #1b1e24;
-}
-
 /*============[ LITTLE ADJUSTMENTS, COLORS ]============*/
-
-/* text color to black for tables */
-table .player-row {
-    color: black;
-}
-
-/* text's style of the requirement times */
-.req-row td {
-    font-family: 'Cairo', sans-serif;
-    font-weight: 700;
-    font-size: 1.05em;
-    letter-spacing: .5px;
-}
 
 /* scores' style */
 .player-row td:nth-child(n+4) {

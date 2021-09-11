@@ -84,7 +84,8 @@ function populate_table(table){
         var tier_req_row = document.createElement("tr"); // row containing the results required for the tier
         var tier_events_row = document.createElement("tr"); // row containing names of the categories
 
-        tier_head.className = "sticky";
+        tier_head.className = "table-header";
+        tier_name_row.className = "tier-row";
         tier_req_row.className = "req-row";
         tier_events_row.className = "events-row";
 

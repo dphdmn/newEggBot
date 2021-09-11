@@ -1,0 +1,39 @@
+.results-table {
+    padding-top: var(--header_height);
+    width: 100%;
+    margin: auto;
+    text-align: center;
+}
+
+.results-table td {
+    height: 30px;
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+.table-header {
+    position: sticky;
+    top: var(--header_height);
+    z-index: 1;
+    color: rgb(220, 220, 220);
+    background-color: #1b1e24;
+}
+
+.tier-row td {
+    height: 50px;
+    padding-left: 15px;
+    font-weight: bold;
+    font-size: 1.5em;
+    text-align: left;
+}
+
+.req-row td {
+    font-family: 'Cairo', sans-serif;
+    font-weight: bold;
+    font-size: 1.05em;
+    letter-spacing: .5px;
+}
+
+.events-row {
+    height: 40px;
+}
