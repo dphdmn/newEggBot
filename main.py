@@ -1170,24 +1170,6 @@ async def on_message(message):
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
-    if message.content.startswith("!savecmp"):
-        if message.author.guild_permissions.administrator:
-            today = str(datetime.datetime.today().strftime('%Y-%m-%d'))
-            db["SMARTanon"] = db["SMART"+today]
-            await message.channel.send("Saved to anon!")
-        else:
-            await message.channel.send("Sorry, you are not admin")
-    if message.content.startswith("!anoncmp"):
-        date1 = "SMARTanon"
-        date2 = "SMART" + str(datetime.datetime.today().strftime('%Y-%m-%d'))
-        out = comparelist(date1, date2)
-        f = open("compare.txt", "w+")
-        f.write(out)
-        f.close()
-        with open("compare.txt", "rb") as f:
-            txt = discord.File(f)
-            await message.channel.send("Your cmp to last anon: ", file=txt)
-        os.remove("compare.txt")
     if message.content.startswith("!datecompare"):
         contentArray = message.content.lower().split(" ")
         if len(contentArray) != 3:
@@ -1203,40 +1185,6 @@ async def on_message(message):
                 txt = discord.File(f)
                 await message.channel.send("Your cmp: ", file=txt)
             os.remove("compare.txt")
-    if message.content.startswith("!compare"):
-        out = comparelist("file1.txt", "file2.txt")
-        if len(out) > 1900:
-            f = open("compare.txt", "w+")
-            f.write(out)
-            f.close()
-            with open("compare.txt", "rb") as f:
-                txt = discord.File(f)
-                await message.channel.send("Your cmp: ", file=txt)
-            os.remove("compare.txt")
-        else:
-            await message.channel.send("```" + out + "```")
-    if message.content.startswith("!cmp1"):
-        good = False
-        try:
-            text = requests.get(message.attachments[0].url).content.decode("utf-8")
-            # print(message.attachments)
-            good = True
-        except:
-            await message.channel.send("Can't get file")
-        if good:
-            db["file1.txt"] = dbcomp(text)
-            await message.channel.send("Probably updated")
-    if message.content.startswith("!cmp2"):
-        good = False
-        try:
-            text = requests.get(message.attachments[0].url).content.decode("utf-8")
-            # print(message.attachments)
-            good = True
-        except:
-            await message.channel.send("Can't get file")
-        if good:
-            db["file2.txt"] = dbcomp(text)
-            await message.channel.send("Probably updated")
     if message.content.startswith("!movesgame"):
         scramble = scrambler.getScramble(4)
         img = draw_state(scramble)
