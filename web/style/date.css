@@ -1,5 +1,5 @@
 .page-header {
-    position: fixed;
+    position: sticky;
     top: 0;
     width: 100%;
     height: var(--header_height);
