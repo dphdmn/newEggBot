@@ -4,25 +4,21 @@
     display: inline-block;
     height: var(--header_height);
     width: var(--header_height);
-    margin-top: 15px;
 }
 
-.menu-icon div {
-    /* parts of the menu icon */
-    width: 30px;
-    height: 6px;
-    margin-left: 15px;
-    margin-right: 15px;
-    margin-bottom: 6px;
-    background-color: rgb(255, 255, 255);
-    border-radius: 10%;
+.menu-icon[state="open"] {
+    background-image: url("menu_open.svg");
+}
+
+.menu-icon[state="close"] {
+    background-image: url("menu_close.svg");
 }
 
 .menu-container {
     display: none;
     position: fixed;
     flex-direction: column;
-    top: 0;
+    top: var(--header_height);
     left: 0;
     background-color: rgb(35, 36, 39);
     width: 20vw;
@@ -33,28 +29,8 @@
     overflow-y: scroll;
 }
 
-.menu-container .menu-icon-div {
-    position: sticky;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1;
-    padding-bottom: 15px;
-    background-color: rgb(35, 36, 39);
-}
-
 .menu-container::-webkit-scrollbar {
     width: 0px;
-}
-
-/* open menu's cross */
-
-.menu-container .menu-icon div:first-child {
-    transform: translateY(12px) rotate(-45deg);
-}
-
-.menu-container .menu-icon div:last-child {
-    transform: rotate(45deg);
 }
 
 @keyframes openMenu {
