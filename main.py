@@ -31,6 +31,7 @@ from analyse import analyse
 from draw_state import draw_state
 from daily_fmc import DailyFMC
 from probability import comparison, distributions
+from leaderboard import update as lb
 from replit import db
 
 client = discord.Client()
@@ -638,11 +639,9 @@ async def on_message(message):
     if message.content.startswith("!update"):
         await message.channel.send("Wait for it!")
         try:
-            getLeaderboard()
+            lb.update()
             webpage = os.environ["webpage"]
-            msg = f"Check this: {webpage}\nProbably updated! Try !getpb command:"
-            await makeTmpSend("smartboard.txt", db["smartboard.txt"], msg, message.channel)
-            db["lastupdate"] = datetime.datetime.now().timestamp()
+            msg = f"Webpage updated!\n{webpage}"
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
