@@ -10,6 +10,37 @@ function decompress(str){
     return decoder.decode(arr);
 }
 
+function format(time){
+    if(time == -1){
+        return "";
+    }
+
+    var t = time;
+    var hours   = Math.floor(t/3600000); t %= 3600000;
+    var minutes = Math.floor(t/60000);   t %= 60000;
+    var seconds = Math.floor(t/1000);    t %= 1000;
+    var millis  = t;
+
+    if(time < 1000){
+        return "0." + millis.toString().padStart(3, "0");
+    }
+    else if(time < 60000){
+        return seconds + "." +
+               millis.toString().padStart(3, "0");
+    }
+    else if(time < 3600000){
+        return minutes + ":" +
+               seconds.toString().padStart(2, "0") + "." +
+               millis.toString().padStart(3, "0");
+    }
+    else{
+        return hours + ":" +
+               minutes.toString().padStart(2, "0") + ":" +
+               seconds.toString().padStart(2, "0") + "." +
+               millis.toString().padStart(3, "0");
+    }
+}
+
 function populate_table(table){
     var results_table = document.getElementById("results-table");
 
@@ -63,7 +94,7 @@ function populate_table(table){
 
         for(var j=0; j<num_categories; j++){
             var div = document.createElement("td");
-            div.textContent = tier["times"][j]/1000;
+            div.textContent = format(tier["times"][j]);
             tier_req_row.appendChild(div);
         }
 
@@ -119,7 +150,7 @@ function populate_table(table){
                 const time = user[j+3];
 
                 var div = document.createElement("td");
-                div.textContent = time/1000;
+                div.textContent = format(time);
                 user_row.appendChild(div);
 
                 // compute which tier the result is
