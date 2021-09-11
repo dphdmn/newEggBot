@@ -157,3 +157,8 @@ export function show_results_from_date(date){
         date_button.innerHTML = date;
     }
 }
+
+// show the latest results
+var dates = Object.keys(data);
+var latest = dates[dates.length-1];
+show_results_from_date(latest);
