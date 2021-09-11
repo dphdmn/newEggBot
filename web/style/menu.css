@@ -2,8 +2,8 @@
     /* whole menu icon */
     cursor: pointer;
     display: inline-block;
-    height: var(--header_height);
-    width: var(--header_height);
+    min-width: var(--header_height);
+    max-width: var(--header_height);
 }
 
 .menu-icon[state="open"] {
