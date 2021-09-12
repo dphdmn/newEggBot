@@ -401,7 +401,8 @@ async def on_message(message):
             msg = pb.get_pb(width, height, user)
             await message.channel.send(f"```\n{msg}\n```")
         except Exception as e:
-            pass
+            traceback.print_exc()
+            await message.channel.send(f"```\n{repr(e)}\n```")
     elif message.content.startswith("!animate"):
         try:
             # !animate [optional scramble] [solution] [optional tps]
