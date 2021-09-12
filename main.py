@@ -251,6 +251,7 @@ async def on_message(message):
             lb.update()
             webpage = os.environ["webpage"]
             msg = f"Webpage updated!\n{webpage}"
+            await message.channel.send(msg)
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
