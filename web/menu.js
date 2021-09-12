@@ -38,10 +38,14 @@ function dropdown(element){
     }
 }
 
+// if we click outside the menu, close it
 $(document).mousedown(function(e){
-    var container = $(".menu-container");
-    // If the target of the click isn't the container
-    if(openMenu === true && !container.is(e.target) && container.has(e.target).length === 0){
-        navMenu();
+    var button = document.getElementById("menu-button");
+    var menu = document.getElementById("menu");
+
+    var open = button.getAttribute("state") == "open";
+
+    if(open === false && !button.contains(e.target) && !menu.contains(e.target)){
+        toggle_menu();
     }
 });
