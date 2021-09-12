@@ -1,5 +1,5 @@
 tables/*
-__pycache__/*
+**/__pycache__/
 pyproject.toml
 poetry.lock
-templates/index.html
+web/data.js
