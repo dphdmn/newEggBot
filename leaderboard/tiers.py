@@ -28,3 +28,9 @@ for i in range(len(tier_names)):
         "limit" : tier_limits[i],
         "times" : tier_times[i]
     })
+
+def get_tier(name):
+    for tier in tiers:
+        if name.lower() == tier["name"].lower():
+            return tier
+    raise ValueError("invalid tier name")
