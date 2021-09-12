@@ -406,6 +406,29 @@ async def on_message(message):
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
+    elif message.content.startswith("!getreq"):
+        try:
+            size_reg = regex.size("width", "height")
+            reg = re.compile(f"!getreq(\s+(?P<tier>[A-Za-z0-9]+))(\s+{size_reg})")
+            match = reg.fullmatch(command)
+
+            if match is None:
+                raise SyntaxError(f"failed to parse arguments")
+
+            groups = match.groupdict()
+
+            tier = groups["tier"]
+            width = int(groups["width"])
+            if groups["height"] is None:
+                height = width
+            else:
+                height = int(groups["height"])
+
+            msg = lb_commands.get_req(width, height, tier)
+            await message.channel.send(f"```\n{msg}\n```")
+        except Exception as e:
+            traceback.print_exc()
+            await message.channel.send(f"```\n{repr(e)}\n```")
     elif message.content.startswith("!animate"):
         try:
             # !animate [optional scramble] [solution] [optional tps]
