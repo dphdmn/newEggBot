@@ -1,15 +1,23 @@
-function toggle_menu(){
+function is_open(){
     var button = document.getElementById("menu-button");
 
-    // true if we want to open the menu, false if we want to close it
+    // true if the button shows the "open" symbol (so the menu is currently closed)
     var open = button.getAttribute("state") == "open";
+    return !open;
+}
 
-    if(open === true){
+function toggle_menu(){
+    var button = document.getElementById("menu-button");
+    var open = is_open();
+
+    // menu is currently closed, so open it
+    if(open === false){
         $(".menu-container").css("animation", "openMenu .3s");
         $(".menu-container").css("display", "flex");
         $("body").css("overflow", "hidden");
         button.setAttribute("state", "close");
     }
+    // menu is open, so close it
     else{
         $(".menu-container").css("animation", "closeMenu .3s");
         setTimeout(function(){
@@ -43,9 +51,7 @@ $(document).mousedown(function(e){
     var button = document.getElementById("menu-button");
     var menu = document.getElementById("menu");
 
-    var open = button.getAttribute("state") == "open";
-
-    if(open === false && !button.contains(e.target) && !menu.contains(e.target)){
+    if(is_open() && !button.contains(e.target) && !menu.contains(e.target)){
         toggle_menu();
     }
 });
