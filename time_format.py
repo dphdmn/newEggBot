@@ -1,4 +1,4 @@
-def format(seconds):
+def format_long(seconds):
     m, s = divmod(seconds, 60)
     h, m = divmod(m, 60)
     if h == 0:

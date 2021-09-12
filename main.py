@@ -158,7 +158,7 @@ async def on_message(message):
             return
         msg  = f"Current FMC scramble: {fmc.round.get_scramble()}\n"
         msg += f"Optimal solution length: {len(fmc.round.get_solution())}\n"
-        msg += "Time remaining: " + time_format.format(fmc.round.remaining())
+        msg += "Time remaining: " + time_format.format_long(fmc.round.remaining())
         await message.channel.send(msg)
     elif command.startswith("!submit"):
         if message.channel.id not in fmcs:
