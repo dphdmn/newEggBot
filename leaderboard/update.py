@@ -55,7 +55,7 @@ def update_webpage():
     file += "export const data = " + json.dumps(data_dict) + ";\n"
 
     # write to data file
-    with open("data.js", "w") as f:
+    with open("web/data.js", "w") as f:
         f.write(file)
         f.close()
 
