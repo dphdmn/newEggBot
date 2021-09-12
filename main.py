@@ -37,7 +37,7 @@ from random_game import RandomGame
 from probability import comparison, distributions
 from probability.format import format_prob
 from leaderboard import update as lb
-from leaderboard import pb
+from leaderboard import commands as lb_commands
 from replit import db
 
 intents = discord.Intents.default()
@@ -401,7 +401,7 @@ async def on_message(message):
             else:
                 height = int(groups["height"])
 
-            msg = pb.get_pb(width, height, user)
+            msg = lb_commands.get_pb(width, height, user)
             await message.channel.send(f"```\n{msg}\n```")
         except Exception as e:
             traceback.print_exc()
