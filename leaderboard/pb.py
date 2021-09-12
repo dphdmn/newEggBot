@@ -1,6 +1,7 @@
 import leaderboard.leaderboard as lb
 from leaderboard.categories import categories, category_names
 from leaderboard.tiers import tiers
+import time_format
 
 def get_pb(width, height, user):
     # get all the relevant date in one leaderboard call
@@ -19,6 +20,6 @@ def get_pb(width, height, user):
             tier_index = lb.result_tier(i, best_time)
             tier = tiers[tier_index]["name"]
 
-            msg += f"{category_names[i]}: {best_time} ({tier})\n"
+            msg += f"{category_names[i]}: {time_format.format(best_time)} ({tier})\n"
 
     return msg
