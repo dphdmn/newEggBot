@@ -396,7 +396,10 @@ async def on_message(message):
 
             user = groups["user"]
             width = int(groups["width"])
-            height = int(groups["height"])
+            if groups["height"] is None:
+                height = width
+            else:
+                height = int(groups["height"])
 
             msg = pb.get_pb(width, height, user)
             await message.channel.send(f"```\n{msg}\n```")
