@@ -1,0 +1,77 @@
+/* whole table */
+
+.results-table {
+    padding-top: var(--header_height);
+    width: 100%;
+    margin: auto;
+    text-align: center;
+}
+
+.results-table td {
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+/* table header */
+
+.table-header {
+    position: sticky;
+    top: var(--header_height);
+    z-index: 1;
+    color: rgb(220, 220, 220);
+    background-color: #1b1e24;
+}
+
+.tier-row td {
+    height: 50px;
+    padding-left: 15px;
+    font-weight: bold;
+    font-size: 1.5em;
+    text-align: left;
+}
+
+.req-row td {
+    height: 40px;
+    font-weight: bold;
+    letter-spacing: .5px;
+}
+
+.events-row {
+    height: 40px;
+}
+
+/* player rows */
+
+.player-row {
+    height: 40px;
+}
+
+.player, .player-place, .player-power {
+    font-weight: bold;
+}
+
+.player {
+    font-size: 1.05em;
+    min-width: 100px;
+    max-width: 100px;
+}
+
+.player-row:nth-child(even) {
+    opacity: 0.9;
+}
+
+/* tiers */
+
+[tier="gamma"]       { background-color: #00ffff; }
+[tier="aleph"]       { background-color: #00ff2a; }
+[tier="ascended"]    { background-color: #ff2262; }
+[tier="nova"]        { background-color: #7900ff; }
+[tier="grandmaster"] { background-color: #ffd700; }
+[tier="master"]      { background-color: #ec44ca; }
+[tier="diamond"]     { background-color: #b9f2ff; }
+[tier="platinum"]    { background-color: #2fcfc2; }
+[tier="gold"]        { background-color: #cab148; }
+[tier="silver"]      { background-color: #cbd9e6; }
+[tier="bronze"]      { background-color: #b45f06; }
+[tier="beginner"]    { background-color: #93c47d; }
+[tier="unranked"]    { background-color: #666666; }

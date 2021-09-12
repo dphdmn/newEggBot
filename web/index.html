@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+
+        <title>Slidysim Tier Ranks</title>
+        <link rel="icon" type="image/png" href="egg.png"/>
+        <link rel="stylesheet" href="style.css">
+        <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+        <script src="https://www.jquery-az.com/javascript/dist/datepickk.min.js"></script>
+        <link rel="stylesheet" href="https://www.jquery-az.com/javascript/dist/datepickk.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/1.0.11/pako_inflate.min.js"></script>
+        <script src="scroll.js"></script>
+    </head>
+
+    <body>
+        <div class="page-header">
+            <button class="menu-icon" id="menu-button" state="open" onclick="toggle_menu();"></button>
+            <button class="date-button" id="date-button" onclick="select_date();">Change the date</button>
+        </div>
+        <div class="results-table" id="results-table"></div>
+
+        <div class="menu-container" id="menu">
+            <div class="menu-links">
+                <div class="menu-section">
+                    <h1>World Records</h1>
+                    <a href="http://slidysim.000webhostapp.com/leaderboard/records.html" target="_blank">NxN WRs (Time)</a>
+                    <a href="http://slidysim.000webhostapp.com/leaderboard/records_all.html" target="_blank">NxM all WRs (Time)</a>
+                    <a href="http://slidysim.000webhostapp.com/leaderboard/records_moves.html" target="_blank">NxN WRs (Movecount)</a>
+                    <a href="http://slidysim.000webhostapp.com/leaderboard/records_all_moves.html" target="_blank">NxM all WRs (Movecount)</a>
+                </div>
+
+                <div class="menu-section">
+                    <h1>Ranking</h1>
+                    <a href="https://egg.benwh1.repl.co/" target="_blank" class="current-link">Dynamic update</a>
+                    <a href="https://docs.google.com/spreadsheets/d/1wWvBKe9X1ihcUCcdFLsduiYIhhk62WRRRrH2_r5cxbc/edit#gid=2027293122" target="_blank">Google Sheet Time update</a>
+                    <a href="https://docs.google.com/spreadsheets/d/1Rc6hCE74sSwRIrgmp6DWVV5k9oKBsQeIyo6cX5xhKIo/edit#gid=1993464816" target="_blank">Google Sheet Movecount update</a>
+                    <a href="" target="_blank">Kinchranks</a>
+                </div>
+
+                <div class="menu-section">
+                    <h1 class="menu-dropdown" onclick="dropdown('.YouTubeLinks')">YouTube links</h1>
+                    <div class="YouTubeLinks dropdownDisplay">
+                        <a href="https://www.youtube.com/c/dphdmn/videos" target="_blank">dphdmn</a>
+                        <a href="https://www.youtube.com/channel/UClGkpZR3mO6QIe2rIXLJbhQ" target="_blank">Dawidluna</a>
+                        <a href="https://www.youtube.com/channel/UCBku7kEWnEOXsOlNhWwOEAA" target="_blank">eff</a>
+                        <a href="https://www.youtube.com/channel/UCNbj1ZtS7pfV2TB_T6zutuw/videos" target="_blank">sq</a>
+                        <a href="https://www.youtube.com/channel/UC1w3-l4GOZpenXa9W4PcNmg/videos" target="_blank">vovker</a>
+                        <a href="https://www.youtube.com/user/s16269/videos" target="_blank">soup</a>
+                        <a href="https://www.youtube.com/user/ben1996123/videos" target="_blank">ben1996123</a>
+                        <a href="https://www.youtube.com/channel/UCyvDjf90Vz33q3qHp7wwpfg/videos" target="_blank">thelegendary08</a>
+                        <a href="https://www.youtube.com/channel/UCCldkGVeUbQ1C_Lqiubq49Q/videos" target="_blank">gottagitgud</a>
+                        <a href="https://www.youtube.com/channel/UCKzRppIfkDedp3Ktkf24xcA/videos" target="_blank">Osipov Alexander</a>
+                    </div>
+                </div>
+
+                <div class="menu-section">
+                    <h1>Discord</h1>
+                    <a href="https://discord.gg/7vXrWAS3yZ" target="_blank">Join us!</a>
+                </div>
+
+                <div class="menu-section">
+                    <h1 class="menu-Slidysim">Slidysim</h1>
+                    <a href="" target="_blank" style="display: flex;"><span class="material-icons-outlined icon">file_download</span> Download it!</a>
+                </div>
+            </div>
+        </div>
+
+        <script src="populate_table.js" type="module"></script>
+        <script src="datepicker.js" type="module"></script>
+        <script src="menu.js"></script>
+    </body>
+</html>

@@ -1,0 +1,12 @@
+Beginner
+Bronze
+Silver
+Gold
+Platinum
+Diamond
+Master
+Grandmaster
+Nova
+Ascended
+Aleph
+Gamma

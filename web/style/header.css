@@ -1,0 +1,53 @@
+/* whole header */
+
+.page-header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: var(--header_height);
+    z-index: 2;
+    background-color: rgba(43, 48, 54);
+    display: flex;
+    justify-content: space-between;
+    overflow: hidden;
+}
+
+/* date button */
+
+.date-button {
+    width: 100%;
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+}
+
+.date-button, .menu-icon {
+    background-color: rgba(43, 48, 54);
+    transition: .1s ease-out;
+}
+
+.date-button:hover, .menu-icon:hover {
+    background-color: rgba(37, 42, 46);
+    transition: .1s ease-in;
+}
+
+.d-calendar * {
+    font-size: 20px;
+}
+
+/* menu icon */
+
+.menu-icon {
+    cursor: pointer;
+    display: inline-block;
+    min-width: var(--header_height);
+    max-width: var(--header_height);
+}
+
+.menu-icon[state="open"] {
+    background-image: url("menu_open.svg");
+}
+
+.menu-icon[state="close"] {
+    background-image: url("menu_close.svg");
+}
