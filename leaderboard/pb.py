@@ -4,7 +4,7 @@ from leaderboard.tiers import tiers
 import time_format
 
 def get_pb(width, height, user):
-    # get all the relevant date in one leaderboard call
+    # get all the relevant data in one leaderboard call
     data = lb.get_leaderboard(width, height, user=user)
 
     msg = ""
