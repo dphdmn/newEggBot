@@ -36,6 +36,7 @@ from movesgame.tournament import MovesGameTournament
 from random_game import RandomGame
 from probability import comparison, distributions
 from probability.format import format_prob
+from leaderboard import update as lb
 from replit import db
 
 intents = discord.Intents.default()
