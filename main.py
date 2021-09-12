@@ -266,89 +266,7 @@ async def on_message(message):
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
     if message.content.startswith("!getpb"):
-        mystr=db["leaderboard.txt"].lower()
-        # print(mystr)
-        mystr = mystr.splitlines()
-        contentArray = message.content.lower().split(" ")
-        # print(contentArray)
-        username = contentArray[1]
-        matching = [s for s in mystr if username in s]
-        my_string = matching[0]
-        my_string = my_string.split("\t")
-
-        # print(my_string)
-        bad = False
-        try:
-            for i in range(1, len(my_string)):
-                try:
-                    number = float(my_string[i])
-                    intpart = int(math.floor(number))
-                    decimals = round(number - intpart, 3)
-                    x = str(datetime.timedelta(seconds=intpart)) + str(decimals)[1:]
-                except:
-                    x = ""
-                if x != "":
-                    if int(intpart) > 60:
-                        my_string[i] = my_string[i] + " (" + x[2:] + ")"
-            puzzle = contentArray[2]
-            outputString = "PBs for user **" + my_string[0] + "** at the puzzle "
-            if puzzle == "3" or puzzle == "3x3":
-                outputString += "3x3\n```"
-                outputString += "ao5: " + my_string[1] + "\n"
-                outputString += "ao12: " + my_string[2] + "\n"
-                outputString += "ao50: " + my_string[3] + "\n"
-                outputString += "ao100: " + my_string[4] + "\n"
-                outputString += "x10 marathon: " + my_string[5] + "\n"
-                outputString += "x42 marathon: " + my_string[6] + "\n```"
-            elif puzzle == "4" or puzzle == "4x4":
-                outputString += "4x4\n```"
-                outputString += "single: " + my_string[7] + "\n"
-                outputString += "ao5: " + my_string[8] + "\n"
-                outputString += "ao12: " + my_string[9] + "\n"
-                outputString += "ao50: " + my_string[10] + "\n"
-                outputString += "ao100: " + my_string[11] + "\n"
-                outputString += "x10 marathon: " + my_string[12] + "\n"
-                outputString += "x42 marathon: " + my_string[13] + "\n"
-                outputString += "4x4 - 2x2 relay: " + my_string[14] + "\n```"
-            elif puzzle == "5" or puzzle == "5x5":
-                outputString += "5x5\n```"
-                outputString += "single: " + my_string[15] + "\n"
-                outputString += "ao5: " + my_string[16] + "\n"
-                outputString += "ao12: " + my_string[17] + "\n"
-                outputString += "ao50: " + my_string[18] + "\n"
-                outputString += "5x5 - 2x2 relay: " + my_string[19] + "\n```"
-            elif puzzle == "6" or puzzle == "6x6":
-                outputString += "6x6\n```"
-                outputString += "single: " + my_string[20] + "\n"
-                outputString += "ao5: " + my_string[21] + "\n"
-                outputString += "ao12: " + my_string[22] + "\n"
-                outputString += "6x6 - 2x2 relay: " + my_string[23] + "\n```"
-            elif puzzle == "7" or puzzle == "7x7":
-                outputString += "7x7\n```"
-                outputString += "single: " + my_string[24] + "\n"
-                outputString += "ao5: " + my_string[25] + "\n"
-                outputString += "7x7 - 2x2 relay: " + my_string[26] + "\n```"
-            elif puzzle == "8" or puzzle == "8x8":
-                outputString += "8x8\n```"
-                outputString += "single: " + my_string[27] + "\n"
-                outputString += "ao5: " + my_string[28] + "\n```"
-            elif puzzle == "9" or puzzle == "9x9":
-                outputString += "9x9\n```"
-                outputString += "single: " + my_string[29] + "\n```"
-            elif puzzle == "10" or puzzle == "10x10":
-                outputString += "10x10\n```"
-                outputString += "single: " + my_string[30] + "\n```"
-            else:
-                await message.channel.send(
-                    "Can't find this puzzle, make sure it's from 3x3 to 10x10.\nFor other pbs check leaderboard in slidysim."
-                )
-                bad = True
-            if not bad:
-                dif = "\nTime since last !update: " + str(int((datetime.datetime.now().timestamp() - (db["lastupdate"]))/60)) + " minutes"
-                await message.channel.send(outputString + dif)
-        except Exception as e:
-            traceback.print_exc()
-            await message.channel.send(f"Please specify the puzzle size, for example: !getpb dphdmn 4x4\n```\n{repr(e)}\n```")
+        pass
     if message.content.startswith("!animate"):
         try:
             # !animate [optional scramble] [solution] [optional tps]
@@ -428,91 +346,7 @@ async def on_message(message):
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
     if message.content.startswith("!getreq"):
-        mystr = db["tiers.txt"].lower()
-        # print(mystr)
-        mystr = mystr.splitlines()
-        contentArray = message.content.lower().split(" ")
-        # print(contentArray)
-        username = contentArray[1]
-        matching = [s for s in mystr if username in s]
-        my_string = matching[0]
-        my_string = my_string.split("\t")
-        # print(my_string)
-
-        bad = False
-        try:
-            puzzle = contentArray[2]
-            outputString = (
-                "Requirement for tier **" + my_string[0] + "** at the puzzle "
-            )
-            for i in range(1, len(my_string)):
-                try:
-                    number = float(my_string[i])
-                    intpart = int(math.floor(number))
-                    decimals = round(number - intpart, 3)
-                    x = str(datetime.timedelta(seconds=intpart)) + str(decimals)[1:]
-                except:
-                    x = ""
-                if x != "":
-                    if int(intpart) > 60:
-                        my_string[i] = my_string[i] + " (" + x[2:] + ")"
-
-            if puzzle == "3" or puzzle == "3x3":
-                outputString += "3x3\n```"
-                outputString += "ao5: " + my_string[1] + "\n"
-                outputString += "ao12: " + my_string[2] + "\n"
-                outputString += "ao50: " + my_string[3] + "\n"
-                outputString += "ao100: " + my_string[4] + "\n"
-                outputString += "x10 marathon: " + my_string[5] + "\n"
-                outputString += "x42 marathon: " + my_string[6] + "\n```"
-            elif puzzle == "4" or puzzle == "4x4":
-                outputString += "4x4\n```"
-                outputString += "single: " + my_string[7] + "\n"
-                outputString += "ao5: " + my_string[8] + "\n"
-                outputString += "ao12: " + my_string[9] + "\n"
-                outputString += "ao50: " + my_string[10] + "\n"
-                outputString += "ao100: " + my_string[11] + "\n"
-                outputString += "x10 marathon: " + my_string[12] + "\n"
-                outputString += "x42 marathon: " + my_string[13] + "\n"
-                outputString += "4x4 - 2x2 relay: " + my_string[14] + "\n```"
-            elif puzzle == "5" or puzzle == "5x5":
-                outputString += "5x5\n```"
-                outputString += "single: " + my_string[15] + "\n"
-                outputString += "ao5: " + my_string[16] + "\n"
-                outputString += "ao12: " + my_string[17] + "\n"
-                outputString += "ao50: " + my_string[18] + "\n"
-                outputString += "5x5 - 2x2 relay: " + my_string[19] + "\n```"
-            elif puzzle == "6" or puzzle == "6x6":
-                outputString += "6x6\n```"
-                outputString += "single: " + my_string[20] + "\n"
-                outputString += "ao5: " + my_string[21] + "\n"
-                outputString += "ao12: " + my_string[22] + "\n"
-                outputString += "6x6 - 2x2 relay: " + my_string[23] + "\n```"
-            elif puzzle == "7" or puzzle == "7x7":
-                outputString += "7x7\n```"
-                outputString += "single: " + my_string[24] + "\n"
-                outputString += "ao5: " + my_string[25] + "\n"
-                outputString += "7x7 - 2x2 relay: " + my_string[26] + "\n```"
-            elif puzzle == "8" or puzzle == "8x8":
-                outputString += "8x8\n```"
-                outputString += "single: " + my_string[27] + "\n"
-                outputString += "ao5: " + my_string[28] + "\n```"
-            elif puzzle == "9" or puzzle == "9x9":
-                outputString += "9x9\n```"
-                outputString += "single: " + my_string[29] + "\n```"
-            elif puzzle == "10" or puzzle == "10x10":
-                outputString += "10x10\n```"
-                outputString += "single: " + my_string[30] + "\n```"
-            else:
-                await message.channel.send(
-                    "Can't find this puzzle, make sure it's from 3x3 to 10x10."
-                )
-                bad = True
-            if not bad:
-                await message.channel.send(outputString)
-        except Exception as e:
-            traceback.print_exc()
-            await message.channel.send(f"Please specify the puzzle size, for example: !getreq ascended 4x4```\n{repr(e)}\n```")
+        pass
     if message.content.startswith("!getprob"):
         try:
             # !getprob [size: N or WxH] [moves: a-b or e.g. >=m, <m, =m, etc.] [repetitions: optional]
@@ -704,20 +538,7 @@ async def on_message(message):
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
     if message.content.startswith("!datecompare"):
-        contentArray = message.content.lower().split(" ")
-        if len(contentArray) != 3:
-            await message.channel.send("Sorry your dates are wrong. Format:\n!datecompare 2021-06-13 2021-06-14")
-        else:
-            date1 = "SMART"+contentArray[1]
-            date2 = "SMART"+contentArray[2]
-            out = comparelist(date1, date2)
-            f = open("compare.txt", "w+")
-            f.write(out)
-            f.close()
-            with open("compare.txt", "rb") as f:
-                txt = discord.File(f)
-                await message.channel.send("Your cmp: ", file=txt)
-            os.remove("compare.txt")
+        pass
     if message.content.startswith("!movesgame"):
         scramble = scrambler.getScramble(4)
         img = draw_state(scramble)
