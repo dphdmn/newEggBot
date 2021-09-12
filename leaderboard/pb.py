@@ -21,7 +21,7 @@ def get_pb(width, height, user):
 
             # find the tier of this result
             tier_index = lb.result_tier(i, best_time)
-            if tier_index == -1:
+            if tier_index is None:
                 tier = "Unranked"
             else:
                 tier = tiers[tier_index]["name"]
