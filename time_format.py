@@ -8,12 +8,12 @@ def format_long(seconds):
     return f"{h} hours, {m} minutes, {s} seconds"
 
 def format(time):
+    if time is None:
+        return "None"
+
     s, z = divmod(time, 1000)
     m, s = divmod(s, 60)
     h, m = divmod(m, 60)
-
-    if time == -1:
-        return ""
 
     if time < 1000:
         return f"0.{z:03d}"
