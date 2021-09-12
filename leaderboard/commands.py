@@ -1,6 +1,6 @@
 import leaderboard.leaderboard as lb
 from leaderboard.categories import categories, category_names
-from leaderboard.tiers import tiers
+from leaderboard.tiers import tiers, get_tier
 import time_format
 
 def get_pb(width, height, user):
@@ -27,5 +27,15 @@ def get_pb(width, height, user):
                 tier = tiers[tier_index]["name"]
 
             msg += f"{category_names[i]}: {time_format.format(best_time)} ({tier})\n"
+
+    return msg
+
+def get_req(width, height, tier_name):
+    msg = ""
+    tier = get_tier(tier_name)
+    for i, category in enumerate(categories):
+        if category["width"] == width and category["height"] == height:
+            req = tier["times"][i]
+            msg += f"{category_names[i]}: {time_format.format(req)}\n"
 
     return msg
