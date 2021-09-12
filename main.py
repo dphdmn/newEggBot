@@ -85,11 +85,6 @@ def convertRgbToWeight(rgbArray):
             arrayWithPixelWeight.append(lum / 255)  # Map values from range 0-255 to 0-1
     return arrayWithPixelWeight
 
-#_____________for !getpb - get date of the file
-def mod_date(path_to_file):
-    stat = os.stat(path_to_file)
-    return datetime.datetime.fromtimestamp(stat.st_mtime)
-
 #____________________________discord started
 @bot.event
 async def on_ready():
