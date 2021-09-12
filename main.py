@@ -37,6 +37,7 @@ from random_game import RandomGame
 from probability import comparison, distributions
 from probability.format import format_prob
 from leaderboard import update as lb
+from leaderboard import pb
 from replit import db
 
 intents = discord.Intents.default()
@@ -383,7 +384,24 @@ async def on_message(message):
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
     elif message.content.startswith("!getpb"):
-        pass
+        try:
+            size_reg = regex.size("width", "height")
+            reg = re.compile(f"!getpb(\s+(?P<user>[A-Za-z0-9]+))(\s+{size_reg})")
+            match = reg.fullmatch(command)
+
+            if match is None:
+                raise SyntaxError(f"failed to parse arguments")
+
+            groups = match.groupdict()
+
+            user = groups["user"]
+            width = int(groups["width"])
+            height = int(groups["height"])
+
+            msg = pb.get_pb(width, height, user)
+            await message.channel.send(f"```\n{msg}\n```")
+        except Exception as e:
+            pass
     elif message.content.startswith("!animate"):
         try:
             # !animate [optional scramble] [solution] [optional tps]
