@@ -1,11 +1,14 @@
 import leaderboard.leaderboard as lb
 from leaderboard.categories import categories, category_names
 from leaderboard.tiers import tiers, get_tier
+import leaderboard.username as names
 import time_format
 
 def get_pb(width, height, user):
+    username = names.nearest(user)
+
     # get all the relevant data in one leaderboard call
-    data = lb.get_leaderboard(width, height, user=user)
+    data = lb.get_leaderboard(width, height, user=username)
 
     msg = ""
     for i, category in enumerate(categories):
