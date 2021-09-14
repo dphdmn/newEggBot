@@ -4,13 +4,12 @@ from replit import db
 
 def get_usernames():
     # get the most recent data that we have
-    dates = [x[17:] for x in db.prefix("leaderboard/data/")]
-    dates.sort()
-    date = dates[-1]
+    date = db.prefix("leaderboard/data/")[-1]
+    data = db[date]
 
     # decompress it and get the usernames
-    data = serialize.deserialize(db[date])
-    usernames = data.keys()
+    data = serialize.deserialize(data)
+    usernames = list(data.keys())
 
     return usernames
 
