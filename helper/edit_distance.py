@@ -1,5 +1,9 @@
 # https://en.wikipedia.org/wiki/Levenshtein_distance#Iterative_with_two_matrix_rows
-def distance(a, b):
+def distance(a, b, case_sensitive=False):
+    if not case_sensitive:
+        a = a.lower()
+        b = b.lower()
+
     m = len(a)
     n = len(b)
 
@@ -20,11 +24,11 @@ def distance(a, b):
     return v0[n]
 
 # return the nearest string in the list l to the string s
-def nearest(l, s):
+def nearest(l, s, case_sensitive=False):
     min_dist = distance(s, l[0])
     best_str = l[0]
     for a in l:
-        dist = distance(s, a)
+        dist = distance(s, a, case_sensitive)
         if dist < min_dist:
             min_dist = dist
             best_str = a
