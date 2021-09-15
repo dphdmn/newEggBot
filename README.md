@@ -24,7 +24,6 @@ PB/ranks commands
 - !getlb - get current version of the webpage as a text file
 - !update - update the ranks webpage
 - !datecompare [date1] [date2] - compare two states of leaderboard (!datecompare 2021-06-14 2021-06-13)
-- !anoncmp - compare from last anon date to today's date
 
 Solver-related commands:
 - !solve [scramble] - optimally solve a scramble (3x3 or 4x4)
@@ -51,12 +50,6 @@ Misc. commands:
 - !egg - 🥚
 - !help - link to this file
 - !tti [text] - bad AI image generator
-
-Technical commands to compare rank pages (will be removed or changed in next updates probably):
-- !cmp1 [file] - old file to compare [technical]
-- !cmp2 [file] - new file to compare [technical]
-- !compare - get compare of last 2 uploaded tables [technical]
-- !savecmp - saves current compare state to "anon" date [technical] [admin]
 
 Spamming fun commands:
 - !spam [something] - make bot spam something many times [admin]
