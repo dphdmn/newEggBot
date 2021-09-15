@@ -29,7 +29,7 @@ def store_usernames():
 
     # format the table
     sorted_table = lb.sort_table(table)
-    usernames = sorted_table.keys()
+    usernames = list(sorted_table.keys())
 
     # store sorted list of usernames in db
     db["leaderboard/usernames"] = serialize.serialize(usernames)
