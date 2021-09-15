@@ -1,6 +1,5 @@
 import os
 import requests
-import json
 from leaderboard.categories import categories
 from leaderboard.tiers import tiers
 
@@ -123,20 +122,16 @@ def power(results_list):
         total += tiers[tier]["power"]
     return total
 
-# takes the output of results_table(), sorts the users by power
-# and formats the times as strings.
+# sort rows of the table by power
+def sort_table(results_table):
+    return dict(sorted(results_table.items(), key=lambda x: -power(x[1])))
+
+# takes a dict of results {user : [results]} and creates a list of lists
+# of the form [[user, place, power, results], ...]
 def format_results_table(results_table):
-    users = results_table.keys()
-
-    # sort users by power
-    user_power = dict(sorted([(user, power(results_table[user])) for user in users], key=lambda x: (-x[1], x[0])))
-    sorted_users = user_power.keys()
-
-    # format the times
-    table = []
-    for i, user in enumerate(sorted_users):
-        results_str = [x if x is not None else -1 for x in results_table[user]]
-        row = [user, i+1, user_power[user]] + results_str
-        table.append(row)
-
-    return json.dumps(table)
+    sorted_table = sort_table(results_table)
+    formatted_table = []
+    for i, user in enumerate(sorted_table):
+        new_row = [user, i+1, power(sorted_table[user])] + sorted_table[user]
+        formatted_table.append(new_row)
+    return formatted_table

@@ -35,7 +35,7 @@ def update_webpage():
         table = pickle.loads(pickled_table)
 
         # format and sort the data
-        table_str = lb.format_results_table(table)
+        table_str = json.dumps(lb.format_results_table(table))
 
         # compress the table string and convert to base 64
         compressed_str = zlib.compress(table_str.encode(), level=9)
