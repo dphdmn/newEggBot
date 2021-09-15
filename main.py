@@ -508,8 +508,6 @@ async def on_message(message):
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
-    elif message.content.startswith("!getreq"):
-        pass
     elif message.content.startswith("!getprob"):
         try:
             # !getprob [size: N or WxH] [mean length: optional] [moves: a-b or e.g. >=m, <m, =m, etc.] [repetitions: optional]
