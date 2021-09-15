@@ -31,6 +31,6 @@ for i in range(len(tier_names)):
 
 def get_tier(name):
     for tier in tiers:
-        if name.lower() == tier["name"].lower():
+        if name.lower() in tier["name"].lower():
             return tier
     raise ValueError("invalid tier name")
