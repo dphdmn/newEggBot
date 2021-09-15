@@ -1,4 +1,3 @@
-import datetime as dt
 from solver import solvers
 import scrambler
 import time

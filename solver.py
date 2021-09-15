@@ -1,6 +1,5 @@
 import subprocess
 from algorithm import Algorithm
-from puzzle_state import PuzzleState
 
 class Solver:
     def __init__(self, size):

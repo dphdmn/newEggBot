@@ -1,7 +1,6 @@
 import re
 import copy
 import move
-from move import Move
 
 class Algorithm:
     def __init__(self, alg=""):

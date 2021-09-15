@@ -2,21 +2,17 @@ import scrambler
 from solver import solvers
 import os
 from keep_alive import keep_alive
-from prettytable import PrettyTable
 import discord
 from discord.ext import tasks, commands
 import urllib.request
 import html2text
 import traceback
 from time import perf_counter
-import datetime
 import math
 import numpy as np
 import cv2
 import sys
 import requests
-import glob
-import zlib
 import re
 import regex
 import bot as bot_helper
@@ -545,7 +541,6 @@ async def on_message(message):
                 dist = dist.sum_distribution(mean_length)
 
             # check if range is given by interval or comparison, and calculate probability for one repetition
-            moves_range = groups["range"]
             if groups["comparison"] is None:
                 start = round(mean_length * float(groups["moves_from"]))
                 end = round(mean_length * float(groups["moves_to"]))

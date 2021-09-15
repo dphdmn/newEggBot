@@ -5,7 +5,6 @@ from draw_state import draw_state
 from puzzle_state import PuzzleState
 from algorithm import Algorithm
 from replit import db
-import discord
 from prettytable import PrettyTable
 from fmc.round import FMCRound
 import helper.discord as dh

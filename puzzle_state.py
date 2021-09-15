@@ -2,7 +2,6 @@ import copy
 import math
 import move
 from move import Move
-from algorithm import Algorithm
 
 class PuzzleState:
     def __init__(self, state=None):

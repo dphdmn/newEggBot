@@ -1,11 +1,9 @@
 import asyncio
 import time
-import os
 from solver import solvers
 import scrambler
 import move
 from draw_state import draw_state
-import discord
 import helper.discord as dh
 
 class MovesGameRound:
