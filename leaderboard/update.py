@@ -1,5 +1,6 @@
 import base64
 import datetime as dt
+from helper import serialize
 import json
 import pickle
 import zlib
@@ -19,6 +20,19 @@ def store_results():
     # store in the database
     today = dt.datetime.now().strftime("%Y-%m-%d")
     db[f"leaderboard/data/{today}"] = base64_table
+
+def store_usernames():
+    # get the most recent data that we have
+    date = db.prefix("leaderboard/data/")[-1]
+    data = db[date]
+    table = serialize.deserialize(data)
+
+    # format the table
+    sorted_table = lb.sort_table(table)
+    usernames = sorted_table.keys()
+
+    # store sorted list of usernames in db
+    db["leaderboard/usernames"] = serialize.serialize(usernames)
 
 def update_webpage():
     # get sorted list of all dates that we have data for
@@ -60,5 +74,10 @@ def update_webpage():
         f.close()
 
 def update():
+    # read results from the leaderboard and store in the db
     store_results()
+
+    # store list of all usernames, sorted by power
+    store_usernames()
+
     update_webpage()
