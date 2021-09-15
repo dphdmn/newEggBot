@@ -16,5 +16,5 @@ def get_usernames():
 def find_username(s):
     for name in get_usernames():
         if s.lower() in name.lower():
-            return s
+            return name
     raise ValueError("username not found")
