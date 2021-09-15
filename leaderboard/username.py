@@ -13,6 +13,9 @@ def get_usernames():
 
     return usernames
 
-# find the username which is nearest to a string
-def nearest(s):
-    return edit_distance.nearest(get_usernames(), s)
+# find the first username which contains s as a substring
+def find_username(s):
+    for name in get_usernames():
+        if s.lower() in name.lower():
+            return s
+    raise ValueError("username not found")

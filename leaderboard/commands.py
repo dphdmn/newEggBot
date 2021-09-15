@@ -5,7 +5,7 @@ import leaderboard.username as names
 import time_format
 
 def get_pb(width, height, user):
-    username = names.nearest(user)
+    username = names.find_username(user)
 
     # get all the relevant data in one leaderboard call
     data = lb.get_leaderboard(width, height, user=username)
