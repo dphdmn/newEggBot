@@ -132,6 +132,8 @@ def format_results_table(results_table):
     sorted_table = sort_table(results_table)
     formatted_table = []
     for i, user in enumerate(sorted_table):
-        new_row = [user, i+1, power(sorted_table[user])] + sorted_table[user]
+        # add row but replace None with -1 in the results
+        new_row = [user, i+1, power(sorted_table[user])]
+        new_row += [x if x is not None else -1 for x in sorted_table[user]]
         formatted_table.append(new_row)
     return formatted_table
