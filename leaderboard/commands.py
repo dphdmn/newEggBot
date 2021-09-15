@@ -10,7 +10,8 @@ def get_pb(width, height, user):
     # get all the relevant data in one leaderboard call
     data = lb.get_leaderboard(width, height, user=username)
 
-    msg = ""
+    msg = f"{width}x{height} PBs for {username}\n"
+    msg += "```\n"
     for i, category in enumerate(categories):
         if category["width"] == width and category["height"] == height:
             # find the users pb for this category
@@ -30,6 +31,7 @@ def get_pb(width, height, user):
                 tier = tiers[tier_index]["name"]
 
             msg += f"{category_names[i]}: {time_format.format(best_time)} ({tier})\n"
+    msg += "\n```"
 
     return msg
 

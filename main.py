@@ -402,7 +402,7 @@ async def on_message(message):
                 height = int(groups["height"])
 
             msg = lb_commands.get_pb(width, height, user)
-            await message.channel.send(f"```\n{msg}\n```")
+            await message.channel.send(msg)
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
