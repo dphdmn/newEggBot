@@ -1,5 +1,4 @@
 from helper import serialize
-from helper import edit_distance
 from replit import db
 
 def get_usernames():
