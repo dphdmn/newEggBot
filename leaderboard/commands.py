@@ -31,16 +31,20 @@ def get_pb(width, height, user):
                 tier = tiers[tier_index]["name"]
 
             msg += f"{category_names[i]}: {time_format.format(best_time)} ({tier})\n"
-    msg += "\n```"
+    msg += "```"
 
     return msg
 
 def get_req(width, height, tier_name):
-    msg = ""
     tier = get_tier(tier_name)
+    real_tier_name = tier["name"]
+
+    msg = f"Requirements for {real_tier_name} {width}x{height}\n"
+    msg += "```\n"
     for i, category in enumerate(categories):
         if category["width"] == width and category["height"] == height:
             req = tier["times"][i]
             msg += f"{category_names[i]}: {time_format.format(req)}\n"
+    msg += "```"
 
     return msg
