@@ -9,6 +9,7 @@ import html2text
 import traceback
 from time import perf_counter
 import math
+import random
 import numpy as np
 import cv2
 import sys
@@ -131,6 +132,13 @@ async def on_message(message):
     if "scrable" in message.content.lower():
         await message.channel.send("Infinity tps, " + message.author.mention + "?")
         await message.add_reaction("0️⃣")
+    if "egg" in message.content.lower():
+        if random.randint(1, 100) == 1:
+            await message.channel.send("Egg!")
+            await message.add_reaction("🥚")
+            await message.add_reaction("<:eg:800488248967168040>")
+            await message.add_reaction("<:eggg:800490913263517706>")
+            await message.add_reaction("<:eggon:807541711847817229>")
 
     # find the first line of the message containing a command
     lines = message.content.split("\n")
