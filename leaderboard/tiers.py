@@ -44,3 +44,10 @@ def result_tier(category_index, time):
             return tier
 
     return None
+
+def power_tier(power):
+    for tier in reversed(tiers):
+        if power >= tier["limit"]:
+            return tier
+
+    return None
