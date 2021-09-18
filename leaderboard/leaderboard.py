@@ -1,7 +1,9 @@
 import os
 import requests
-from leaderboard.categories import categories
-from leaderboard.tiers import tiers
+from leaderboard import categories
+from leaderboard import tiers
+from categories import categories
+from tiers import tiers
 from helper import serialize
 from replit import db
 
@@ -100,28 +102,13 @@ def results_table():
 
     return table
 
-def result_tier(category_index, time):
-    if time is None:
-        return None
-
-    for i, tier in enumerate(tiers):
-        if time > tier["times"][category_index]:
-            # if the result doesn't make the first tier, return None
-            # otherwise, return the previous tier
-            if i == 0:
-                return None
-            return i-1
-
-    # highest tier
-    return len(tiers)-1
-
 def power(results_list):
     total = 0
     for i, result in enumerate(results_list):
-        tier = result_tier(i, result)
+        tier = tiers.result_tier(i, result)
         if tier is None:
             continue
-        total += tiers[tier]["power"]
+        total += tier["power"]
     return total
 
 # sort rows of the table by power

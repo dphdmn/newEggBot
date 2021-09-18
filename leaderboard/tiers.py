@@ -34,3 +34,13 @@ def get_tier(name):
         if name.lower() in tier["name"].lower():
             return tier
     raise ValueError("invalid tier name")
+
+def result_tier(category_index, time):
+    if time is None:
+        return None
+
+    for tier in reversed(tiers):
+        if time <= tier["times"][category_index]:
+            return tier
+
+    return None

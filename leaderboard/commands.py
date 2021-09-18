@@ -1,6 +1,7 @@
 import leaderboard.leaderboard as lb
 from leaderboard.categories import categories, category_names
-from leaderboard.tiers import tiers, get_tier
+from leaderboard import tiers
+from tiers import tiers
 import leaderboard.username as names
 import time_format
 
@@ -24,19 +25,19 @@ def get_pb(width, height, user):
                         best_time = min(best_time, result["time"])
 
             # find the tier of this result
-            tier_index = lb.result_tier(i, best_time)
-            if tier_index is None:
-                tier = "Unranked"
+            tier = tiers.result_tier(i, best_time)
+            if tier is None:
+                tier_name = "Unranked"
             else:
-                tier = tiers[tier_index]["name"]
+                tier_name = tier["name"]
 
-            msg += f"{category_names[i]}: {time_format.format(best_time)} ({tier})\n"
+            msg += f"{category_names[i]}: {time_format.format(best_time)} ({tier_name})\n"
     msg += "```"
 
     return msg
 
 def get_req(width, height, tier_name):
-    tier = get_tier(tier_name)
+    tier = tiers.get_tier(tier_name)
     real_tier_name = tier["name"]
 
     msg = f"Requirements for {real_tier_name} {width}x{height}\n"
