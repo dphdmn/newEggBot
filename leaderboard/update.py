@@ -10,17 +10,9 @@ import leaderboard.categories as categories
 from replit import db
 
 def store_results():
-    # pull data from the leaderboard
     table = lb.results_table()
-
-    # pickle, compress, convert to base64 so it can be stored in the db
-    pickled_table = pickle.dumps(table)
-    compressed_table = zlib.compress(pickled_table, level=9)
-    base64_table = base64.b64encode(compressed_table).decode()
-
-    # store in the database
     today = dt.datetime.now().strftime("%Y-%m-%d")
-    db[f"leaderboard/data/{today}"] = base64_table
+    db[f"leaderboard/data/{today}"] = serialize.serialize(table)
 
 def store_usernames():
     # latest data that we have stored
@@ -42,10 +34,7 @@ def update_webpage():
     data_dict = {}
     for date in dates:
         # read the data from the database and uncompress it
-        base64_table = db["leaderboard/data/" + date]
-        compressed_table = base64.b64decode(base64_table.encode())
-        pickled_table = zlib.decompress(compressed_table)
-        table = pickle.loads(pickled_table)
+        table = serialize.deserialize(db[f"leaderboard/data/{date}"])
 
         # format and sort the data
         table_str = json.dumps(lb.format_results_table(table))
