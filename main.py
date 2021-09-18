@@ -881,7 +881,7 @@ async def on_message(message):
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
-    elif command == "!rank":
+    elif command.startswith("!rank"):
         try:
             user = command[6:]
             msg = lb_commands.rank(user)
