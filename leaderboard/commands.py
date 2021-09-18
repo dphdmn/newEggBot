@@ -53,6 +53,7 @@ def rank(user):
     username = names.find_username(user)
     table = lb.format_results_table(lb.latest_from_db())
     row = [x for x in table if x[0] == username][0]
+    position = row[1]
     power = row[2]
     power_tier_name = tiers.power_tier(power)["name"]
-    return f"{username} has {power} power ({power_tier_name})"
+    return f"{username} is in position {position} with {power} power ({power_tier_name})"
