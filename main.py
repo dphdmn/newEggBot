@@ -881,6 +881,14 @@ async def on_message(message):
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
+    elif command == "!rank":
+        try:
+            user = command[6:]
+            msg = lb_commands.rank(user)
+            await message.channel.send(msg)
+        except Exception as e:
+            traceback.print_exc()
+            await message.channel.send(f"```\n{repr(e)}\n```")
     elif command == "!egg":
         egg = readFilenormal("misc/egg.txt")
         await message.channel.send("```" + egg + "```")
