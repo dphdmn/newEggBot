@@ -10,6 +10,7 @@ import leaderboard.categories as categories
 from replit import db
 
 def store_results():
+    # pull data from the leaderboard
     table = lb.results_table()
 
     # pickle, compress, convert to base64 so it can be stored in the db
@@ -22,10 +23,8 @@ def store_results():
     db[f"leaderboard/data/{today}"] = base64_table
 
 def store_usernames():
-    # get the most recent data that we have
-    date = db.prefix("leaderboard/data/")[-1]
-    data = db[date]
-    table = serialize.deserialize(data)
+    # latest data that we have stored
+    table = lb.latest_from_db()
 
     # format the table
     sorted_table = lb.sort_table(table)

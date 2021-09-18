@@ -2,6 +2,8 @@ import os
 import requests
 from leaderboard.categories import categories
 from leaderboard.tiers import tiers
+from helper import serialize
+from replit import db
 
 def get_leaderboard(width=-1, height=-1, solvetype="any", avglen=-1, user=""):
     url = os.environ['slidysim']
@@ -137,3 +139,9 @@ def format_results_table(results_table):
         new_row += [x if x is not None else -1 for x in sorted_table[user]]
         formatted_table.append(new_row)
     return formatted_table
+
+# get the latest results table that we have stored in the db
+def latest_from_db():
+    date = db.prefix("leaderboard/data/")[-1]
+    table = serialize.deserialize(db[date])
+    return table
