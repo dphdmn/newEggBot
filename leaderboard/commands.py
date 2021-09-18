@@ -49,3 +49,11 @@ def get_req(width, height, tier_name):
     msg += "```"
 
     return msg
+
+def rank(user):
+    username = names.find_username(user)
+    table = lb.format_results_table(lb.latest_from_db())
+    row = [x for x in table if x[0] == username][0]
+    power = row[2]
+    power_tier_name = tiers.power_tier(power)["name"]
+    return f"{username} has {power} power ({power_tier_name})"
