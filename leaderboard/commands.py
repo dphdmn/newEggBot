@@ -1,7 +1,6 @@
 import leaderboard.leaderboard as lb
 from leaderboard.categories import categories, category_names
 from leaderboard import tiers
-from tiers import tiers
 import leaderboard.username as names
 import time_format
 

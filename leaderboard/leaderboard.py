@@ -2,8 +2,6 @@ import os
 import requests
 from leaderboard import categories
 from leaderboard import tiers
-from categories import categories
-from tiers import tiers
 from helper import serialize
 from replit import db
 
@@ -58,7 +56,7 @@ def get_category_results():
         result_category = {x : result[x] for x in entries}
         try:
             # add the category index for convenience
-            index = categories.index(result_category)
+            index = categories.categories.index(result_category)
             result["category"] = index
             filtered_lb.append(result)
         except ValueError as e:
@@ -80,7 +78,7 @@ def results_table():
 
     for user in users:
         # create an empty row with one entry per category
-        row = [None]*len(categories)
+        row = [None]*len(categories.categories)
 
         for result in results:
             if result["user"] != user:
