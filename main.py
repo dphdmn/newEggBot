@@ -514,14 +514,16 @@ async def on_message(message):
             await message.channel.send(f"```\n{repr(e)}\n```")
     elif message.content.startswith("!getprob"):
         try:
-            # !getprob [size: N or WxH] [mean length: optional] [moves: a-b or e.g. >=m, <m, =m, etc.] [repetitions: optional]
+            # !getprob [size: N or WxH] [mean/marathon length: optional] [moves: a-b or e.g. >=m, <m, =m, etc.] [repetitions: optional]
             size_reg = regex.size("width", "height")
-            mean_reg = "(mo" + regex.positive_integer("num_solves") + ")"
+            solve_type_reg = "(?P<solve_type>(mo)|x)"
+            num_solves_reg = regex.positive_integer("num_solves")
+            full_solve_type_reg = "(" + solve_type_reg + num_solves_reg + ")"
             pos_real_reg = regex.positive_real()
             interval_reg = f"((?P<moves_from>{pos_real_reg})-(?P<moves_to>{pos_real_reg}))"
             comparison_reg = f"((?P<comparison>[<>]?=?)(?P<moves>{pos_real_reg}))"
             reps_reg = regex.positive_integer("repetitions")
-            reg = re.compile(f"!getprob(\s+{size_reg})(\s+{mean_reg})?(\s+(?P<range>{interval_reg}|{comparison_reg}))(\s+{reps_reg})?")
+            reg = re.compile(f"!getprob(\s+{size_reg})(\s+{full_solve_type_reg})?(\s+(?P<range>{interval_reg}|{comparison_reg}))(\s+{reps_reg})?")
             match = reg.fullmatch(command)
 
             if match is None:
@@ -536,26 +538,33 @@ async def on_message(message):
             else:
                 h = int(groups["height"])
 
-            # get the distribution for one position
-            dist = distributions.get_distribution(w, h)
-
-            # compute the sum distribution if we're using a mean
-            if groups["num_solves"] is None:
+            # read solve type and number of solves
+            if groups["solve_type"] is None:
+                solve_type = "single"
                 num_solves = 1
-            else:
+            elif groups["solve_type"] == "mo":
+                solve_type = "mean"
                 num_solves = int(groups["num_solves"])
-                if num_solves > 1000:
-                    raise ValueError("mean length must be at most 1000")
-                dist = dist.sum_distribution(num_solves)
+            else:
+                solve_type = "marathon"
+                num_solves = int(groups["num_solves"])
+
+            # limit on the number of solves
+            if num_solves > 1000:
+                raise ValueError("number of solves must be at most 1000")
+
+            # get the distribution for the number of solves we want
+            dist = distributions.get_distribution(w, h).sum_distribution(num_solves)
 
             # check if range is given by interval or comparison, and calculate probability for one repetition
+            multiplier = num_solves if solve_type == "mean" else 1
             if groups["comparison"] is None:
-                start = round(num_solves * float(groups["moves_from"]))
-                end = round(num_solves * float(groups["moves_to"]))
+                start = round(multiplier * float(groups["moves_from"]))
+                end = round(multiplier * float(groups["moves_to"]))
                 prob_one = dist.prob_range(start, end)
             else:
                 comp = comparison.from_string(groups["comparison"])
-                moves = round(num_solves * float(groups["moves"]))
+                moves = round(multiplier * float(groups["moves"]))
                 prob_one = dist.prob(moves, comp)
 
             # number of repetitions
@@ -573,9 +582,9 @@ async def on_message(message):
             # even though we rounded 52.1 and 52.9 to 52 and 53.
             # if the endpoints of the rounded range are integers, make them integers, otherwise round to 3dp
             def make_str(a):
-                if a % num_solves == 0:
-                    return str(a // num_solves)
-                return format(a/num_solves, ".3f")
+                if a % multiplier == 0:
+                    return str(a // multiplier)
+                return format(a/multiplier, ".3f")
 
             if groups["comparison"] is None:
                 range_str = f"{make_str(start)}-{make_str(end)}"
@@ -583,14 +592,18 @@ async def on_message(message):
                 range_str = groups["comparison"] + make_str(moves)
 
             # write the message
-            if num_solves == 1:
+            if solve_type == "single":
                 msg = f"Probability of {w}x{h} having an optimal solution of {range_str} moves is {format_prob(prob_one)}\n"
                 if reps > 1:
                     msg += f"Probability of at least one scramble out of {reps} within that range is {format_prob(prob)}"
-            else:
+            elif solve_type == "mean":
                 msg = f"Probability of {w}x{h} mo{num_solves} having an optimal solution of {range_str} moves is {format_prob(prob_one)}\n"
                 if reps > 1:
                     msg += f"Probability of at least one mean out of {reps} within that range is {format_prob(prob)}"
+            elif solve_type == "marathon":
+                msg = f"Probability of {w}x{h} x{num_solves} having an optimal solution of {range_str} moves is {format_prob(prob_one)}\n"
+                if reps > 1:
+                    msg += f"Probability of at least one marathon out of {reps} within that range is {format_prob(prob)}"
 
             await message.channel.send(msg)
         except Exception as e:
