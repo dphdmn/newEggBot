@@ -41,11 +41,6 @@ intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 
-def readFilenormal(name):
-    with open(name, "r") as file:
-        mystr = file.read()
-    return mystr
-
 #_________________________probably for !paint
 def apply_brightness_contrast(input_img, brightness=0, contrast=0):
     if brightness != 0:
@@ -903,7 +898,8 @@ async def on_message(message):
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
     elif command == "!egg":
-        egg = readFilenormal("misc/egg.txt")
+        with open("misc/egg.txt", "r") as f:
+            egg = f.read()
         await message.channel.send("```" + egg + "```")
     elif command.startswith("!help"):
         await message.channel.send("Egg bot commands: https://github.com/benwh1/eggbot/blob/master/README.md")
