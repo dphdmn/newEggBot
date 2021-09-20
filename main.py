@@ -516,7 +516,7 @@ async def on_message(message):
         try:
             # !getprob [size: N or WxH] [mean length: optional] [moves: a-b or e.g. >=m, <m, =m, etc.] [repetitions: optional]
             size_reg = regex.size("width", "height")
-            mean_reg = "(mo" + regex.positive_integer("mean_length") + ")"
+            mean_reg = "(mo" + regex.positive_integer("num_solves") + ")"
             pos_real_reg = regex.positive_real()
             interval_reg = f"((?P<moves_from>{pos_real_reg})-(?P<moves_to>{pos_real_reg}))"
             comparison_reg = f"((?P<comparison>[<>]?=?)(?P<moves>{pos_real_reg}))"
@@ -540,22 +540,22 @@ async def on_message(message):
             dist = distributions.get_distribution(w, h)
 
             # compute the sum distribution if we're using a mean
-            if groups["mean_length"] is None:
-                mean_length = 1
+            if groups["num_solves"] is None:
+                num_solves = 1
             else:
-                mean_length = int(groups["mean_length"])
-                if mean_length > 1000:
+                num_solves = int(groups["num_solves"])
+                if num_solves > 1000:
                     raise ValueError("mean length must be at most 1000")
-                dist = dist.sum_distribution(mean_length)
+                dist = dist.sum_distribution(num_solves)
 
             # check if range is given by interval or comparison, and calculate probability for one repetition
             if groups["comparison"] is None:
-                start = round(mean_length * float(groups["moves_from"]))
-                end = round(mean_length * float(groups["moves_to"]))
+                start = round(num_solves * float(groups["moves_from"]))
+                end = round(num_solves * float(groups["moves_to"]))
                 prob_one = dist.prob_range(start, end)
             else:
                 comp = comparison.from_string(groups["comparison"])
-                moves = round(mean_length * float(groups["moves"]))
+                moves = round(num_solves * float(groups["moves"]))
                 prob_one = dist.prob(moves, comp)
 
             # number of repetitions
@@ -573,9 +573,9 @@ async def on_message(message):
             # even though we rounded 52.1 and 52.9 to 52 and 53.
             # if the endpoints of the rounded range are integers, make them integers, otherwise round to 3dp
             def make_str(a):
-                if a % mean_length == 0:
-                    return str(a // mean_length)
-                return format(a/mean_length, ".3f")
+                if a % num_solves == 0:
+                    return str(a // num_solves)
+                return format(a/num_solves, ".3f")
 
             if groups["comparison"] is None:
                 range_str = f"{make_str(start)}-{make_str(end)}"
@@ -583,12 +583,12 @@ async def on_message(message):
                 range_str = groups["comparison"] + make_str(moves)
 
             # write the message
-            if mean_length == 1:
+            if num_solves == 1:
                 msg = f"Probability of {w}x{h} having an optimal solution of {range_str} moves is {format_prob(prob_one)}\n"
                 if reps > 1:
                     msg += f"Probability of at least one scramble out of {reps} within that range is {format_prob(prob)}"
             else:
-                msg = f"Probability of {w}x{h} mo{mean_length} having an optimal solution of {range_str} moves is {format_prob(prob_one)}\n"
+                msg = f"Probability of {w}x{h} mo{num_solves} having an optimal solution of {range_str} moves is {format_prob(prob_one)}\n"
                 if reps > 1:
                     msg += f"Probability of at least one mean out of {reps} within that range is {format_prob(prob)}"
 
