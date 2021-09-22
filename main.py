@@ -144,6 +144,9 @@ async def on_message(message):
         return
     command = command_lines[0]
 
+    log.info(f"found command from user {message.author}")
+    log.info(f"command: {command}")
+
     if command.startswith("!spam"):
         if message.author.guild_permissions.administrator:
             shit = command[6:]
