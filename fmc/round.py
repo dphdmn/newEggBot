@@ -1,3 +1,4 @@
+from log import log
 from solver import solvers
 import scrambler
 import time
@@ -57,11 +58,17 @@ class FMCRound:
         if self.running():
             return
 
+        log.info("opening fmc round")
+
         if self.scramble is None:
             scramble = scrambler.getScramble(4)
+            log.info(f"generated scramble: {scramble}")
         else:
             scramble = self.scramble
+            log.info(f"using given scramble: {scramble}")
+
         solution = solvers[4].solveOne(scramble)
+        log.info(f"found solution [{len(solution)}]: {solution}")
 
         db[self.db_path + "scramble"] = str(scramble)
         db[self.db_path + "solution"] = str(solution)
@@ -74,6 +81,8 @@ class FMCRound:
     def close(self):
         if not self.running():
             return
+
+        log.info("closing fmc round")
 
         scramble = self.get_scramble()
         solution = self.get_solution()
@@ -95,10 +104,14 @@ class FMCRound:
         if not self.running():
             return
 
+        log.info(f"user id {user_id} is submitting [{len(solution)}] {solution}")
+
         # check that the solution works
         scramble = self.get_scramble()
         scramble.apply(solution)
         if not scramble.solved():
+            log.info("solution is invalid")
+
             # scramble has been modified, so get a new copy of the scramble from the db to print
             scramble = self.get_scramble()
             raise ValueError(f"solution does not solve scramble \"{scramble}\"")
@@ -111,6 +124,8 @@ class FMCRound:
                 db[result_key] = str(solution)
         else:
             db[result_key] = str(solution)
+
+        log.info("solution added")
 
     @tasks.loop(seconds=10)
     async def loop(self):
@@ -125,9 +140,11 @@ class FMCRound:
                 key = self.db_path + f"warnings/{warning}"
                 if elapsed >= warning and not db[key]:
                     db[key] = True
+                    log.info(f"emitting warning message for time={warning}")
                     await self.on_warning(warning)
 
         if elapsed >= self.duration:
             round_dict = self.close()
             if self.on_close is not None:
+                log.info("emitting close message")
                 await self.on_close(round_dict)
