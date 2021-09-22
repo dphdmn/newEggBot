@@ -1,5 +1,6 @@
 import asyncio
 import time
+from log import log
 from solver import solvers
 import scrambler
 import move
@@ -26,6 +27,7 @@ class MovesGameRound:
         if self.running:
             return
 
+        log.info("starting movesgame round")
         self.running = True
 
         # timestamp at the start of the round
@@ -34,15 +36,19 @@ class MovesGameRound:
         # generate scramble if not already given
         if self.scramble is None:
             scramble = scrambler.getScramble(4)
+            log.info(f"generated scramble: {scramble}")
         else:
             scramble = self.scramble
+            log.info(f"using given scramble: {scramble}")
 
         # calculate good moves if not already given
         if self.good_moves is None:
             solutions = solvers[4].solveGood(scramble)
             good_moves = "".join([move.to_string(sol.first()) for sol in solutions])
+            log.info(f"found good moves: {good_moves}")
         else:
             good_moves = self.good_moves
+            log.info(f"using given good moves: {good_moves}")
 
         # draw image
         img = draw_state(scramble)
@@ -55,8 +61,10 @@ class MovesGameRound:
         self.results = {}
 
         # wait for people to submit moves and then close
+        log.info(f"waiting {self.delay} seconds for submissions")
         await asyncio.sleep(self.delay)
 
+        log.info("finishing movesgame round")
         self.running = False
 
         # return the round info as a dict
@@ -68,6 +76,7 @@ class MovesGameRound:
         }
 
     def submit(self, user, move):
+        log.info(f"user {user} submitted {move}")
         self.results[user.id] = move
 
     async def on_message(self, message):
