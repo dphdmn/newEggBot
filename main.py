@@ -7,7 +7,7 @@ from discord.ext import tasks, commands
 import urllib.request
 import html2text
 import traceback
-import logging
+from log import log
 from time import perf_counter
 import math
 import random
@@ -41,9 +41,6 @@ from replit import db
 intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix="!", intents=intents)
-
-# set up logging
-logging.basicConfig(filename="log.log", level=logging.DEBUG)
 
 #_________________________probably for !paint
 def apply_brightness_contrast(input_img, brightness=0, contrast=0):
@@ -85,8 +82,8 @@ def convertRgbToWeight(rgbArray):
 #____________________________discord started
 @bot.event
 async def on_ready():
-    logging.info(f"Logged in as {bot.user}")
-    logging.info(f"Running version {bot_helper.git_info}")
+    log.info(f"Logged in as {bot.user}")
+    log.info(f"Running version {bot_helper.git_info}")
 
     # check for message to send after a restart/update
     if "restart/channel_id" in db.keys() and "restart/message" in db.keys():
