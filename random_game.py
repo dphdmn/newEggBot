@@ -1,5 +1,6 @@
 import random
 import time
+import time_format
 from helper import serialize
 from discord.ext import tasks
 from replit import db
@@ -76,7 +77,8 @@ class RandomGame:
         del db[self.db_path + "current/channel_id"]
         del db[self.db_path + "current/timestamp"]
 
-        await winner_message.reply(f"You win!")
+        t = int(1000*(winner_timestamp - timestamp))
+        await winner_message.reply("You win! Time: " + time_format.format(t))
 
         self.running = False
 
