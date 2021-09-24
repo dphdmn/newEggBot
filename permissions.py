@@ -11,7 +11,7 @@ def is_egg_admin(user):
     key = "permissions/egg_admin"
 
     if key not in db:
-        db[key] = serialize.serialize({})
+        db[key] = serialize.serialize([owner_id])
 
     admins = serialize.deserialize(db[key])
     return user.id in admins
