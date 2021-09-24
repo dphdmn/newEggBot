@@ -22,6 +22,7 @@ import time_format
 import move
 import helper.serialize as serialize
 import helper.discord as dh
+import permissions
 from animate import make_video
 from puzzle_state import PuzzleState
 from algorithm import Algorithm
@@ -925,8 +926,7 @@ async def on_message(message):
             bot_helper.update()
             bot_helper.restart()
     elif command.startswith("!dbdump"):
-        owner = int(os.environ["owner"])
-        if message.author.id == owner:
+        if permissions.is_owner(message.author):
             my_db = {}
             for key in db.keys():
                 my_db[key] = db[key]
