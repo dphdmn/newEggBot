@@ -37,6 +37,7 @@ from probability import comparison, distributions
 from probability.format import format_prob
 from leaderboard import update as lb
 from leaderboard import commands as lb_commands
+from leaderboard import link
 from replit import db
 
 intents = discord.Intents.default()
@@ -900,6 +901,26 @@ async def on_message(message):
             user = command[6:]
             msg = lb_commands.rank(user)
             await message.channel.send(msg)
+        except Exception as e:
+            traceback.print_exc()
+            await message.channel.send(f"```\n{repr(e)}\n```")
+    elif command.startswith("!link"):
+        if not permissions.is_egg_admin(message.author):
+            return
+        try:
+            reg = re.compile(f"!link\s+(?P<user_id>[0-9]+)\s+(?P<lb_username>[a-zA-Z0-9]+)")
+            match = reg.fullmatch(command)
+
+            if match is None:
+                raise SyntaxError(f"failed to parse arguments")
+
+            groups = match.groupdict()
+
+            user_id = int(groups["user_id"])
+            lb_username = groups["lb_username"]
+
+            link.link(user_id, lb_username)
+            await message.channel.send("Accounts linked")
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
