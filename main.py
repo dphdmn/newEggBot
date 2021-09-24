@@ -910,16 +910,16 @@ async def on_message(message):
     elif command.startswith("!help"):
         await message.channel.send("Egg bot commands: https://github.com/benwh1/eggbot/blob/master/README.md")
     elif command.startswith("!git"):
-        if message.author.guild_permissions.administrator:
+        if permissions.is_egg_admin(message.author):
             await message.channel.send(bot_helper.git_info)
     elif command.startswith("!restart"):
-        if message.author.guild_permissions.administrator:
+        if permissions.is_egg_admin(message.author):
             await message.channel.send("Restarting...")
             db["restart/channel_id"] = message.channel.id
             db["restart/message"] = "Restarted"
             bot_helper.restart()
     elif command.startswith("!botupdate"):
-        if message.author.guild_permissions.administrator:
+        if permissions.is_egg_admin(message.author):
             await message.channel.send("Updating...")
             db["restart/channel_id"] = message.channel.id
             db["restart/message"] = "Updated!"
