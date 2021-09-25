@@ -389,7 +389,7 @@ async def on_message(message):
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
-    elif message.content.startswith("!getpb"):
+    elif command.startswith("!getpb"):
         try:
             size_reg = regex.size("width", "height")
             reg = re.compile(f"!getpb(\s+(?P<user>[A-Za-z0-9]+))?(\s+{size_reg})")
@@ -416,7 +416,7 @@ async def on_message(message):
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
-    elif message.content.startswith("!getreq"):
+    elif command.startswith("!getreq"):
         try:
             size_reg = regex.size("width", "height")
             reg = re.compile(f"!getreq(\s+(?P<tier>[A-Za-z0-9]+))(\s+{size_reg})")
@@ -439,7 +439,7 @@ async def on_message(message):
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
-    elif message.content.startswith("!animate"):
+    elif command.startswith("!animate"):
         try:
             # !animate [optional scramble] [solution] [optional tps]
             scr_reg = regex.puzzle_state("scramble")
@@ -518,7 +518,7 @@ async def on_message(message):
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
-    elif message.content.startswith("!getprob"):
+    elif command.startswith("!getprob"):
         try:
             # !getprob [size: N or WxH] [mean/marathon length: optional] [moves: a-b or e.g. >=m, <m, =m, etc.] [repetitions: optional]
             size_reg = regex.size("width", "height")
@@ -741,7 +741,7 @@ async def on_message(message):
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
-    elif message.content.startswith("!datecompare"):
+    elif command.startswith("!datecompare"):
         pass
     elif command.startswith("!movesgame"):
         if message.channel.id == movesgame.channel.id:
