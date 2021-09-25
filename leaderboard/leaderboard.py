@@ -1,9 +1,5 @@
 import os
 import requests
-from leaderboard import categories
-from leaderboard import tiers
-from helper import serialize
-from replit import db
 
 def get_leaderboard(width=-1, height=-1, solvetype="any", avglen=-1, user=""):
     url = os.environ['slidysim']
