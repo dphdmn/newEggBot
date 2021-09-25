@@ -2,7 +2,7 @@ import os
 import requests
 
 def get_leaderboard(width=-1, height=-1, solvetype="any", avglen=-1, user=""):
-    url = os.environ['slidysim']
+    url = os.environ["slidysim"]
     r = requests.post(url, data = {
         "width"       : width,
         "height"      : height,
