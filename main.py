@@ -23,6 +23,7 @@ import move
 import helper.serialize as serialize
 import helper.discord as dh
 import permissions
+import config.channels
 from animate import make_video
 from puzzle_state import PuzzleState
 from algorithm import Algorithm
@@ -98,8 +99,8 @@ async def on_ready():
 
     # create fmc
     global daily_fmc, short_fmc
-    daily_fmc = DailyFMC(bot, int(os.environ["daily_fmc_channel"]), int(os.environ["daily_fmc_results_channel"]))
-    short_fmc = FMC(bot, int(os.environ["fmc_channel"]))
+    daily_fmc = DailyFMC(bot, config.channels.daily_fmc, config.channels.daily_fmc_results)
+    short_fmc = FMC(bot, config.channels.ten_minute_fmc)
     await daily_fmc.start()
 
     # dict of fmc objects by id
@@ -108,13 +109,12 @@ async def on_ready():
 
     # create movesgame
     global movesgame, movesgame_tournament
-    movesgame = MovesGame(bot, int(os.environ["movesgame_channel"]))
-    movesgame_tournament = MovesGameTournament(bot, int(os.environ["movesgame_tournament_channel"]))
+    movesgame = MovesGame(bot, config.channels.movesgame)
+    movesgame_tournament = MovesGameTournament(bot, config.channels.movesgame_tournament)
 
     # create random game
     global random_game
-    channels = [int(x) for x in os.environ["random_game_channels"].split(",")]
-    random_game = RandomGame(bot, channels, 181440)
+    random_game = RandomGame(bot, config.channels.random_game, 181440)
     random_game.start()
 
 @bot.listen()
