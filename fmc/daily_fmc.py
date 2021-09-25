@@ -7,6 +7,7 @@ from algorithm import Algorithm
 from replit import db
 from prettytable import PrettyTable
 from fmc.round import FMCRound
+import config.roles
 import helper.discord as dh
 
 class DailyFMC:
@@ -38,8 +39,7 @@ class DailyFMC:
         await dh.send_image(img, "scramble.png", msg, self.channel)
 
         # ping fmc role
-        id = os.environ["fmc_role_id"]
-        await self.channel.send(f"<@&{id}>")
+        await self.channel.send(f"<@&{config.roles.fmc}>")
 
     async def finish(self, round_dict):
         results = round_dict["results"]
