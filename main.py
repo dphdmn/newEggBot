@@ -392,7 +392,7 @@ async def on_message(message):
     elif message.content.startswith("!getpb"):
         try:
             size_reg = regex.size("width", "height")
-            reg = re.compile(f"!getpb(\s+(?P<user>[A-Za-z0-9]+))(\s+{size_reg})")
+            reg = re.compile(f"!getpb(\s+(?P<user>[A-Za-z0-9]+))?(\s+{size_reg})")
             match = reg.fullmatch(command)
 
             if match is None:
@@ -400,7 +400,11 @@ async def on_message(message):
 
             groups = match.groupdict()
 
-            user = groups["user"]
+            if groups["user"] is None:
+                user = link.get_leaderboard_user(message.author.id)
+            else:
+                user = groups["user"]
+
             width = int(groups["width"])
             if groups["height"] is None:
                 height = width
