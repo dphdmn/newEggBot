@@ -98,16 +98,16 @@ def latest_from_db():
     return table
 
 def store_results():
-    table = lb.results_table()
+    table = results_table()
     today = dt.datetime.now().strftime("%Y-%m-%d")
     db[f"leaderboard/data/{today}"] = serialize.serialize(table)
 
 def store_usernames():
     # latest data that we have stored
-    table = lb.latest_from_db()
+    table = latest_from_db()
 
     # format the table
-    sorted_table = lb.sort_table(table)
+    sorted_table = sort_table(table)
     usernames = list(sorted_table.keys())
 
     # store sorted list of usernames in db
@@ -125,7 +125,7 @@ def update_webpage():
         table = serialize.deserialize(db[f"leaderboard/data/{date}"])
 
         # format and sort the data
-        table_str = json.dumps(lb.format_results_table(table))
+        table_str = json.dumps(format_results_table(table))
 
         # compress the table string and convert to base 64
         compressed_str = zlib.compress(table_str.encode(), level=9)
