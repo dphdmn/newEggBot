@@ -962,4 +962,4 @@ async def spam(chan, msg):
     await chan.send(msg)
 
 keep_alive()
-bot.run(os.environ["eggkey"])
+bot.run(os.environ["token"])
