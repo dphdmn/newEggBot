@@ -45,21 +45,12 @@ def update_webpage():
 
         data_dict[date] = base64_str
 
-    file = ""
-
-    # write tiers into an array of json objects
-    file += "export const tiers = " + json.dumps(tiers.tiers) + ";\n"
-
-    # write categories
+    # write data.js file
+    file  = "export const tiers = " + json.dumps(tiers.tiers) + ";\n"
     file += "export const categories = " + json.dumps(categories.category_names) + ";\n"
-
-    # write table data
     file += "export const data = " + json.dumps(data_dict) + ";\n"
-
-    # write to data file
     with open("web/data.js", "w") as f:
         f.write(file)
-        f.close()
 
 def update():
     # read results from the leaderboard and store in the db
