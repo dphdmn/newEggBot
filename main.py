@@ -427,8 +427,8 @@ async def on_message(message):
             await message.channel.send(f"```\n{repr(e)}\n```")
     elif command.startswith("!getreq"):
         try:
-            size_reg = regex.size("width", "height")
-            reg = re.compile(f"!getreq(\s+(?P<tier>[A-Za-z0-9]+))(\s+{size_reg})")
+            size_reg = regex.size("width", "height", "size")
+            reg = re.compile(f"!getreq(\s+(?P<tier>[A-Za-z0-9]+))(\s+{size_reg})?")
             match = reg.fullmatch(command)
 
             if match is None:
@@ -437,11 +437,20 @@ async def on_message(message):
             groups = match.groupdict()
 
             tier = groups["tier"]
-            width = int(groups["width"])
-            if groups["height"] is None:
-                height = width
+
+            # if no size given, check if we're in an NxN channel. if not, default to 4x4
+            if groups["size"] is None:
+                channel_id = message.channel.id
+                if channel_id in config.channels.nxn_channels:
+                    width = height = config.channels.nxn_channels[channel_id]
+                else:
+                    width = height = 4
             else:
-                height = int(groups["height"])
+                width = int(groups["width"])
+                if groups["height"] is None:
+                    height = width
+                else:
+                    height = int(groups["height"])
 
             msg = lb_commands.get_req(width, height, tier)
             await message.channel.send(msg)
