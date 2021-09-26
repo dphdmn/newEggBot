@@ -1,10 +1,9 @@
-from helper import serialize
-from replit import db
+from leaderboard import db
 
 # find the first username which contains s as a substring
 def find_username(s):
     # get all usernames from the db, and convert to lower case
-    names = serialize.deserialize(db["leaderboard/usernames"])
+    names = db.usernames()
     names_lower = [name.lower() for name in names]
 
     # check if there's an exact match
