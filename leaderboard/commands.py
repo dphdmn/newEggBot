@@ -1,6 +1,8 @@
 import leaderboard.leaderboard as lb
 from leaderboard.categories import categories, category_names
 from leaderboard import tiers
+from leaderboard import ranking
+from leaderboard import db
 import leaderboard.username as names
 import time_format
 
@@ -51,9 +53,8 @@ def get_req(width, height, tier_name):
 
 def rank(user):
     username = names.find_username(user)
-    table = lb.format_results_table(lb.latest_from_db())
-    row = [x for x in table if x[0] == username][0]
-    position = row[1]
-    power = row[2]
+    table = db.latest_results()
+    position = ranking.place(table, username)
+    power = ranking.power(table[username])
     power_tier_name = tiers.power_tier(power)["name"]
     return f"{username} is in position {position} with {power} power ({power_tier_name})"
