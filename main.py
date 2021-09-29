@@ -24,6 +24,7 @@ import helper.serialize as serialize
 import helper.discord as dh
 import permissions
 import config.channels
+import config.emoji
 from animate import make_video
 from puzzle_state import PuzzleState
 from algorithm import Algorithm
@@ -133,11 +134,16 @@ async def on_message(message):
         await message.add_reaction("0️⃣")
     if "egg" in message.content.lower():
         if random.randint(1, 100) == 1:
-            await message.channel.send("Egg!")
-            await message.add_reaction("🥚")
-            await message.add_reaction("<:eg:800488248967168040>")
-            await message.add_reaction("<:eggg:800490913263517706>")
-            await message.add_reaction("<:eggon:807541711847817229>")
+            if random.randint(1, 25) == 1:
+                await message.channel.send("Eggggggggggggggggggg!")
+                await message.add_reaction("🥚")
+                for id in config.emoji.eggs:
+                    await message.add_reaction(bot.get_emoji(id))
+            else:
+                await message.channel.send("Egg!")
+                await message.add_reaction("🥚")
+                for id in config.emoji.eggs[:3]:
+                    await message.add_reaction(bot.get_emoji(id))
 
     # find the first line of the message containing a command
     lines = message.content.split("\n")
