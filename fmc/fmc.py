@@ -94,10 +94,7 @@ class FMC:
             await dh.send_as_file(table.get_string(), "results.txt", msg, self.channel)
 
         make_video(scramble, optSolution, 8)
-        with open("movie.webm", "rb") as f:
-            picture = discord.File(f)
-            await self.channel.send("", file=picture)
-        os.remove("movie.webm")
+        await dh.send_binary_file("movie.webm", "", self.channel)
 
     async def on_close(self, round_dict):
         await self.finish(round_dict)
