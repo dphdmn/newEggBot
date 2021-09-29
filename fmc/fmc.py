@@ -1,4 +1,3 @@
-import os
 import copy
 from animate import make_video
 from draw_state import draw_state
@@ -6,19 +5,39 @@ from puzzle_state import PuzzleState
 from algorithm import Algorithm
 from helper import serialize
 from replit import db
-import discord
 from prettytable import PrettyTable
 from fmc.round import FMCRound
 import helper.discord as dh
 
 class FMC:
-    def __init__(self, bot, channel_id):
+    def __init__(self, bot, channel_id, duration, results_channel_id=None, ping_role=None, warnings=None, warning_messages=None):
         self.bot = bot
         self.channel = bot.get_channel(channel_id)
+        self.duration = duration
+        self.warnings = warnings
+        self.warning_messages = warning_messages
+
+        if results_channel_id is None:
+            self.results_channel = None
+        else:
+            self.results_channel = bot.get_channel(results_channel_id)
+
+        if ping_role is None:
+            self.role = None
+        else:
+            self.role = ping_role
+
         self.db_path = f"{self.channel.guild.id}/fmc/{self.channel.id}/"
         self.block_size = 100
 
-        self.round = FMCRound(self.db_path, duration=600, warnings=[60*5, 60*9], on_close=self.on_close, on_warning=self.on_warning)
+        async def on_close(round_dict):
+            await self.finish(round_dict)
+
+        async def on_warning(warning):
+            index = self.warnings.index(warning)
+            await self.channel.send(self.warning_messages[index])
+
+        self.round = FMCRound(self.db_path, duration=duration, warnings=warnings, on_close=on_close, on_warning=on_warning)
 
         if self.db_path + "round_number" not in db:
             # -1 so that the first round is round 0
@@ -45,6 +64,9 @@ class FMC:
 
         img = draw_state(scramble)
         await dh.send_image(img, "scramble.png", msg, self.channel)
+
+        if self.role is not None:
+            await self.channel.send(f"<@&{self.role}>")
 
     async def finish(self, round_dict):
         results = round_dict["results"]
@@ -92,18 +114,11 @@ class FMC:
                 table.add_row([user.name, length, length - optLength, str(solution)])
 
             await dh.send_as_file(table.get_string(), "results.txt", msg, self.channel)
+            if self.results_channel is not None:
+                await dh.send_as_file(table.get_string(), "results.txt", msg, self.results_channel)
 
         make_video(scramble, optSolution, 8)
         await dh.send_binary_file("movie.webm", "", self.channel)
-
-    async def on_close(self, round_dict):
-        await self.finish(round_dict)
-
-    async def on_warning(self, warning):
-        if warning == 60*5:
-            await self.channel.send("5 minutes remaining!")
-        elif warning == 60*9:
-            await self.channel.send("One minute remaining!")
 
     async def submit(self, user, solution):
         id = user.id

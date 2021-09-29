@@ -25,12 +25,12 @@ import helper.discord as dh
 import permissions
 import config.channels
 import config.emoji
+import config.roles
 from animate import make_video
 from puzzle_state import PuzzleState
 from algorithm import Algorithm
 from analyse import analyse
 from draw_state import draw_state
-from fmc.daily_fmc import DailyFMC
 from fmc.fmc import FMC
 from movesgame.movesgame import MovesGame
 from movesgame.tournament import MovesGameTournament
@@ -100,8 +100,8 @@ async def on_ready():
 
     # create fmc
     global daily_fmc, short_fmc
-    daily_fmc = DailyFMC(bot, config.channels.daily_fmc, config.channels.daily_fmc_results)
-    short_fmc = FMC(bot, config.channels.ten_minute_fmc)
+    daily_fmc = FMC(bot, config.channels.daily_fmc, 86400, config.channels.daily_fmc_results, config.roles.fmc, [23*3600], ["One hour remaining!"])
+    short_fmc = FMC(bot, config.channels.ten_minute_fmc, 600, warnings=[60*5, 60*9], warning_messages=["5 minutes remaining!", "One minute remaining!"])
     await daily_fmc.start()
 
     # dict of fmc objects by id
