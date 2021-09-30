@@ -10,12 +10,13 @@ from fmc.round import FMCRound
 import helper.discord as dh
 
 class FMC:
-    def __init__(self, bot, channel_id, duration, results_channel_id=None, ping_role=None, warnings=None, warning_messages=None):
+    def __init__(self, bot, channel_id, duration, results_channel_id=None, ping_role=None, warnings=None, warning_messages=None, repeating=False):
         self.bot = bot
         self.channel = bot.get_channel(channel_id)
         self.duration = duration
         self.warnings = warnings
         self.warning_messages = warning_messages
+        self.repeating = repeating
 
         if results_channel_id is None:
             self.results_channel = None
@@ -32,6 +33,13 @@ class FMC:
 
         async def on_close(round_dict):
             await self.finish(round_dict)
+
+            # if repeating, start a new round and set the timestamp so that it lines up
+            # exactly with the start of the previous round + the duration
+            if self.repeating:
+                await self.start()
+                timestamp = round_dict["timestamp"]
+                db[self.round.db_path + "start_time"] = timestamp + self.round.duration
 
         async def on_warning(warning):
             index = self.warnings.index(warning)
