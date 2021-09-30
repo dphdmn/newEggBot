@@ -3,6 +3,8 @@ from animate import make_video
 from draw_state import draw_state
 from puzzle_state import PuzzleState
 from algorithm import Algorithm
+from solver import solvers
+import scrambler
 from helper import serialize
 from replit import db
 from prettytable import PrettyTable
@@ -10,7 +12,8 @@ from fmc.round import FMCRound
 import helper.discord as dh
 
 class FMC:
-    def __init__(self, bot, channel_id, duration, results_channel_id=None, ping_role=None, warnings=None, warning_messages=None, repeating=False):
+    def __init__(self, bot, channel_id, duration, results_channel_id=None, ping_role=None,
+                 warnings=None, warning_messages=None, repeating=False, size=4):
         self.bot = bot
         self.channel = bot.get_channel(channel_id)
         self.duration = duration
@@ -45,7 +48,22 @@ class FMC:
             index = self.warnings.index(warning)
             await self.channel.send(self.warning_messages[index])
 
-        self.round = FMCRound(self.db_path, duration=duration, warnings=warnings, on_close=on_close, on_warning=on_warning)
+        def generate():
+            return scrambler.getScramble(size)
+
+        def solve(pos):
+            if size in [3, 4]:
+                return solvers[size].solveOne(pos)
+            return None
+
+        self.round = FMCRound(self.db_path,
+            duration=duration,
+            warnings=warnings,
+            on_close=on_close,
+            on_warning=on_warning,
+            generator=generate,
+            solver=solve
+        )
 
         if self.db_path + "round_number" not in db:
             # -1 so that the first round is round 0
