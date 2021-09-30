@@ -115,11 +115,20 @@ async def on_ready():
         warnings=[60*5, 60*9],
         warning_messages=["5 minutes remaining!", "One minute remaining!"]
     )
+    fmc_5x5 = FMC(bot,
+        channel_id=config.channels.fmc_5x5,
+        duration=2*24*60*60,
+        ping_role=config.roles.fmc,
+        warnings=[24*60*60, 60*60],
+        warning_messages=["One day remaining.", "One hour remaining!"],
+        repeating=True
+    )
     await daily_fmc.start()
+    await fmc_5x5.start()
 
     # dict of fmc objects by id
     global fmcs
-    fmcs = {x.channel.id : x for x in [daily_fmc, short_fmc]}
+    fmcs = {x.channel.id : x for x in [daily_fmc, short_fmc, fmc_5x5]}
 
     # create movesgame
     global movesgame, movesgame_tournament
