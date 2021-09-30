@@ -168,14 +168,7 @@ async def on_message(message):
     log.info(f"found command from user {message.author}")
     log.info(f"command: {command}")
 
-    if command.startswith("!spam"):
-        if message.author.guild_permissions.administrator:
-            shit = command[6:]
-            msg = ""
-            for x in range(3000):
-                msg += shit + " "
-            spam.start(message.channel, msg[:2000])
-    elif command.startswith("!fmc"):
+    if command.startswith("!fmc"):
         if message.channel.id not in fmcs:
             return
         fmc = fmcs[message.channel.id]
@@ -276,9 +269,6 @@ async def on_message(message):
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
-    elif command.startswith("!stop"):
-        if message.author.guild_permissions.administrator:
-            spam.cancel()
     elif command.startswith("!getreal"):
         await message.channel.send("Generating scramble!")
 
@@ -993,10 +983,6 @@ async def on_message(message):
             for key in db.keys():
                 my_db[key] = db[key]
             await dh.send_as_file(serialize.serialize(my_db), "db.txt", "", message.channel)
-
-@tasks.loop(seconds=1)
-async def spam(chan, msg):
-    await chan.send(msg)
 
 keep_alive()
 bot.run(os.environ["token"])
