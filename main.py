@@ -121,7 +121,8 @@ async def on_ready():
         ping_role=config.roles.fmc,
         warnings=[24*60*60, 60*60],
         warning_messages=["One day remaining.", "One hour remaining!"],
-        repeating=True
+        repeating=True,
+        size=5
     )
     await daily_fmc.start()
     await fmc_5x5.start()
