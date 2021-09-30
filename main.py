@@ -100,8 +100,21 @@ async def on_ready():
 
     # create fmc
     global daily_fmc, short_fmc
-    daily_fmc = FMC(bot, config.channels.daily_fmc, 86400, config.channels.daily_fmc_results, config.roles.fmc, [23*3600], ["One hour remaining!"], repeating=True)
-    short_fmc = FMC(bot, config.channels.ten_minute_fmc, 600, warnings=[60*5, 60*9], warning_messages=["5 minutes remaining!", "One minute remaining!"])
+    daily_fmc = FMC(bot,
+        channel=config.channels.daily_fmc,
+        results_channel=config.channels.daily_fmc_results,
+        duration=86400,
+        ping_role=config.roles.fmc,
+        warnings=[23*3600],
+        warning_messages=["One hour remaining!"],
+        repeating=True
+    )
+    short_fmc = FMC(bot,
+        channel=config.channels.ten_minute_fmc,
+        duration=600,
+        warnings=[60*5, 60*9],
+        warning_messages=["5 minutes remaining!", "One minute remaining!"]
+    )
     await daily_fmc.start()
 
     # dict of fmc objects by id
