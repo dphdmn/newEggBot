@@ -90,9 +90,12 @@ class FMC:
         msg +=  "Use **!submit** command to submit solutions (You can submit multiple times!), for example:\n"
         msg +=  "!submit LUR2DL2URU2LDR2DLUR2D2LU3RD3LULU2RDLDR2ULDLURUL2"
 
+        # currently only have draw_state for 4x4
         if self.size == 4:
             img = draw_state(scramble)
             await dh.send_image(img, "scramble.png", msg, self.channel)
+        else:
+            await self.channel.send(msg)
 
         if self.role is not None:
             await self.channel.send(f"<@&{self.role}>")
