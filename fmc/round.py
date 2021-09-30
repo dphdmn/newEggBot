@@ -8,13 +8,18 @@ from discord.ext import tasks
 from replit import db
 
 class FMCRound:
-    def __init__(self, db_path, scramble=None, duration=86400, warnings=[], on_close=None, on_warning=None):
+    def __init__(self, db_path, scramble=None, duration=86400, warnings=[],
+                 on_close=None, on_warning=None,
+                 generator=lambda: scrambler.getScramble(4),
+                 solver=lambda x: solvers[4].solveOne(x)):
         self.db_path = db_path + "current/"
         self.scramble = scramble
         self.duration = duration
         self.warnings = warnings
         self.on_close = on_close
         self.on_warning  = on_warning
+        self.generator = generator
+        self.solver = solver
 
         self.loop.start()
 
@@ -25,7 +30,10 @@ class FMCRound:
         return PuzzleState(db[self.db_path + "scramble"])
 
     def get_solution(self):
-        return Algorithm(db[self.db_path + "solution"])
+        alg = db[self.db_path + "solution"]
+        if alg == "None":
+            return None
+        return Algorithm(alg)
 
     def elapsed(self):
         return int(time.time()) - int(db[self.db_path + "start_time"])
@@ -61,14 +69,18 @@ class FMCRound:
         log.info("opening fmc round")
 
         if self.scramble is None:
-            scramble = scrambler.getScramble(4)
+            scramble = self.generator()
             log.info(f"generated scramble: {scramble}")
         else:
             scramble = self.scramble
             log.info(f"using given scramble: {scramble}")
 
-        solution = solvers[4].solveOne(scramble)
-        log.info(f"found solution [{len(solution)}]: {solution}")
+        # we may not be able to solve the position (e.g. big puzzles)
+        if self.solver is None:
+            solution = None
+        else:
+            solution = self.solver(scramble)
+            log.info(f"found solution [{len(solution)}]: {solution}")
 
         db[self.db_path + "scramble"] = str(scramble)
         db[self.db_path + "solution"] = str(solution)

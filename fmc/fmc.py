@@ -66,7 +66,8 @@ class FMC:
         solution = self.round.get_solution()
 
         msg  = f"FMC scramble: {scramble}\n"
-        msg += f"Optimal solution length: {len(solution)}\n"
+        if solution is not None:
+            msg += f"Optimal solution length: {len(solution)}\n"
         msg +=  "Use **!submit** command to submit solutions (You can submit multiple times!), for example:\n"
         msg +=  "!submit LUR2DL2URU2LDR2DLUR2D2LU3RD3LULU2RDLDR2ULDLURUL2"
 
@@ -77,10 +78,13 @@ class FMC:
             await self.channel.send(f"<@&{self.role}>")
 
     async def finish(self, round_dict):
+        opt_known = round_dict["solution"] is not None
+
         results = round_dict["results"]
         scramble = round_dict["scramble"]
-        optSolution = round_dict["solution"]
-        optLength = len(optSolution)
+        if opt_known:
+            optSolution = round_dict["solution"]
+            optLength = len(optSolution)
 
         db[self.db_path + "round_number"] += 1
 
@@ -108,27 +112,35 @@ class FMC:
 
         msg  =  "FMC results\n"
         msg += f"Scramble: {scramble}\n"
-        msg += f"Optimal solution [{optLength}]: {optSolution}"
+        if opt_known:
+            msg += f"Optimal solution [{optLength}]: {optSolution}"
 
         if len(results) == 0:
             msg += "\n\nNo one joined :("
             await self.channel.send(msg)
         else:
             table = PrettyTable()
-            table.field_names = ["Username", "Moves", "To optimal", "Solution"]
+            if opt_known:
+                table.field_names = ["Username", "Moves", "To optimal", "Solution"]
+            else:
+                table.field_names = ["Username", "Moves", "Solution"]
 
             # organise results in an array
             for (id, solution) in results.items():
                 user = self.bot.get_user(id)
                 length = len(solution)
-                table.add_row([user.name, length, length - optLength, str(solution)])
+                if opt_known:
+                    table.add_row([user.name, length, length - optLength, str(solution)])
+                else:
+                    table.add_row([user.name, length, str(solution)])
 
             await dh.send_as_file(table.get_string(), "results.txt", msg, self.channel)
             if self.results_channel is not None:
                 await dh.send_as_file(table.get_string(), "results.txt", msg, self.results_channel)
 
-        make_video(scramble, optSolution, 8)
-        await dh.send_binary_file("movie.webm", "", self.channel)
+        if opt_known:
+            make_video(scramble, optSolution, 8)
+            await dh.send_binary_file("movie.webm", "", self.channel)
 
     async def submit(self, user, solution):
         id = user.id
