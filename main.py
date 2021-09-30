@@ -941,6 +941,9 @@ async def on_message(message):
     elif command.startswith("!rank"):
         try:
             user = command[6:]
+            if user == "":
+                user = link.get_leaderboard_user(message.author.id)
+
             msg = lb_commands.rank(user)
             await message.channel.send(msg)
         except Exception as e:
