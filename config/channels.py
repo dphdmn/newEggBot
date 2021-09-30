@@ -1,6 +1,7 @@
 daily_fmc         = 852582798454685706
 daily_fmc_results = 867567943335411732
 ten_minute_fmc    = 875715612431757343
+fmc_5x5           = 893244109995778058
 
 movesgame            = 853530538844225546
 movesgame_tournament = 873777813172396072
