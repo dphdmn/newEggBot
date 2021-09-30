@@ -35,6 +35,9 @@ class FMCRound:
             return None
         return Algorithm(alg)
 
+    def solution_known(self):
+        return db[self.db_path + "solution"] != "None"
+
     def elapsed(self):
         return int(time.time()) - int(db[self.db_path + "start_time"])
 
