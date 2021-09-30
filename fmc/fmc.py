@@ -20,6 +20,7 @@ class FMC:
         self.warnings = warnings
         self.warning_messages = warning_messages
         self.repeating = repeating
+        self.size = size
 
         if results_channel_id is None:
             self.results_channel = None
