@@ -119,7 +119,7 @@ async def on_ready():
         channel_id=config.channels.fmc_5x5,
         duration=2*24*60*60,
         ping_role=config.roles.fmc,
-        warnings=[24*60*60, 60*60],
+        warnings=[24*60*60, 47*60*60],
         warning_messages=["One day remaining.", "One hour remaining!"],
         repeating=True,
         size=5
