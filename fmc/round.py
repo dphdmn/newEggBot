@@ -76,10 +76,9 @@ class FMCRound:
             log.info(f"using given scramble: {scramble}")
 
         # we may not be able to solve the position (e.g. big puzzles)
-        if self.solver is None:
-            solution = None
-        else:
-            solution = self.solver(scramble)
+        # in which case the solver function should return None
+        solution = self.solver(scramble)
+        if solution is not None:
             log.info(f"found solution [{len(solution)}]: {solution}")
 
         db[self.db_path + "scramble"] = str(scramble)
