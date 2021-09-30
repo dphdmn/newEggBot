@@ -78,8 +78,8 @@ class FMC:
 
     async def finish(self, round_dict):
         results = round_dict["results"]
-        scramble = PuzzleState(round_dict["scramble"])
-        optSolution = Algorithm(round_dict["solution"])
+        scramble = round_dict["scramble"]
+        optSolution = round_dict["solution"]
         optLength = len(optSolution)
 
         db[self.db_path + "round_number"] += 1
@@ -96,8 +96,10 @@ class FMC:
         else:
             block_dict = serialize.deserialize(db[block_path])
 
-        # same as round_dict, but we convert the solutions to strings
+        # same as round_dict, but we convert the puzzle states and algorithms to strings
         round_dict2 = copy.deepcopy(round_dict)
+        round_dict2["scramble"] = str(round_dict2["scramble"])
+        round_dict2["solution"] = str(round_dict2["solution"])
         for id in round_dict2["results"]:
             round_dict2["results"][id] = str(round_dict2["results"][id])
 

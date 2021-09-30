@@ -94,8 +94,8 @@ class FMCRound:
             del db[x]
 
         return {
-            "scramble"  : str(scramble),
-            "solution"  : str(solution),
+            "scramble"  : scramble,
+            "solution"  : solution,
             "timestamp" : timestamp,
             "results"   : results
         }
