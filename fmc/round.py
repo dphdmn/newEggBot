@@ -38,6 +38,12 @@ class FMCRound:
     def set_solution(self, alg):
         if self.solution_known():
             raise ValueError("solution is already known")
+
+        scramble = self.get_scramble()
+        scramble.apply(alg)
+        if not scramble.solved():
+            raise ValueError(f"solution does not solve scramble")
+
         db[self.db_path + "solution"] = str(alg)
 
     def solution_known(self):
