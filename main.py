@@ -284,16 +284,6 @@ async def on_message(message):
         if message.channel.id != short_fmc.channel.id or short_fmc.round.running():
             return
         await short_fmc.start()
-    elif command.startswith("!wrupdate"):
-        url = os.environ["updateURL"]
-        x = requests.get(url).text
-        if x == "":
-            x = "WRs updated\n" + \
-                "WRs: http://slidysim.000webhostapp.com/leaderboard/records.html\n" + \
-                "WRs (all): http://slidysim.000webhostapp.com/leaderboard/records_all.html\n" + \
-                "WRs (moves): http://slidysim.000webhostapp.com/leaderboard/records_moves.html\n" + \
-                "WRs (moves, all): http://slidysim.000webhostapp.com/leaderboard/records_all_moves.html"
-        await message.channel.send(x)
     elif command.startswith("!update"):
         await message.channel.send("Wait for it!")
         try:

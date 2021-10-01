@@ -1,5 +1,7 @@
 import base64
 import datetime as dt
+import os
+import requests
 from helper import serialize
 import json
 import zlib
@@ -115,3 +117,6 @@ def update():
     file += "export const data = " + json.dumps(data_dict) + ";\n"
     with open("web/data.js", "w") as f:
         f.write(file)
+
+    # update wr list
+    requests.get(os.environ["updateURL"]).text
