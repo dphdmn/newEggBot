@@ -5,7 +5,6 @@ https://discord.gg/7vXrWAS3yZ
 WR commands:
 - !getwr [NxM] - get WR single for NxM puzzle
 - !wrsby [username] - get all WRs by that username
-- !wrupdate - update WR pages
 
 FMC commands
 - !fmc - get current fmc information
@@ -19,10 +18,10 @@ Movesgame commands
 - !results - view lifetime results of movesgame
 
 PB/ranks commands
-- !getpb [user] [puzzle=NxN] - get user's PBs for 3x3 to 10x10 puzzle. default puzzle size is 4x4, or the channel size in the 3x3-10x10 channels
-- !getreq [tier] [puzzle] - get time requirement for a tier
+- !getpb [user=you] [puzzle=NxN] - get user's PBs for 3x3 to 10x10 puzzle. default puzzle size is 4x4, or the channel size in the 3x3-10x10 channels
+- !getreq [tier] [puzzle=NxN] - get time requirement for a tier. default puzzle size is the same as for !getpb
 - !getlb - get current version of the webpage as a text file
-- !update - update the ranks webpage
+- !update - update the ranks webpage and WR pages
 - !datecompare [date1] [date2] - compare two states of leaderboard (!datecompare 2021-06-14 2021-06-13)
 
 Solver-related commands:
@@ -50,10 +49,6 @@ Misc. commands:
 - !egg - 🥚
 - !help - link to this file
 - !tti [text] - bad AI image generator
-
-Spamming fun commands:
-- !spam [something] - make bot spam something many times [admin]
-- !stop - make bot stop spamming [admin]
 
 List of useful websites:
 - Ranks - https://egg.benwh1.repl.co/
