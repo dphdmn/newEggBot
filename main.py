@@ -265,7 +265,14 @@ async def on_message(message):
         if not fmc.round.running():
             return
         try:
-            solution = Algorithm(command[13:])
+            solution_reg = regex.optionally_spoilered(regex.algorithm("solution"))
+            reg = re.compile(f"!setsolution\s+{solution_reg}")
+            match = reg.fullmatch(command)
+            if match is None:
+                raise SyntaxError(f"failed to read solution")
+            groups = match.groupdict()
+            solution = Algorithm(groups["solution"])
+
             fmc.round.set_solution(solution)
             await message.channel.send(f"Added solution. Length: {len(solution)} moves")
         except Exception as e:
