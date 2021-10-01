@@ -265,6 +265,8 @@ async def on_message(message):
         if not fmc.round.running():
             return
         try:
+            await message.delete()
+
             solution_reg = regex.optionally_spoilered(regex.algorithm("solution"))
             reg = re.compile(f"!setsolution\s+{solution_reg}")
             match = reg.fullmatch(command)
