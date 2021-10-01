@@ -35,6 +35,11 @@ class FMCRound:
             return None
         return Algorithm(alg)
 
+    def set_solution(self, alg):
+        if self.solution_known():
+            raise ValueError("solution is already known")
+        db[self.db_path + "solution"] = str(alg)
+
     def solution_known(self):
         return db[self.db_path + "solution"] != "None"
 

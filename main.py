@@ -256,6 +256,21 @@ async def on_message(message):
                     provisional_msg += f"({user.name}: {good}/{good+bad} = {formatted})\n"
 
             await message.channel.send(results_msg + provisional_msg)
+    elif command.startswith("!setsolution"):
+        if not permissions.is_egg_admin(message.author):
+            return
+        if message.channel.id not in fmcs:
+            return
+        fmc = fmcs[message.channel.id]
+        if not fmc.round.running():
+            return
+        try:
+            solution = Algorithm(command[13:])
+            fmc.round.set_solution(solution)
+            await message.channel.send(f"Added solution. Length: {len(solution)} moves")
+        except Exception as e:
+            traceback.print_exc()
+            await message.channel.send(f"```\n{repr(e)}\n```")
     elif command.startswith("!startfmc"):
         if message.channel.id != short_fmc.channel.id or short_fmc.round.running():
             return
