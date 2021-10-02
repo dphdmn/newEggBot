@@ -85,9 +85,9 @@ class RandomGame:
 
         response_time = int(1000*(winner_timestamp - timestamp))
         msg = "You win!\nTime: " + time_format.format(response_time)
-        if round > 0:
-            last_round = rounds[round-1]
-            time_since_last = timestamp - last_round["timestamp"]
+        if round_number > 0:
+            last_round = rounds[round_number-1]
+            time_since_last = int(timestamp - last_round["timestamp"])
             msg += "\nTime since last rare egg: " + time_format.format_long(time_since_last)
 
         await winner_message.reply(msg)
