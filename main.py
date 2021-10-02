@@ -987,6 +987,13 @@ async def on_message(message):
         with open("misc/egg.txt", "r") as f:
             egg = f.read()
         await message.channel.send("```" + egg + "```")
+    elif command == "!rareegg":
+        scores = random_game.scores()
+        msg = ""
+        for id, score in scores.items():
+            user = bot.get_user(id)
+            msg += f"{user.name}: {score}\n"
+        message.channel.send(msg)
     elif command.startswith("!help"):
         await message.channel.send("Egg bot commands: https://github.com/benwh1/eggbot/blob/master/README.md")
     elif command.startswith("!git"):

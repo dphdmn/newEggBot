@@ -28,6 +28,12 @@ class RandomGame:
         for x in db.prefix(self.db_path + "current"):
             del db[x]
 
+    def scores(self):
+        # sort scores in descending order
+        s = serialize.deserialize(db[self.db_path + "scores"])
+        s = dict(sorted(s.items(), key=lambda x: -x[1]))
+        return s
+
     def start(self):
         self.loop.start()
 
