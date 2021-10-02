@@ -77,8 +77,14 @@ class RandomGame:
         del db[self.db_path + "current/channel_id"]
         del db[self.db_path + "current/timestamp"]
 
-        t = int(1000*(winner_timestamp - timestamp))
-        await winner_message.reply("You win! Time: " + time_format.format(t))
+        response_time = int(1000*(winner_timestamp - timestamp))
+        msg = "You win!\nTime: " + time_format.format(response_time)
+        if round > 0:
+            last_round = rounds[round-1]
+            time_since_last = timestamp - last_round["timestamp"]
+            msg += "\nTime since last rare egg: " + time_format.format_long(time_since_last)
+
+        await winner_message.reply(msg)
 
         self.running = False
 
