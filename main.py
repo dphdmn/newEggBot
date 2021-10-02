@@ -993,7 +993,7 @@ async def on_message(message):
         for id, score in scores.items():
             user = bot.get_user(id)
             msg += f"{user.name}: {score}\n"
-        message.channel.send(msg)
+        await message.channel.send(msg)
     elif command.startswith("!help"):
         await message.channel.send("Egg bot commands: https://github.com/benwh1/eggbot/blob/master/README.md")
     elif command.startswith("!git"):
