@@ -129,6 +129,8 @@ class FMCRound:
         if not self.running():
             return
 
+        solution.simplify()
+
         log.info(f"user id {user_id} is submitting [{len(solution)}] {solution}")
 
         # check that the solution works
