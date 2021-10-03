@@ -169,6 +169,9 @@ class FMC:
         id = user.id
         name = user.name
 
+        # simplify the solution before submitting
+        solution.simplify()
+
         # check if the user has already submitted a solution
         if self.round.has_result(id):
             previous_length = len(self.round.result(id))
