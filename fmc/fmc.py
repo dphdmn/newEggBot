@@ -161,7 +161,7 @@ class FMC:
             if self.results_channel is not None:
                 await dh.send_as_file(table.get_string(), "results.txt", msg, self.results_channel)
 
-        if opt_known:
+        if opt_known and self.size == 4:
             make_video(scramble, optSolution, 8)
             await dh.send_binary_file("movie.webm", "", self.channel)
 
