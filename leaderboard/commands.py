@@ -32,7 +32,28 @@ def get_pb(width, height, user):
             else:
                 tier_name = tier["name"]
 
-            msg += f"{category_names[i]}: {time_format.format(best_time)} ({tier_name})\n"
+            # find the next tier above the users tier so we can show the requirement
+            if tier is None:
+                next_tier = tiers.tiers[0]
+            else:
+                tier_index = tiers.tiers.index(tier)
+                if tier_index == len(tiers.tiers)-1:
+                    next_tier = None
+                else:
+                    next_tier = tiers.tiers[tier_index+1]
+
+            if next_tier is None:
+                requirement_msg = None
+            else:
+                next_tier_name = next_tier["name"]
+                next_tier_req = next_tier["times"][i]
+                requirement_msg = f"{next_tier_name}={time_format.format(next_tier_req)}"
+
+            msg += f"{category_names[i]}: {time_format.format(best_time)} ({tier_name})"
+            if requirement_msg is not None:
+                msg += f" ({requirement_msg})"
+            msg += "\n"
+
     msg += "```"
 
     return msg
