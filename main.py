@@ -37,7 +37,6 @@ from movesgame.tournament import MovesGameTournament
 from random_game import RandomGame
 from probability import comparison, distributions
 from probability.format import format_prob
-from leaderboard import update as lb
 from leaderboard import commands as lb_commands
 from leaderboard import link
 from replit import db
@@ -287,7 +286,7 @@ async def on_message(message):
     elif command.startswith("!update"):
         await message.channel.send("Wait for it!")
         try:
-            lb.update()
+            lb_commands.update()
             webpage = os.environ["webpage"]
             msg = f"Webpage updated!\n{webpage}"
             await message.channel.send(msg)

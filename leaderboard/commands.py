@@ -3,6 +3,7 @@ from leaderboard.categories import categories, category_names
 from leaderboard import tiers
 from leaderboard import ranking
 from leaderboard import db
+from leaderboard import update as lb_update
 import leaderboard.username as names
 import time_format
 
@@ -79,3 +80,6 @@ def rank(user):
     power = ranking.power(table[username])
     power_tier_name = tiers.power_tier(power)["name"]
     return f"{username} is in position {position} with {power} power ({power_tier_name})"
+
+def update():
+    lb_update.update()
