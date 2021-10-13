@@ -1,5 +1,6 @@
 import os
 import requests
+from log import log
 
 def get_leaderboard(width=-1, height=-1, solvetype="any", avglen=-1, user=""):
     url = os.environ["slidysim"]
@@ -16,6 +17,9 @@ def get_leaderboard(width=-1, height=-1, solvetype="any", avglen=-1, user=""):
         "solvedata"   : 0,
         "version"     : "28.3"
     })
+
+    if r.text[-7:] != "success":
+        raise Exception("failed to read leaderboard")
 
     data = [line.split(",") for line in r.text[19:].split("<br>")[:-1]]
 
