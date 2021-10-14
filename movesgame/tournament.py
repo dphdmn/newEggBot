@@ -130,7 +130,7 @@ class MovesGameTournament:
                     msg += ", ".join(["**" + name(id) + "**" for id in winners]) + f" continue to round {round_num+2}!\n"
                     if len(losers) == 1:
                         loser = list(losers)[0]
-                        msg += loser + " was eliminated"
+                        msg += name(loser) + " was eliminated"
                     else:
                         msg += ", ".join([name(id) for id in losers]) + " were eliminated"
 
