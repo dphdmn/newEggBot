@@ -225,7 +225,8 @@ async def on_message(message):
                 msg = ""
                 for (id, result) in results.items():
                     user = bot.get_user(id)
-                    msg += f"{user.name}: {len(result)}\n"
+                    if user:
+                        msg += f"{user.name}: {len(result)}\n"
             await message.channel.send(msg)
         # movesgame results
         elif message.channel.id == movesgame.channel.id:
@@ -244,15 +245,16 @@ async def on_message(message):
             provisional_msg = ""
             for id in sorted_ids:
                 user = bot.get_user(id)
-                good = results[id]["correct"]
-                bad = results[id]["incorrect"]
-                formatted = format(100*good/(good+bad), ".2f") + "%"
+                if user:
+                    good = results[id]["correct"]
+                    bad = results[id]["incorrect"]
+                    formatted = format(100*good/(good+bad), ".2f") + "%"
 
-                # only show results for people with enough rounds
-                if good+bad >= 30:
-                    results_msg += f"{user.name}: {good}/{good+bad} = {formatted}\n"
-                else:
-                    provisional_msg += f"({user.name}: {good}/{good+bad} = {formatted})\n"
+                    # only show results for people with enough rounds
+                    if good+bad >= 30:
+                        results_msg += f"{user.name}: {good}/{good+bad} = {formatted}\n"
+                    else:
+                        provisional_msg += f"({user.name}: {good}/{good+bad} = {formatted})\n"
 
             await message.channel.send(results_msg + provisional_msg)
     elif command.startswith("!setsolution"):
@@ -991,7 +993,8 @@ async def on_message(message):
         msg = ""
         for id, score in scores.items():
             user = bot.get_user(id)
-            msg += f"{user.name}: {score}\n"
+            if user:
+                msg += f"{user.name}: {score}\n"
         await message.channel.send(msg)
     elif command.startswith("!help"):
         await message.channel.send("Egg bot commands: https://github.com/benwh1/eggbot/blob/master/README.md")

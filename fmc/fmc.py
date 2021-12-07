@@ -151,11 +151,12 @@ class FMC:
             # organise results in an array
             for (id, solution) in results.items():
                 user = self.bot.get_user(id)
-                length = len(solution)
-                if opt_known:
-                    table.add_row([user.name, length, length - optLength, str(solution)])
-                else:
-                    table.add_row([user.name, length, str(solution)])
+                if user:
+                    length = len(solution)
+                    if opt_known:
+                        table.add_row([user.name, length, length - optLength, str(solution)])
+                    else:
+                        table.add_row([user.name, length, str(solution)])
 
             await dh.send_as_file(table.get_string(), "results.txt", msg, self.channel)
             if self.results_channel is not None:
