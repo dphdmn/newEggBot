@@ -861,7 +861,7 @@ async def on_message(message):
                     b = perf_counter()
                     elapsed = b-a
                     if size == (4, 4) and elapsed >= 3:
-                        solve_db.store(scramble, solutions, False)
+                        solve_db.store(scramble, solutions, True)
 
                 string = ""
                 if elapsed is not None:
