@@ -3,7 +3,7 @@ from solver import solvers
 import os
 from keep_alive import keep_alive
 import discord
-from discord.ext import tasks, commands
+from discord.ext import commands
 import urllib.request
 import html2text
 import traceback
