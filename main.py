@@ -94,7 +94,8 @@ async def on_ready():
         channel_id = db["restart/channel_id"]
         channel = bot.get_channel(channel_id)
         message = db["restart/message"]
-        await channel.send(message)
+        if channel is not None:
+            await channel.send(message)
         del db["restart/channel_id"]
         del db["restart/message"]
 
