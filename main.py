@@ -854,7 +854,7 @@ async def on_message(message):
                             solutions = result["solutios"]
                             elapsed = None
 
-                if solutions is not None:
+                if solutions is None:
                     a = perf_counter()
                     solutions = solvers[size[0]].solveAll(scramble)
                     b = perf_counter()
@@ -905,7 +905,7 @@ async def on_message(message):
                     solution = result["solutions"][0]
                     elapsed = None
 
-            if solution is not None:
+            if solution is None:
                 solver = solvers[size[0]]
                 a = perf_counter()
                 solution = solver.solveOne(scramble)
