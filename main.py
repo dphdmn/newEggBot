@@ -26,6 +26,7 @@ import permissions
 import config.channels
 import config.emoji
 import config.roles
+import solve_db
 from animate import make_video
 from puzzle_state import PuzzleState
 from algorithm import Algorithm
@@ -844,11 +845,26 @@ async def on_message(message):
 
         if size == (3, 3) or size == (4, 4):
             try:
-                a = perf_counter()
-                solutions = solvers[size[0]].solveAll(scramble)
-                b = perf_counter()
+                solutions = None
 
-                string  = f"Time: {round(b - a, 3)}\n"
+                if size == (4, 4):
+                    result = solve_db.lookup(scramble)
+                    if result is not None:
+                        if result["all"]:
+                            solutions = result["solutios"]
+                            elapsed = None
+
+                if solutions is not None:
+                    a = perf_counter()
+                    solutions = solvers[size[0]].solveAll(scramble)
+                    b = perf_counter()
+                    elapsed = b-a
+                    if size == (4, 4) and elapsed >= 3:
+                        solve_db.store(scramble, solutions, False)
+
+                string = ""
+                if elapsed is not None:
+                    string += f"Time: {round(elapsed, 3)}\n"
                 string += f"Number of solutions: {len(solutions)}\n"
                 string += f"Length: {len(solutions[0])}\n"
                 string += "\n".join([str(s) for s in solutions])
@@ -881,10 +897,22 @@ async def on_message(message):
             if size == (3, 3) and video:
                 raise ValueError(f"puzzle size {size} must be 4x4")
 
-            a = perf_counter()
-            solver = solvers[size[0]]
-            solution = solver.solveOne(scramble)
-            b = perf_counter()
+            solution = None
+
+            if size == (4, 4):
+                result = solve_db.lookup(scramble)
+                if result is not None:
+                    solution = result["solutions"][0]
+                    elapsed = None
+
+            if solution is not None:
+                solver = solvers[size[0]]
+                a = perf_counter()
+                solution = solver.solveOne(scramble)
+                b = perf_counter()
+                elapsed = b-a
+                if size == (4, 4) and elapsed >= 3:
+                    solve_db.store(scramble, [solution], False)
 
             # solution of solved puzzle = egg
             solution_str = str(solution)
@@ -893,7 +921,8 @@ async def on_message(message):
 
             msg  = f"Scramble: {scramble}\n"
             msg += f"Solution [{len(solution)}]: ||{solution_str}||\n"
-            msg += f"Time: {round((b - a), 3)}"
+            if elapsed is not None:
+                msg += f"Time: {round(elapsed, 3)}"
 
             if video:
                 msg += "\nPlease wait! I'm making a video for you!"
