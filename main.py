@@ -852,7 +852,7 @@ async def on_message(message):
                     result = solve_db.lookup(scramble)
                     if result is not None:
                         if result["all"]:
-                            solutions = result["solutios"]
+                            solutions = result["solutions"]
                             elapsed = None
 
                 if solutions is None:
