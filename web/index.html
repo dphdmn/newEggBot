@@ -1,68 +1,68 @@
 <!DOCTYPE html>
+
 <html>
-   <head>
-      <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-      <title>Slidysim Tier Ranks</title>
-      <link rel="icon" type="image/png" href="egg.png">
-      <link rel="stylesheet" href="style.css">
-      <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
-      <script src="https://www.jquery-az.com/javascript/dist/datepickk.min.js"></script>
-      <link rel="stylesheet" href="https://www.jquery-az.com/javascript/dist/datepickk.min.css">
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/1.0.11/pako_inflate.min.js"></script>
-      <script src="scroll.js"></script>
-   </head>
-   <body>
+    <head>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Slidysim Tier Ranks</title>
+        <link rel="icon" type="image/png" href="egg.png">
+        <link rel="stylesheet" href="style.css">
+        <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+        <script src="https://www.jquery-az.com/javascript/dist/datepickk.min.js"></script>
+        <link rel="stylesheet" href="https://www.jquery-az.com/javascript/dist/datepickk.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/1.0.11/pako_inflate.min.js"></script>
+        <script src="scroll.js"></script>
+    </head>
 
-      <div class="page-header">
-         <button class="menu-btn"><i class="menu-icon"></i></button>
-         <button class="date-button" id="date-button" onclick="select_date();">2021-12-29</button>
-         <div class="switch-div">
-             <input type="checkbox" id="switch">
-             <label for="switch"></label>
-             <div class="more-infos">
-                 <p><span>Off:</span> all colors are shown</p>
-                 <p><span>On:</span> only tier's color and above are shown</p>
-             </div>
-         </div>
-      </div>
+    <body>
+        <div class="page-header">
+            <button class="menu-btn"><i class="menu-icon"></i></button>
+            <button class="date-button" id="date-button" onclick="select_date();">2021-12-29</button>
+            <div class="switch-div">
+                <input type="checkbox" id="switch">
+                <label for="switch"></label>
+                <div class="more-infos">
+                    <p><span>Off:</span> all colors are shown</p>
+                    <p><span>On:</span> only tier's color and above are shown</p>
+                </div>
+            </div>
+        </div>
 
-      <div class="menu">
-        <p class="menu-heading"><i class="fas fa-download"></i>Download</p>
-        <a href="http://slidysim.000webhostapp.com/" target="_blank" title="New Tab">Slidysim v28.3</a>
+        <div class="menu">
+            <p class="menu-heading"><i class="fas fa-download"></i>Download</p>
+            <a href="http://slidysim.000webhostapp.com/" target="_blank" title="New Tab">Slidysim v28.3</a>
 
+            <p class="menu-heading"><i class="fas fa-globe-europe"></i>World Records</p>
+            <a href="http://slidysim.000webhostapp.com/leaderboard/records.html" target="_blank" title="New Tab">NxN WRs (Time)</a>
+            <a href="http://slidysim.000webhostapp.com/leaderboard/records_all.html" target="_blank" title="New Tab">NxM all WRs (Time)</a>
+            <a href="http://slidysim.000webhostapp.com/leaderboard/records_moves.html" target="_blank" title="New Tab">NxN WRs (Movecount)</a>
+            <a href="http://slidysim.000webhostapp.com/leaderboard/records_all_moves.html" target="_blank" title="New Tab">NxM all WRs (Movecount)</a>
 
-        <p class="menu-heading"><i class="fas fa-globe-europe"></i>World Records</p>
-        <a href="http://slidysim.000webhostapp.com/leaderboard/records.html" target="_blank" title="New Tab">NxN WRs (Time)</a>
-        <a href="http://slidysim.000webhostapp.com/leaderboard/records_all.html" target="_blank" title="New Tab">NxM all WRs (Time)</a>
-        <a href="http://slidysim.000webhostapp.com/leaderboard/records_moves.html" target="_blank" title="New Tab">NxN WRs (Movecount)</a>
-        <a href="http://slidysim.000webhostapp.com/leaderboard/records_all_moves.html" target="_blank" title="New Tab">NxM all WRs (Movecount)</a>
+            <p class="menu-heading"><i class="fas fa-medal"></i>Ranking</p>
+            <a href="#">Dynamic Update</a>
+            <a href="https://docs.google.com/spreadsheets/d/1wWvBKe9X1ihcUCcdFLsduiYIhhk62WRRRrH2_r5cxbc/edit#gid=2027293122" target="_blank" title="New Tab">Google Sheet Time Update</a>
+            <a href="https://docs.google.com/spreadsheets/d/1Rc6hCE74sSwRIrgmp6DWVV5k9oKBsQeIyo6cX5xhKIo/edit#gid=1993464816" target="_blank" title="New Tab">Google Sheet Movecount Update</a>
+            <a href="https://docs.google.com/spreadsheets/d/1DEOPBE3ZhxEt9UGve2gGJLbGT2VrYMTzj9oXoab4FmQ/edit#gid=1807348172" target="_blank" title="New Tab">Kinchranks</a>
 
-        <p class="menu-heading"><i class="fas fa-medal"></i>Ranking</p>
-        <a href="#">Dynamic Update</a>
-        <a href="https://docs.google.com/spreadsheets/d/1wWvBKe9X1ihcUCcdFLsduiYIhhk62WRRRrH2_r5cxbc/edit#gid=2027293122" target="_blank" title="New Tab">Google Sheet Time Update</a>
-        <a href="https://docs.google.com/spreadsheets/d/1Rc6hCE74sSwRIrgmp6DWVV5k9oKBsQeIyo6cX5xhKIo/edit#gid=1993464816" target="_blank" title="New Tab">Google Sheet Movecount Update</a>
-        <a href="https://docs.google.com/spreadsheets/d/1DEOPBE3ZhxEt9UGve2gGJLbGT2VrYMTzj9oXoab4FmQ/edit#gid=1807348172" target="_blank" title="New Tab">Kinchranks</a>
-        
-        <p class="menu-heading"><i class="fab fa-discord"></i>Discord</p>
-        <a href="https://discord.gg/7vXrWAS3yZ" target="_blank" title="New Tab">Join us!</a>
+            <p class="menu-heading"><i class="fab fa-discord"></i>Discord</p>
+            <a href="https://discord.gg/7vXrWAS3yZ" target="_blank" title="New Tab">Join us!</a>
 
-        <p class="menu-heading"><i class="fab fa-youtube"></i>YouTube links</p>
-        <a href="https://www.youtube.com/c/dphdmn/videos" target="_blank" title="New Tab">dphdmn</a>
-        <a href="https://www.youtube.com/channel/UClGkpZR3mO6QIe2rIXLJbhQ" target="_blank" title="New Tab">Dawidluna</a>
-        <a href="https://www.youtube.com/channel/UCNbj1ZtS7pfV2TB_T6zutuw/videos" target="_blank" title="New Tab">sq</a>
-        <a href="https://www.youtube.com/channel/UC1w3-l4GOZpenXa9W4PcNmg/videos" target="_blank" title="New Tab">vovker</a>
-        <a href="https://www.youtube.com/channel/UCBku7kEWnEOXsOlNhWwOEAA" target="_blank" title="New Tab">eff</a>
-        <a href="https://www.youtube.com/user/s16269/videos" target="_blank" title="New Tab">soup</a>
-        <a href="https://www.youtube.com/user/ben1996123/videos" target="_blank" title="New Tab">ben1996123</a>
-        <a href="https://www.youtube.com/channel/UCyvDjf90Vz33q3qHp7wwpfg/videos" target="_blank" title="New Tab">thelegendary08</a>
-        <a href="https://www.youtube.com/channel/UCCldkGVeUbQ1C_Lqiubq49Q/videos" target="_blank" title="New Tab">gottagitgud</a>
-        <a href="https://www.youtube.com/channel/UCKzRppIfkDedp3Ktkf24xcA/videos" target="_blank" title="New Tab">Osipov Alexander</a>
-      </div>
+            <p class="menu-heading"><i class="fab fa-youtube"></i>YouTube links</p>
+            <a href="https://www.youtube.com/c/dphdmn/videos" target="_blank" title="New Tab">dphdmn</a>
+            <a href="https://www.youtube.com/channel/UClGkpZR3mO6QIe2rIXLJbhQ" target="_blank" title="New Tab">Dawidluna</a>
+            <a href="https://www.youtube.com/channel/UCNbj1ZtS7pfV2TB_T6zutuw/videos" target="_blank" title="New Tab">sq</a>
+            <a href="https://www.youtube.com/channel/UC1w3-l4GOZpenXa9W4PcNmg/videos" target="_blank" title="New Tab">vovker</a>
+            <a href="https://www.youtube.com/channel/UCBku7kEWnEOXsOlNhWwOEAA" target="_blank" title="New Tab">eff</a>
+            <a href="https://www.youtube.com/user/s16269/videos" target="_blank" title="New Tab">soup</a>
+            <a href="https://www.youtube.com/user/ben1996123/videos" target="_blank" title="New Tab">ben1996123</a>
+            <a href="https://www.youtube.com/channel/UCyvDjf90Vz33q3qHp7wwpfg/videos" target="_blank" title="New Tab">thelegendary08</a>
+            <a href="https://www.youtube.com/channel/UCCldkGVeUbQ1C_Lqiubq49Q/videos" target="_blank" title="New Tab">gottagitgud</a>
+            <a href="https://www.youtube.com/channel/UCKzRppIfkDedp3Ktkf24xcA/videos" target="_blank" title="New Tab">Osipov Alexander</a>
+        </div>
 
-      <script src="populate_table.js" type="module"></script>
-      <script src="datepicker.js" type="module"></script>
-      <script src="menu.js"></script>
-      <script defer src="switch.js"></script>
+        <script src="populate_table.js" type="module"></script>
+        <script src="datepicker.js" type="module"></script>
+        <script src="menu.js"></script>
+        <script defer src="switch.js"></script>
 
-   </body>
+    </body>
 </html>

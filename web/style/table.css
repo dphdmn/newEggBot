@@ -46,15 +46,29 @@
 .player-row {
     height: 40px;
 }
-.player-row td[onclick]{
+
+.player-row td[onclick] {
     cursor: pointer;
     text-decoration: underline;
     transition: .3s;
     position: relative;
 }
-.player-row td[onclick]::before{content:''; position: absolute; top: 0; left: 0; background: #0003; width: 100%; height: 100%; clip-path: circle(0 at 0 0); transition: .3s;}
-.player-row td[onclick]:hover::before{clip-path: circle(140% at 0 0);}
 
+.player-row td[onclick]::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #0003;
+    width: 100%;
+    height: 100%;
+    clip-path: circle(0 at 0 0);
+    transition: .3s;
+}
+
+.player-row td[onclick]:hover::before {
+    clip-path: circle(140% at 0 0);
+}
 
 .player, .player-place, .player-power {
     font-weight: 700 !important;

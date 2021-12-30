@@ -1,4 +1,4 @@
-.menu{
+.menu {
     position: fixed;
     z-index: 998;
     left: 0;
@@ -12,29 +12,33 @@
     color: white;
     overflow-y: scroll;
 }
-@supports not (backdrop-filter: blur(1em)){
-    .menu{background-color: hsl(var(--header_clr));}
+
+@supports not (backdrop-filter: blur(1em)) {
+    .menu {
+        background-color: hsl(var(--header_clr));
+    }
 }
-.menu-active{
+
+.menu-active {
     clip-path: circle(150% at 0 0);
 }
 
-
-.menu-heading{ /* categories */
+/* categories */
+.menu-heading {
     padding: .5em 1em;
     font-size: 2rem;
-    /* background: #eaeaea; */
     color: white;
     font-weight: 500;
-    /*box-shadow: 
-    inset .1em .1em .2em rgb(153, 153, 153),
-    inset -.1em -.1em .2em white;*/
 }
-.menu-heading i{ /* icons in the categories */
+
+/* icons in the categories */
+.menu-heading i {
     font-size: inherit;
     padding: 0 .5em 0 0;
 }
-.menu a{ /* links */
+
+/* links */
+.menu a {
     display: block;
     color: #c7c7c7;
     text-decoration: none;
@@ -44,7 +48,8 @@
     font-weight: 400;
     position: relative;
 }
-.menu a::before{
+
+.menu a::before {
     content: '';
     position: absolute;
     left: 0;
@@ -55,7 +60,12 @@
     background: rgba(255, 255, 255, 0.274);
     transition: .3s;
 }
-.menu a:hover{background: #eaeaead8; color: black;}
-.menu a:hover::before{clip-path: circle(30% at 100% 50%);}
 
+.menu a:hover {
+    background: #eaeaead8;
+    color: black;
+}
 
+.menu a:hover::before {
+    clip-path: circle(30% at 100% 50%);
+}
