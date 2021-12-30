@@ -1,4 +1,6 @@
-@import url("https://fonts.googleapis.com/icon?family=Material+Icons+Outlined");
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons+Outlined"); /* google icons */
+@import url("https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css"); /* remix icons */
+@import url('https://fonts.googleapis.com/css2?family=Commissioner:wght@100;200;300;400;500;600;700;800;900&display=swap'); /* font family "Commissioner" */
 @import url("style/header.css");
 @import url("style/menu.css");
 @import url("style/scrollbar.css");
@@ -6,7 +8,7 @@
 
 * {
     font-weight: lighter;
-    font-family: sans-serif;
+    font-family: 'Commissioner', sans-serif;
     font-size: 11px;
     margin: 0;
     padding: 0;
@@ -17,8 +19,13 @@
 
 :root {
     --header_height: 60px;
+    --header_clr: 213 11% 19%;
 }
+::selection{background: #2555be; color: white;}
 
 body {
     background-color: rgb(63, 72, 83);
 }
+.overflow-hidden{overflow: hidden;}
+
+
