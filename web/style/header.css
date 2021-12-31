@@ -1,5 +1,4 @@
 /* whole header */
-
 .page-header {
     position: fixed;
     top: 0;
@@ -48,6 +47,11 @@
 /* date button */
 .page-header .date-button {
     flex-grow: 1;
+}
+
+/* calendar */
+.d-calendar * {
+    font-size: 20px;
 }
 
 /* switch */
