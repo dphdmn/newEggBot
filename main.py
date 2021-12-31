@@ -3,7 +3,7 @@ from solver import solvers
 import os
 from keep_alive import keep_alive
 import discord
-from discord.ext import commands
+from discord.ext import commands,tasks
 import urllib.request
 import html2text
 import traceback
@@ -82,6 +82,12 @@ def convertRgbToWeight(rgbArray):
             )  # Reversed luminosity
             arrayWithPixelWeight.append(lum / 255)  # Map values from range 0-255 to 0-1
     return arrayWithPixelWeight
+
+# Update Leaderboard automatically every N minutes
+@tasks.loop(minutes=10)
+async def silent_update():
+    lb_commands.update()
+silent_update.start()
 
 #____________________________discord started
 @bot.event
