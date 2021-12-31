@@ -2,6 +2,7 @@ import base64
 import datetime as dt
 import os
 import requests
+from log import log
 from helper import serialize
 import json
 import zlib
@@ -70,6 +71,8 @@ def results_table():
     return table
 
 def update():
+    log.info("Running update")
+
     # store results
     table = results_table()
     today = dt.datetime.now().strftime("%Y-%m-%d")
