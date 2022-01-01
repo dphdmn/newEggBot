@@ -8,7 +8,7 @@ switchBtn.on("change", function(){
 });
 
 function changeTable(tier_table){
-    let elements = $(`#${tier_table}-table`).children($("tbody")).children(".player-row").children();
+    let elements = $(`#${tier_table}-table`).children(".player-row").children();
 
     $(elements).each((i) => {
         let element = $(elements[i]);
