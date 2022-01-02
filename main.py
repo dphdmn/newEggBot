@@ -87,7 +87,6 @@ def convertRgbToWeight(rgbArray):
 @tasks.loop(minutes=10)
 async def silent_update():
     lb_commands.update()
-silent_update.start()
 
 #____________________________discord started
 @bot.event
@@ -147,6 +146,9 @@ async def on_ready():
     global random_game
     random_game = RandomGame(bot, config.channels.random_game, 181440)
     random_game.start()
+
+    # Start automatic leaderboard updates
+    silent_update.start()
 
 @bot.listen()
 async def on_message(message):
