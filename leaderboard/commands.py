@@ -4,6 +4,7 @@ from leaderboard import tiers
 from leaderboard import ranking
 from leaderboard import db
 from leaderboard import update as lb_update
+from leaderboard import commands_helper as helper
 import leaderboard.username as names
 import time_format
 
@@ -18,37 +19,16 @@ def get_pb(width, height, user):
     for i, category in enumerate(categories):
         if category["width"] == width and category["height"] == height:
             # find the users pb for this category
-            best_time = None
-            for result in data:
-                if result["solvetype"] == category["solvetype"] and result["avglen"] == category["avglen"]:
-                    if best_time is None:
-                        best_time = result["time"]
-                    else:
-                        best_time = min(best_time, result["time"])
+            best_time = helper.category_pb(category,data)
 
             # find the tier of this result
             tier = tiers.result_tier(i, best_time)
-            if tier is None:
-                tier_name = "Unranked"
-            else:
-                tier_name = tier["name"]
+            tier_name = helper.get_tier_name(tier)
 
             # find the next tier above the users tier so we can show the requirement
-            if tier is None:
-                next_tier = tiers.tiers[0]
-            else:
-                tier_index = tiers.tiers.index(tier)
-                if tier_index == len(tiers.tiers)-1:
-                    next_tier = None
-                else:
-                    next_tier = tiers.tiers[tier_index+1]
+            next_tier = helper.get_next_tier(tier)
 
-            if next_tier is None:
-                requirement_msg = None
-            else:
-                next_tier_name = next_tier["name"]
-                next_tier_req = next_tier["times"][i]
-                requirement_msg = f"{next_tier_name}={time_format.format(next_tier_req)}"
+            requirement_msg = helper.get_requirement_message(next_tier,i)
 
             msg += f"{category_names[i]}: {time_format.format(best_time)} ({tier_name})"
             if requirement_msg is not None:
