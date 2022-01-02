@@ -11,6 +11,16 @@ def category_pb(category, data):
                 best_time = min(best_time, result["time"])
     return best_time
 
+def general_pb(data):
+    best_time = None
+    for result in data:
+        if result["solvetype"] == "Standard" and result["avglen"] == 1:
+            if best_time is None:
+                best_time = result["time"]
+            else:
+                best_time = min(best_time, result["time"])
+    return best_time
+
 def get_tier_name(tier):
     if tier is None:
         tier_name = "Unranked"
@@ -37,3 +47,6 @@ def get_requirement_message(tier, category_index):
         next_tier_req = tier["times"][category_index]
         requirement_msg = f"{next_tier_name}={time_format.format(next_tier_req)}"
     return requirement_msg
+
+def get_used_sizes(categories):
+    return {(category["width"],category["height"]) for category in categories}

@@ -16,24 +16,32 @@ def get_pb(width, height, user):
 
     msg = f"{width}x{height} PBs for {username}\n"
     msg += "```\n"
-    for i, category in enumerate(categories):
-        if category["width"] == width and category["height"] == height:
-            # find the users pb for this category
-            best_time = helper.category_pb(category,data)
 
-            # find the tier of this result
-            tier = tiers.result_tier(i, best_time)
-            tier_name = helper.get_tier_name(tier)
+    # Sizes used in tier ranking
+    if (width,height) in helper.get_used_sizes(categories):
+        for i, category in enumerate(categories):
+            if category["width"] == width and category["height"] == height:
+                # find the users pb for this category
+                best_time = helper.category_pb(category,data)
 
-            # find the next tier above the users tier so we can show the requirement
-            next_tier = helper.get_next_tier(tier)
+                # find the tier of this result
+                tier = tiers.result_tier(i, best_time)
+                tier_name = helper.get_tier_name(tier)
 
-            requirement_msg = helper.get_requirement_message(next_tier,i)
+                # find the next tier above the users tier so we can show the requirement
+                next_tier = helper.get_next_tier(tier)
 
-            msg += f"{category_names[i]}: {time_format.format(best_time)} ({tier_name})"
-            if requirement_msg is not None:
-                msg += f" ({requirement_msg})"
-            msg += "\n"
+                requirement_msg = helper.get_requirement_message(next_tier,i)
+
+                msg += f"{category_names[i]}: {time_format.format(best_time)} ({tier_name})"
+                if requirement_msg is not None:
+                    msg += f" ({requirement_msg})"
+                msg += "\n"
+    # Other sizes
+    else:
+        best_time = helper.general_pb(data)
+        msg += f"{width}x{height} single: {time_format.format(best_time)}\n"
+
 
     msg += "```"
 
