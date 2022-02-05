@@ -978,8 +978,17 @@ async def on_message(message):
                 solution = solvers[3].solveOne(scramble)
                 length = len(solution)
 
+                # generate real scramble
+                prefix = Algorithm("D2 R2 U2 L2 D2 R2 U2 L2")
+                puzzle = PuzzleState()
+                puzzle.reset(3)
+                puzzle.apply(prefix.inverse())
+                puzzle.apply(solution.inverse())
+                real_scramble = prefix + solvers[3].solveOne(puzzle).inverse()
+                real_scramble.simplify()
+
                 l.append(length)
-                data += f"{scramble}\t{length}\n"
+                data += f"{scramble}\t{real_scramble}\t{length}\n"
 
             msg  = f"Average: {round(sum(l)/n, 3)}\n"
             msg += f"Longest: {max(l)}\n"
