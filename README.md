@@ -18,7 +18,7 @@ Movesgame commands
 - !results - view lifetime results of movesgame
 
 PB/ranks commands
-- !getpb [user=you] [puzzle=NxN] - get user's PBs for 3x3 to 10x10 puzzle. default puzzle size is 4x4, or the channel size in the 3x3-10x10 channels
+- !getpb [user=you] [puzzle=NxM] - get user's PBs. default puzzle size is 4x4, or the channel size in the 3x3-10x10 channels
 - !getreq [tier] [puzzle=NxN] - get time requirement for a tier. default puzzle size is the same as for !getpb
 - !getlb - get current version of the webpage as a text file
 - !update - update the ranks webpage and WR pages
