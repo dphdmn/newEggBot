@@ -630,8 +630,8 @@ async def on_message(message):
                 dist = distributions.get_distribution(w, h)
             else:
                 # relay start-end
-                start = int(groups["start"])
-                end = int(groups["end"])
+                start = int(groups["relay_start"])
+                end = int(groups["relay_end"])
 
                 # distribution for a single relay
                 dist = distributions.get_distribution(w, h)
