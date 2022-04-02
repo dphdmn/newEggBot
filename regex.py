@@ -25,5 +25,10 @@ def size(wname=None, hname=None, name=None):
     h = positive_integer(hname)
     return format(f"{w}(x{h})?", name)
 
+def relay(start=None, end=None, name=None):
+    s = positive_integer(start)
+    e = positive_integer(end)
+    return format(f"{s}-{e}", name)
+
 def optionally_spoilered(regex, spoiler_name="spoiler", name=None):
     return format(f"(?P<{spoiler_name}>(\|\|)?){regex}(?P={spoiler_name})", name)

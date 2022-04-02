@@ -585,6 +585,8 @@ async def on_message(message):
         try:
             # !getprob [size: N or WxH] [mean/marathon length: optional] [moves: a-b or e.g. >=m, <m, =m, etc.] [repetitions: optional]
             size_reg = regex.size("width", "height")
+            relay_reg = regex.relay("relay_start", "relay_end")
+            full_size_reg = f"(({size_reg})|({relay_reg}))"
             solve_type_reg = "(?P<solve_type>(mo)|x)"
             num_solves_reg = regex.positive_integer("num_solves")
             full_solve_type_reg = "(" + solve_type_reg + num_solves_reg + ")"
@@ -592,20 +594,13 @@ async def on_message(message):
             interval_reg = f"((?P<moves_from>{pos_real_reg})-(?P<moves_to>{pos_real_reg}))"
             comparison_reg = f"((?P<comparison>[<>]?=?)(?P<moves>{pos_real_reg}))"
             reps_reg = regex.positive_integer("repetitions")
-            reg = re.compile(f"!getprob(\s+{size_reg})(\s+{full_solve_type_reg})?(\s+(?P<range>{interval_reg}|{comparison_reg}))(\s+{reps_reg})?")
+            reg = re.compile(f"!getprob(\s+{full_size_reg})(\s+{full_solve_type_reg})?(\s+(?P<range>{interval_reg}|{comparison_reg}))(\s+{reps_reg})?")
             match = reg.fullmatch(command)
 
             if match is None:
                 raise SyntaxError(f"failed to parse arguments")
 
             groups = match.groupdict()
-
-            # read the size
-            w = int(groups["width"])
-            if groups["height"] is None:
-                h = w
-            else:
-                h = int(groups["height"])
 
             # read solve type and number of solves
             if groups["solve_type"] is None:
@@ -622,8 +617,27 @@ async def on_message(message):
             if num_solves > 1000:
                 raise ValueError("number of solves must be at most 1000")
 
-            # get the distribution for the number of solves we want
-            dist = distributions.get_distribution(w, h).sum_distribution(num_solves)
+            # read the size
+            if groups["width"] is not None:
+                # W or WxH size
+                w = int(groups["width"])
+                if groups["height"] is None:
+                    h = w
+                else:
+                    h = int(groups["height"])
+
+                # distribution for a single solve
+                dist = distributions.get_distribution(w, h)
+            else:
+                # relay start-end
+                start = int(groups["start"])
+                end = int(groups["end"])
+
+                # distribution for a single relay
+                dist = distributions.get_distribution(w, h)
+
+            # distribution for the number of solves we want, instead of a single solve
+            dist = dist.sum_distribution(num_solves)
 
             # check if range is given by interval or comparison, and calculate probability for one repetition
             multiplier = num_solves if solve_type == "mean" else 1
