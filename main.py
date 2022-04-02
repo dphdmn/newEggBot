@@ -586,7 +586,7 @@ async def on_message(message):
             # !getprob [size: N or WxH] [mean/marathon length: optional] [moves: a-b or e.g. >=m, <m, =m, etc.] [repetitions: optional]
             size_reg = regex.size("width", "height")
             relay_reg = regex.relay("relay_start", "relay_end")
-            full_size_reg = f"(({size_reg})|({relay_reg}))"
+            full_size_reg = f"(?P<full_size>({size_reg})|({relay_reg}))"
             solve_type_reg = "(?P<solve_type>(mo)|x)"
             num_solves_reg = regex.positive_integer("num_solves")
             full_solve_type_reg = "(" + solve_type_reg + num_solves_reg + ")"
@@ -675,16 +675,17 @@ async def on_message(message):
                 range_str = groups["comparison"] + make_str(moves)
 
             # write the message
+            full_size = groups["full_size"]
             if solve_type == "single":
-                msg = f"Probability of {w}x{h} having an optimal solution of {range_str} moves is {format_prob(prob_one)}\n"
+                msg = f"Probability of {full_size} having an optimal solution of {range_str} moves is {format_prob(prob_one)}\n"
                 if reps > 1:
-                    msg += f"Probability of at least one scramble out of {reps} within that range is {format_prob(prob)}"
+                    msg += f"Probability of at least one out of {reps} within that range is {format_prob(prob)}"
             elif solve_type == "mean":
-                msg = f"Probability of {w}x{h} mo{num_solves} having an optimal solution of {range_str} moves is {format_prob(prob_one)}\n"
+                msg = f"Probability of {full_size} mo{num_solves} having an optimal solution of {range_str} moves is {format_prob(prob_one)}\n"
                 if reps > 1:
                     msg += f"Probability of at least one mean out of {reps} within that range is {format_prob(prob)}"
             elif solve_type == "marathon":
-                msg = f"Probability of {w}x{h} x{num_solves} having an optimal solution of {range_str} moves is {format_prob(prob_one)}\n"
+                msg = f"Probability of {full_size} x{num_solves} having an optimal solution of {range_str} moves is {format_prob(prob_one)}\n"
                 if reps > 1:
                     msg += f"Probability of at least one marathon out of {reps} within that range is {format_prob(prob)}"
 
