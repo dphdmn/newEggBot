@@ -634,7 +634,7 @@ async def on_message(message):
                 end = int(groups["relay_end"])
 
                 # distribution for a single relay
-                dist = distributions.get_distribution(w, h)
+                dist = distributions.get_relay_distribution(start, end)
 
             # distribution for the number of solves we want, instead of a single solve
             dist = dist.sum_distribution(num_solves)
