@@ -592,9 +592,9 @@ async def on_message(message):
             full_solve_type_reg = "(" + solve_type_reg + num_solves_reg + ")"
             pos_real_reg = regex.positive_real()
             interval_reg = f"((?P<moves_from>{pos_real_reg})-(?P<moves_to>{pos_real_reg}))"
-            comparison_reg = f"((?P<comparison>[<>]?=?)(?P<moves>{pos_real_reg}))"
+            comparison_reg = f"((?P<comparison>[<>]?=?)\s*(?P<moves>{pos_real_reg}))"
             reps_reg = regex.positive_integer("repetitions")
-            reg = re.compile(f"!getprob(\s+{full_size_reg})(\s+{full_solve_type_reg})?(\s+(?P<range>{interval_reg}|{comparison_reg}))\s*({reps_reg})?")
+            reg = re.compile(f"!getprob(\s+{full_size_reg})(\s+{full_solve_type_reg})?(\s+(?P<range>{interval_reg}|{comparison_reg}))(\s+{reps_reg})?")
             match = reg.fullmatch(command)
 
             if match is None:
