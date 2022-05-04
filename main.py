@@ -334,7 +334,7 @@ async def on_message(message):
     elif command.startswith("!getwr"):
         try:
             fp = urllib.request.urlopen(
-                "http://slidysim.000webhostapp.com/leaderboard/records_all.html"
+                "http://slidysim2.000webhostapp.com/leaderboard/records_all.html"
             )
             mybytes = fp.read()
             mystr = mybytes.decode("utf8")
@@ -356,7 +356,7 @@ async def on_message(message):
     elif command.startswith("!wrsby"):
         try:
             fp = urllib.request.urlopen(
-                "http://slidysim.000webhostapp.com/leaderboard/records_all.html"
+                "http://slidysim2.000webhostapp.com/leaderboard/records_all.html"
             )
             mybytes = fp.read()
             mystr = mybytes.decode("utf8")

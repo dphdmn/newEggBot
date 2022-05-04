@@ -52,7 +52,7 @@ Misc. commands:
 
 List of useful websites:
 - Ranks - https://egg.benwh1.repl.co/
-- WRs - http://slidysim.000webhostapp.com/leaderboard/records.html
-- WRs (all) - http://slidysim.000webhostapp.com/leaderboard/records_all.html
-- WRs (moves) - http://slidysim.000webhostapp.com/leaderboard/records_moves.html
-- WRs (moves, all) - http://slidysim.000webhostapp.com/leaderboard/records_all_moves.html
+- WRs - http://slidysim2.000webhostapp.com/leaderboard/records.html
+- WRs (all) - http://slidysim2.000webhostapp.com/leaderboard/records_all.html
+- WRs (moves) - http://slidysim2.000webhostapp.com/leaderboard/records_moves.html
+- WRs (moves, all) - http://slidysim2.000webhostapp.com/leaderboard/records_all_moves.html
