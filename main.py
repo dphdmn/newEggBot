@@ -84,7 +84,7 @@ def convertRgbToWeight(rgbArray):
     return arrayWithPixelWeight
 
 # Update Leaderboard automatically every N minutes
-@tasks.loop(minutes=30)
+@tasks.loop(minutes=120)
 async def silent_update():
     lb_commands.update()
 
