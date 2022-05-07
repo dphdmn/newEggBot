@@ -1,5 +1,6 @@
 from flask import Flask, send_from_directory
 from threading import Thread
+import os
 
 app = Flask(__name__, static_folder="./web")
 
@@ -12,7 +13,8 @@ def other(path):
     return send_from_directory("./web", path)
 
 def run():
-    app.run(host="0.0.0.0", port=8080)
+    port = int(os.environ["PORT"])
+    app.run(host="0.0.0.0", port=port)
 
 def keep_alive():
     t = Thread(target=run)
