@@ -92,7 +92,6 @@ async def silent_update():
 @bot.event
 async def on_ready():
     log.info(f"Logged in as {bot.user}")
-    log.info(f"Running version {bot_helper.git_info}")
 
     # check for message to send after a restart/update
     if "restart/channel_id" in db.keys() and "restart/message" in db.keys():
@@ -1060,21 +1059,11 @@ async def on_message(message):
         await message.channel.send(msg)
     elif command.startswith("!help"):
         await message.channel.send("Egg bot commands: https://github.com/benwh1/eggbot/blob/master/README.md")
-    elif command.startswith("!git"):
-        if permissions.is_egg_admin(message.author):
-            await message.channel.send(bot_helper.git_info)
     elif command.startswith("!restart"):
         if permissions.is_egg_admin(message.author):
             await message.channel.send("Restarting...")
             db["restart/channel_id"] = message.channel.id
             db["restart/message"] = "Restarted"
-            bot_helper.restart()
-    elif command.startswith("!botupdate"):
-        if permissions.is_egg_admin(message.author):
-            await message.channel.send("Updating...")
-            db["restart/channel_id"] = message.channel.id
-            db["restart/message"] = "Updated!"
-            bot_helper.update()
             bot_helper.restart()
     elif command.startswith("!dbdump"):
         if permissions.is_owner(message.author):
