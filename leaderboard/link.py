@@ -1,15 +1,14 @@
-from helper import serialize
 from database import db
 
 key = "leaderboard/linked_accounts"
 if key not in db:
-    db[key] = serialize.serialize({})
+    db[key] = {}
 
 def linked_accounts():
-    return serialize.deserialize(db[key])
+    return db[key]
 
 def store_linked_accounts(accounts):
-    db[key] = serialize.serialize(accounts)
+    db[key] = accounts
 
 def link(user_id, lb_username):
     accounts = linked_accounts()

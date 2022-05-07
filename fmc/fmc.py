@@ -5,7 +5,6 @@ from puzzle_state import PuzzleState
 from algorithm import Algorithm
 from solver import solvers
 import scrambler
-from helper import serialize
 from database import db
 from prettytable import PrettyTable
 from fmc.round import FMCRound
@@ -121,7 +120,7 @@ class FMC:
         if block_round == 0:
             block_dict = {}
         else:
-            block_dict = serialize.deserialize(db[block_path])
+            block_dict = db[block_path]
 
         # same as round_dict, but we convert the puzzle states and algorithms to strings
         round_dict2 = copy.deepcopy(round_dict)
@@ -131,7 +130,7 @@ class FMC:
             round_dict2["results"][id] = str(round_dict2["results"][id])
 
         block_dict[block_round] = round_dict2
-        db[block_path] = serialize.serialize(block_dict)
+        db[block_path] = block_dict
 
         msg  =  "FMC results\n"
         msg += f"Scramble: {scramble}\n"

@@ -17,9 +17,9 @@ class RandomGame:
 
         # initialize db keys
         if self.db_path + "scores" not in db:
-            db[self.db_path + "scores"] = serialize.serialize({})
+            db[self.db_path + "scores"] = {}
         if self.db_path + "rounds" not in db:
-            db[self.db_path + "rounds"] = serialize.serialize({})
+            db[self.db_path + "rounds"] = {}
         if self.db_path + "round_number" not in db:
             # -1 so that the first round is round 0
             db[self.db_path + "round_number"] = -1
@@ -30,7 +30,7 @@ class RandomGame:
 
     def scores(self):
         # sort scores in descending order
-        s = serialize.deserialize(db[self.db_path + "scores"])
+        s = db[self.db_path + "scores"]
         s = dict(sorted(s.items(), key=lambda x: -x[1]))
         return s
 
@@ -67,17 +67,17 @@ class RandomGame:
             "winner_message"   : winner_message.id,
             "winner_timestamp" : winner_timestamp
         }
-        rounds = serialize.deserialize(db[self.db_path + "rounds"])
+        rounds = db[self.db_path + "rounds"]
         rounds[round_number] = round
-        db[self.db_path + "rounds"] = serialize.serialize(rounds)
+        db[self.db_path + "rounds"] = rounds
 
         # add a point to the lifetime scores
-        scores = serialize.deserialize(db[self.db_path + "scores"])
+        scores = db[self.db_path + "scores"]
         if winner_id not in scores:
             scores[winner_id] = 1
         else:
             scores[winner_id] += 1
-        db[self.db_path + "scores"] = serialize.serialize(scores)
+        db[self.db_path + "scores"] = scores
 
         del db[self.db_path + "current/message_id"]
         del db[self.db_path + "current/channel_id"]

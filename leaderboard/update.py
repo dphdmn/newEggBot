@@ -3,7 +3,6 @@ import datetime as dt
 import os
 import requests
 from log import log
-from helper import serialize
 import json
 import zlib
 import leaderboard.leaderboard as lb
@@ -76,14 +75,14 @@ def update():
     # store results
     table = results_table()
     today = dt.datetime.now().strftime("%Y-%m-%d")
-    db[f"leaderboard/data/{today}"] = serialize.serialize(table)
+    db[f"leaderboard/data/{today}"] = table
 
     # store usernames sorted by power
     sorted_table = ranking.sort_table(table)
     usernames = list(sorted_table.keys())
 
     # store sorted list of usernames in db
-    db["leaderboard/usernames"] = serialize.serialize(usernames)
+    db["leaderboard/usernames"] = usernames
 
     # update the webpage
     # get sorted list of all dates that we have data for
@@ -94,7 +93,7 @@ def update():
     data_dict = {}
     for date in dates:
         # read the data from the database and uncompress it
-        table = serialize.deserialize(db[f"leaderboard/data/{date}"])
+        table = db[f"leaderboard/data/{date}"]
 
         # sort the data and make it into a table of the form
         # [[user, place, power, results], ...]

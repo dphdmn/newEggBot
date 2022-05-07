@@ -1,5 +1,4 @@
 import os
-from helper import serialize
 from database import db
 
 owner_id = int(os.environ["owner"])
@@ -11,7 +10,7 @@ def is_egg_admin(user):
     key = "permissions/egg_admin"
 
     if key not in db:
-        db[key] = serialize.serialize([owner_id])
+        db[key] = [owner_id]
 
-    admins = serialize.deserialize(db[key])
+    admins = db[key]
     return user.id in admins

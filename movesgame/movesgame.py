@@ -1,4 +1,3 @@
-from helper import serialize
 from movesgame.round import MovesGameRound
 from database import db
 
@@ -14,7 +13,7 @@ class MovesGame:
 
         # initialize db keys
         if self.db_path + "lifetime_results" not in db:
-            db[self.db_path + "lifetime_results"] = serialize.serialize({})
+            db[self.db_path + "lifetime_results"] = {}
         if self.db_path + "round_number" not in db:
             # -1 so that the first round is round 0
             db[self.db_path + "round_number"] = -1
@@ -24,7 +23,7 @@ class MovesGame:
 
     def lifetime_results(self):
         key = self.db_path + "lifetime_results"
-        return serialize.deserialize(db[key])
+        return db[key]
 
     async def start(self):
         if self.running:
@@ -48,9 +47,9 @@ class MovesGame:
         if block_round == 0:
             block_dict = {}
         else:
-            block_dict = serialize.deserialize(db[block_path])
+            block_dict = db[block_path]
         block_dict[block_round] = round
-        db[block_path] = serialize.serialize(block_dict)
+        db[block_path] = block_dict
 
         msg = "Good moves: " + ", ".join(round["good_moves"]) + "\n"
 
@@ -81,7 +80,7 @@ class MovesGame:
                 msg += "Winners: " + ", ".join(winners)
 
         # store the updated lifetime results
-        db[self.db_path + "lifetime_results"] = serialize.serialize(lifetime_results)
+        db[self.db_path + "lifetime_results"] = lifetime_results
 
         await self.channel.send(msg)
 

@@ -1,10 +1,9 @@
-from helper import serialize
 from database import db
 
 def latest_results():
     date = db.prefix("leaderboard/data/")[-1]
-    table = serialize.deserialize(db[date])
+    table = db[date]
     return table
 
 def usernames():
-    return serialize.deserialize(db["leaderboard/usernames"])
+    return db["leaderboard/usernames"]

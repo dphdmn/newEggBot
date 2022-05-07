@@ -1,14 +1,13 @@
 from database import db
-from helper import serialize
 from algorithm import Algorithm
 
 db_key = "solver/4x4/solutions"
 
 if db_key not in db:
-    db[db_key] = serialize.serialize({})
+    db[db_key] = {}
 
 def lookup(state):
-    data = serialize.deserialize(db[db_key])
+    data = db[db_key]
 
     scramble_str = str(state)
     if scramble_str in data:
@@ -22,7 +21,7 @@ def lookup(state):
 
 # is_all is True if we are storing all solutions, false if we only have one
 def store(state, solutions, is_all):
-    data = serialize.deserialize(db[db_key])
+    data = db[db_key]
 
     # True if either the scramble is not already stored, or if we previously
     # only had one solution but now we have all.
@@ -42,4 +41,4 @@ def store(state, solutions, is_all):
             "solutions": [str(s) for s in solutions],
             "all": is_all
         }
-        db[db_key] = serialize.serialize(data)
+        db[db_key] = data

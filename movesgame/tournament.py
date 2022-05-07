@@ -3,7 +3,6 @@ import random
 import asyncio
 import time
 import scrambler
-from helper import serialize
 from movesgame.round import MovesGameRound
 from algorithm import Algorithm
 from database import db
@@ -156,13 +155,13 @@ class MovesGameTournament:
         if block_round == 0:
             block_dict = {}
         else:
-            block_dict = serialize.deserialize(db[block_path])
+            block_dict = db[block_path]
         block_dict[block_round] = {
             "scramble" : str(scramble),
             "solution" : str(solution),
             "rounds"   : rounds,
             "winners"  : tournament_winners
         }
-        db[block_path] = serialize.serialize(block_dict)
+        db[block_path] = block_dict
 
         self.running = False
