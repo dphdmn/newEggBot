@@ -5,7 +5,7 @@ import time
 from puzzle_state import PuzzleState
 from algorithm import Algorithm
 from discord.ext import tasks
-from replit import db
+from database import db
 
 class FMCRound:
     def __init__(self, db_path, scramble=None, duration=86400, warnings=[],

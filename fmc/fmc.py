@@ -6,7 +6,7 @@ from algorithm import Algorithm
 from solver import solvers
 import scrambler
 from helper import serialize
-from replit import db
+from database import db
 from prettytable import PrettyTable
 from fmc.round import FMCRound
 import helper.discord as dh

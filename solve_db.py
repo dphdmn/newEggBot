@@ -1,4 +1,4 @@
-from replit import db
+from database import db
 from helper import serialize
 from algorithm import Algorithm
 

@@ -1,5 +1,5 @@
 from helper import serialize
-from replit import db
+from database import db
 
 key = "leaderboard/linked_accounts"
 if key not in db:

@@ -3,7 +3,7 @@ import time
 import time_format
 from helper import serialize
 from discord.ext import tasks
-from replit import db
+from database import db
 
 class RandomGame:
     def __init__(self, bot, channel_ids, freq):

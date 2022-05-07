@@ -10,7 +10,7 @@ import leaderboard.leaderboard as lb
 import leaderboard.tiers as tiers
 import leaderboard.categories as categories
 import leaderboard.ranking as ranking
-from replit import db
+from database import db
 
 # filters the leaderboard results, removing any results that don't correspond
 # to one of our categories. each result has a "category" parameter appended

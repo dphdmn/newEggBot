@@ -40,7 +40,7 @@ from probability import comparison, distributions
 from probability.format import format_prob
 from leaderboard import commands as lb_commands
 from leaderboard import link
-from replit import db
+from database import db
 
 intents = discord.Intents.default()
 intents.members = True

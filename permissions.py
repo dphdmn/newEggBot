@@ -1,6 +1,6 @@
 import os
 from helper import serialize
-from replit import db
+from database import db
 
 owner_id = int(os.environ["owner"])
 

@@ -6,7 +6,7 @@ import scrambler
 from helper import serialize
 from movesgame.round import MovesGameRound
 from algorithm import Algorithm
-from replit import db
+from database import db
 
 class MovesGameTournament:
     def __init__(self, bot, channel_id):
