@@ -12,4 +12,4 @@ random_game = [int(x) for x in os.environ["channel_random_game"].split(",")]
 
 _nxn_ids = [int(x) for x in os.environ["channel_nxn"].split(",")]
 _nxn_sizes = list(range(3,11))
-nxn_channels = dict([(_nxn_ids[i], _nxn_sizes[i])] for i in range(len(_nxn_ids)))
+nxn_channels = {_nxn_ids[i]: _nxn_sizes[i] for i in range(len(_nxn_ids))}
