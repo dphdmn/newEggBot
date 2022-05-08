@@ -22,7 +22,7 @@ class Database:
 
     def get(self, key, deserialize=True):
         cur = self.conn.cursor()
-        cur.execute("select value from egg where key=%s", (key,))
+        cur.execute("select value from egg where key=%s order by key", (key,))
         v = cur.fetchone()
         if v is None:
             raise KeyError(f"{key} not in database")
@@ -57,7 +57,7 @@ class Database:
 
     def prefix(self, pref):
         cur = self.conn.cursor()
-        cur.execute("select key from egg where key like %s", (pref + "%",))
+        cur.execute("select key from egg where key like %s order by key", (pref + "%",))
         return [x[0] for x in cur.fetchall()]
     
     def keys(self):
