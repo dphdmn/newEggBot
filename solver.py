@@ -1,5 +1,6 @@
 from log import log
 import subprocess
+import os
 from algorithm import Algorithm
 
 class Solver:
@@ -57,6 +58,10 @@ solvers = {
     3: Solver(3),
     4: Solver(4)
 }
+
+# create tables directory if it doesn't exist yet
+if not os.path.exists("tables"):
+    os.mkdir("tables")
 
 solvers[3].start()
 solvers[4].start()
