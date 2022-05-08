@@ -51,7 +51,7 @@ Misc. commands:
 - !tti [text] - bad AI image generator
 
 List of useful websites:
-- Ranks - https://egg.benwh1.repl.co/
+- Ranks - https://yaytso.herokuapp.com/
 - WRs - http://slidysim2.000webhostapp.com/leaderboard/records.html
 - WRs (all) - http://slidysim2.000webhostapp.com/leaderboard/records_all.html
 - WRs (moves) - http://slidysim2.000webhostapp.com/leaderboard/records_moves.html
