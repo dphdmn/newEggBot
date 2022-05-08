@@ -7,9 +7,12 @@ class Database:
         url = os.environ['DATABASE_URL']
         self.conn = psycopg2.connect(url, sslmode='require')
 
-    def __setitem__(self, key, value):
+    def set(self, key, value, serialize=True):
         cur = self.conn.cursor()
-        v = serialize.serialize(value)
+        if serialize:
+            v = serialize.serialize(value)
+        else:
+            v = value
         cur.execute("""
             insert into egg (key, value) values (%s, %s)
             on conflict(key) do
@@ -17,13 +20,21 @@ class Database:
         """, (key, v, v))
         self.conn.commit()
 
-    def __getitem__(self, key):
+    def get(self, key, deserialize=True):
         cur = self.conn.cursor()
         cur.execute("select value from egg where key=%s", (key,))
         v = cur.fetchone()
         if v is None:
             raise KeyError(f"{key} not in database")
-        return serialize.deserialize(v[0])
+        if deserialize:
+            return serialize.deserialize(v[0])
+        return v[0]
+
+    def __setitem__(self, key, value):
+        self.set(key, value)
+
+    def __getitem__(self, key):
+        return self.get(key)
 
     def __delitem__(self, key):
         cur = self.conn.cursor()
