@@ -1,6 +1,6 @@
 import os
 import psycopg2
-from helper import serialize
+from helper import serialize as s
 
 class Database:
     def __init__(self):
@@ -10,7 +10,7 @@ class Database:
     def set(self, key, value, serialize=True):
         cur = self.conn.cursor()
         if serialize:
-            v = serialize.serialize(value)
+            v = s.serialize(value)
         else:
             v = value
         cur.execute("""
@@ -27,7 +27,7 @@ class Database:
         if v is None:
             raise KeyError(f"{key} not in database")
         if deserialize:
-            return serialize.deserialize(v[0])
+            return s.deserialize(v[0])
         return v[0]
 
     def __setitem__(self, key, value):
