@@ -33,8 +33,8 @@ class Database:
 
         v = self.local[key]
         if deserialize:
-            return s.deserialize(v[0])
-        return v[0]
+            return s.deserialize(v)
+        return v
 
     def __setitem__(self, key, value):
         self.set(key, value)
