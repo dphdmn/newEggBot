@@ -1,31 +1,24 @@
-fmc = 847587867940880465
+import os
 
-tiers = {
-    "Beginner"    : 866373783170056192,
-    "Bronze"      : 819737382718275654,
-    "Silver"      : 866370840631312385,
-    "Gold"        : 831819849168584704,
-    "Platinum"    : 800486330327891994,
-    "Diamond"     : 800475331378806825,
-    "Master"      : 800475244456181830,
-    "Grandmaster" : 800475124733313073,
-    "Nova"        : 800474979031973899,
-    "Ascended"    : 800474848815349781,
-    "Aleph"       : 831820204349587467,
-    "Gamma"       : 831824434369134632
-}
+fmc = int(os.environ["role_fmc"])
 
-true_tiers = {
-    "Beginner"    : 866373924237606934,
-    "Bronze"      : 866372477211115530,
-    "Silver"      : 866371619055730700,
-    "Gold"        : 834119340386811905,
-    "Platinum"    : 817818288880615474,
-    "Diamond"     : 817818156323176458,
-    "Master"      : 817818025918726204,
-    "Grandmaster" : 817817839553216542,
-    "Nova"        : 817817628017688626,
-    "Ascended"    : 817817528683200523,
-    "Aleph"       : 831820349036560435,
-    "Gamma"       : 831824544603701258
-}
+_tier_names = [
+    "Beginner",
+    "Bronze",
+    "Silver",
+    "Gold",
+    "Platinum",
+    "Diamond",
+    "Master",
+    "Grandmaster",
+    "Nova",
+    "Ascended",
+    "Aleph",
+    "Gamma"
+]
+
+_tier_ids = [int(x) for x in os.environ["role_tiers"].split(",")]
+tiers = {_tier_names[i]: _tier_ids[i] for i in range(len(_tier_names))}
+
+_true_tier_ids = [int(x) for x in os.environ["role_true_tiers"].split(",")]
+true_tiers = {_tier_names[i]: _true_tier_ids[i] for i in range(len(_tier_names))}

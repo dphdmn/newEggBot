@@ -1,20 +1,15 @@
-daily_fmc         = 852582798454685706
-daily_fmc_results = 867567943335411732
-ten_minute_fmc    = 875715612431757343
-fmc_5x5           = 893244109995778058
+import os
 
-movesgame            = 853530538844225546
-movesgame_tournament = 873777813172396072
+daily_fmc         = int(os.environ["channel_daily_fmc"])
+daily_fmc_results = int(os.environ["channel_daily_fmc_results"])
+ten_minute_fmc    = int(os.environ["channel_ten_minute_fmc"])
+fmc_5x5           = int(os.environ["channel_5x5_fmc"])
 
-random_game = [800441015269589024, 877627712083202118, 843212028906831872, 800473411298132008]
+movesgame            = int(os.environ["channel_movesgame"])
+movesgame_tournament = int(os.environ["channel_movesgame_tournament"])
 
-nxn_channels = {
-    800468752905797664: 3,
-    800468727324737586: 4,
-    800468938629972038: 5,
-    800468948939309117: 6,
-    800468960348733461: 7,
-    818585243560312852: 8,
-    818585257393389658: 9,
-    818585267924893706: 10
-}
+random_game = [int(x) for x in os.environ["channel_random_game"].split(",")]
+
+_nxn_ids = [int(x) for x in os.environ["channel_nxn"].split(",")]
+_nxn_sizes = list(range(3,11))
+nxn_channels = dict([(_nxn_ids[i], _nxn_sizes[i])] for i in range(len(_nxn_ids)))
