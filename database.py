@@ -58,7 +58,7 @@ class Database:
     def prefix(self, pref):
         cur = self.conn.cursor()
         cur.execute("select key from egg where key like %s", (pref + "%",))
-        return iter([x[0] for x in cur.fetchall()])
+        return [x[0] for x in cur.fetchall()]
     
     def keys(self):
         return self.prefix("")
