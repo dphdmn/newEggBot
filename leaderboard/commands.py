@@ -41,7 +41,7 @@ def get_pb(width, height, user):
     else:
         best_time, best_moves = helper.general_pb(data)
         msg += f"{width}x{height} time: {time_format.format(best_time)}\n"
-        msg += f"{width}x{height} moves: {time_format.format(best_moves)}\n"
+        msg += f"{width}x{height} moves: {best_moves // 1000}\n"
 
 
     msg += "```"
