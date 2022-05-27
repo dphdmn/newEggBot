@@ -39,7 +39,7 @@ def get_pb(width, height, user, pbtype="time"):
         }
 
         # ranked category result
-        if category in categories:
+        if category in categories and pbtype == "time":
             idx = categories.index(category)
 
             # find the users pb for this category
