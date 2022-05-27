@@ -13,7 +13,6 @@ def category_pb(category, data):
 
 def general_pb(data):
     best_time = None
-    best_moves = None
     for result in data:
         if result["solvetype"] == "Standard" and result["avglen"] == 1:
             if best_time is None:
@@ -21,12 +20,7 @@ def general_pb(data):
             else:
                 best_time = min(best_time, result["time"])
 
-            if best_moves is None:
-                best_moves = result["moves"]
-            else:
-                best_moves = min(best_moves, result["moves"])
-
-    return best_time, best_moves
+    return best_time
 
 def get_tier_name(tier):
     if tier is None:

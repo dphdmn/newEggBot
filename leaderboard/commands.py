@@ -19,7 +19,7 @@ def get_pb(width, height, user):
     msg += "```\n"
 
     # Sizes used in tier ranking
-    if (width,height) in helper.get_used_sizes(categories):
+    if (width, height) in helper.get_used_sizes(categories):
         for i, category in enumerate(categories):
             if category["width"] == width and category["height"] == height:
                 # find the users pb for this category
@@ -40,9 +40,8 @@ def get_pb(width, height, user):
                 msg += "\n"
     # Other sizes
     else:
-        best_time, best_moves = helper.general_pb(data)
+        best_time = helper.general_pb(data)
         msg += f"{width}x{height} time: {time_format.format(best_time)}\n"
-        msg += f"{width}x{height} moves: {moves_format.format(best_moves)}\n"
 
     msg += "```"
 
