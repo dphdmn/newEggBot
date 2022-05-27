@@ -7,6 +7,7 @@ from leaderboard import update as lb_update
 from leaderboard import commands_helper as helper
 import leaderboard.username as names
 from formatting import time as time_format
+from formatting import moves as moves_format
 
 def get_pb(width, height, user):
     username = names.find_username(user)
@@ -41,7 +42,7 @@ def get_pb(width, height, user):
     else:
         best_time, best_moves = helper.general_pb(data)
         msg += f"{width}x{height} time: {time_format.format(best_time)}\n"
-        msg += f"{width}x{height} moves: {best_moves // 1000}\n"
+        msg += f"{width}x{height} moves: {moves_format.format(best_moves)}\n"
 
 
     msg += "```"
