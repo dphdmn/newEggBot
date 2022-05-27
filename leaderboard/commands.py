@@ -10,14 +10,22 @@ from formatting import time as time_format
 from formatting import moves as moves_format
 import json
 
-def get_pb(width, height, user):
+def get_pb(width, height, user, pbtype="time"):
     username = names.find_username(user)
 
     # get all the relevant data in one leaderboard call
-    data = lb.get_leaderboard(width, height, user=username)
+    data = lb.get_leaderboard(width, height, user=username, pbtype=pbtype)
 
     # {category: message text} pairs
     results = {}
+
+    # formatter
+    if pbtype == "time":
+        formatter = time_format.format
+    elif pbtype == "moves":
+        formatter = moves_format.format
+    else:
+        raise ValueError("unsupported or invalid `pbtype`")
 
     for result in data:
         result_msg = ""
@@ -44,7 +52,7 @@ def get_pb(width, height, user):
 
             requirement_msg = helper.get_requirement_message(next_tier, idx)
 
-            result_msg += f"{category_names[idx]}: {time_format.format(best_time)} ({tier_name})"
+            result_msg += f"{category_names[idx]}: {formatter(best_time)} ({tier_name})"
             if requirement_msg is not None:
                 result_msg += f" ({requirement_msg})"
         # not a main category, but a standard average
@@ -58,7 +66,7 @@ def get_pb(width, height, user):
             else:
                 name = f"ao{avglen}"
 
-            result_msg += f"{width}x{height} {name}: {time_format.format(best_time)}"
+            result_msg += f"{width}x{height} {name}: {formatter(best_time)}"
         else:
             continue
 
