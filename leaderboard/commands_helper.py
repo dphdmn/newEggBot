@@ -1,14 +1,14 @@
 from leaderboard import tiers
 from formatting import time as time_format
 
-def category_pb(category, data):
+def category_pb(category, data, pbtype="time"):
     best_time = None
     for result in data:
         if result["solvetype"] == category["solvetype"] and result["avglen"] == category["avglen"]:
             if best_time is None:
-                best_time = result["time"]
+                best_time = result[pbtype]
             else:
-                best_time = min(best_time, result["time"])
+                best_time = min(best_time, result[pbtype])
     return best_time
 
 def get_tier_name(tier):

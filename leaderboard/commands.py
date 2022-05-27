@@ -19,11 +19,13 @@ def get_pb(width, height, user, pbtype="time"):
     # {category: message text} pairs
     results = {}
 
-    # formatter
+    # formatter + dumb thing
     if pbtype == "time":
         formatter = time_format.format
+        pbtype2 = "time"
     elif pbtype == "move":
         formatter = moves_format.format
+        pbtype2 = "moves"
     else:
         raise ValueError("unsupported or invalid `pbtype`")
 
@@ -41,10 +43,10 @@ def get_pb(width, height, user, pbtype="time"):
             idx = categories.index(category)
 
             # find the users pb for this category
-            best_time = helper.category_pb(category, data)
+            best = helper.category_pb(category, data, pbtype=pbtype2)
 
             # find the tier of this result
-            tier = tiers.result_tier(idx, best_time)
+            tier = tiers.result_tier(idx, best)
             tier_name = helper.get_tier_name(tier)
 
             # find the next tier above the users tier so we can show the requirement
@@ -52,21 +54,21 @@ def get_pb(width, height, user, pbtype="time"):
 
             requirement_msg = helper.get_requirement_message(next_tier, idx)
 
-            result_msg += f"{category_names[idx]}: {formatter(best_time)} ({tier_name})"
+            result_msg += f"{category_names[idx]}: {formatter(best)} ({tier_name})"
             if requirement_msg is not None:
                 result_msg += f" ({requirement_msg})"
         # not a main category, but a standard average
         elif result["solvetype"] == "Standard":
             avglen = result["avglen"]
 
-            best_time = helper.category_pb(category, data)
+            best = helper.category_pb(category, data, pbtype=pbtype2)
 
             if avglen == 1:
                 name = "single"
             else:
                 name = f"ao{avglen}"
 
-            result_msg += f"{width}x{height} {name}: {formatter(best_time)}"
+            result_msg += f"{width}x{height} {name}: {formatter(best)}"
         else:
             continue
 
