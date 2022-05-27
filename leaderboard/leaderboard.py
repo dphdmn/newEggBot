@@ -1,7 +1,7 @@
 import os
 import requests
 
-def get_leaderboard(width=-1, height=-1, solvetype="any", avglen=-1, user=""):
+def get_leaderboard(width=-1, height=-1, solvetype="any", avglen=-1, pbtype="time", user=""):
     url = os.environ["slidysim"]
     r = requests.post(url, data = {
         "width"       : width,
@@ -9,7 +9,7 @@ def get_leaderboard(width=-1, height=-1, solvetype="any", avglen=-1, user=""):
         "solvetype"   : solvetype,
         "displaytype" : "Standard",
         "avglen"      : avglen,
-        "pbtype"      : "time",
+        "pbtype"      : pbtype,
         "sortby"      : "time",
         "controls"    : "km",
         "user"        : user,
