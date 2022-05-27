@@ -6,7 +6,7 @@ from leaderboard import db
 from leaderboard import update as lb_update
 from leaderboard import commands_helper as helper
 import leaderboard.username as names
-import time_format
+from formatting import time as time_format
 
 def get_pb(width, height, user):
     username = names.find_username(user)

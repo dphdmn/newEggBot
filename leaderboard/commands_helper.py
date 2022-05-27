@@ -1,5 +1,5 @@
 from leaderboard import tiers
-import time_format
+from formatting import time as time_format
 
 def category_pb(category, data):
     best_time = None

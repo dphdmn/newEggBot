@@ -18,7 +18,7 @@ import requests
 import re
 import regex
 import bot as bot_helper
-import time_format
+from formatting import time as time_format
 import move
 import helper.serialize as serialize
 import helper.discord as dh

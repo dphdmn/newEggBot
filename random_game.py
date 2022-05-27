@@ -1,6 +1,6 @@
 import random
 import time
-import time_format
+from formatting import time as time_format
 from discord.ext import tasks
 from database import db
 
