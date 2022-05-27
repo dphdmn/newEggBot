@@ -22,7 +22,7 @@ def get_pb(width, height, user, pbtype="time"):
     # formatter
     if pbtype == "time":
         formatter = time_format.format
-    elif pbtype == "moves":
+    elif pbtype == "move":
         formatter = moves_format.format
     else:
         raise ValueError("unsupported or invalid `pbtype`")

@@ -467,7 +467,7 @@ async def on_message(message):
             if groups["is_moves"] is None:
                 pbtype = "time"
             else:
-                pbtype = "moves"
+                pbtype = "move"
 
             msg = lb_commands.get_pb(width, height, user, pbtype=pbtype)
             await message.channel.send(msg)
