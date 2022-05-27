@@ -86,42 +86,6 @@ def get_pb(width, height, user, pbtype="time"):
 
     return msg
 
-def get_move_pb(width, height, user):
-    username = names.find_username(user)
-
-    # get all the relevant data in one leaderboard call
-    data = lb.get_leaderboard(width, height, user=username, pbtype="move")
-
-    msg = f"{width}x{height} PBs for {username}\n"
-    msg += "```\n"
-
-    results = {}
-    for result in data:
-        avglen = result["avglen"]
-
-        if results[avglen] is None:
-            results[avglen] = result["moves"]
-        else:
-            results[avglen] = min(results[avglen], result["moves"])
-
-    # sort results by avglen
-    results = dict(sorted(results.items(), key=lambda x: x[0]))
-
-    for (k, v) in results.items():
-        if v is None:
-            continue
-
-        if k == 1:
-            name = "single"
-        else:
-            name = f"ao{k}"
-
-        msg += f"{width}x{height} {name}: {moves_format.format(v)}\n"
-
-    msg += "```"
-
-    return msg
-
 def get_req(width, height, tier_name):
     tier = tiers.get_tier(tier_name)
     real_tier_name = tier["name"]

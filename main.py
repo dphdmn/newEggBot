@@ -464,7 +464,12 @@ async def on_message(message):
                 else:
                     height = int(groups["height"])
 
-            msg = lb_commands.get_pb(width, height, user)
+            if groups["is_moves"] is None:
+                pbtype = "time"
+            else:
+                pbtype = "moves"
+
+            msg = lb_commands.get_pb(width, height, user, pbtype=pbtype)
             await message.channel.send(msg)
         except Exception as e:
             traceback.print_exc()
