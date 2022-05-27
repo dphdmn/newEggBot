@@ -20,11 +20,13 @@ def general_pb(data):
                 best_time = result["time"]
             else:
                 best_time = min(best_time, result["time"])
+
             if best_moves is None:
                 best_time = result["time"]
             else:
                 best_moves = min(best_moves, result["moves"])
-    return best_time,best_moves
+
+    return best_time, best_moves
 
 def get_tier_name(tier):
     if tier is None:
