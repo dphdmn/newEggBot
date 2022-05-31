@@ -107,8 +107,17 @@ def rank(user):
     table = db.latest_results()
     position = ranking.place(table, username)
     power = ranking.power(table[username])
-    power_tier_name = tiers.power_tier(power)["name"]
-    return f"{username} is in position {position} with {power} power ({power_tier_name})"
+    power_tier = tiers.power_tier(power)
+    name = power_tier["name"]
+    msg = f"{username} is in position {position} with {power} power ({name})"
+
+    next_tier = helper.get_next_tier(power_tier)
+    if next_tier is not None:
+        next_name = next_tier["name"]
+        required = next_tier["limit"]
+        return f"{msg} ({next_name}={required})"
+
+    return msg
 
 def update():
     lb_update.update()
