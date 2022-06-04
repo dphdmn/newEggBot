@@ -332,20 +332,32 @@ async def on_message(message):
             await message.channel.send(f"Random scramble for {n}x{n} puzzle\n{scramble}")
     elif command.startswith("!getwr"):
         try:
-            fp = urllib.request.urlopen(
-                "http://slidysim2.000webhostapp.com/leaderboard/records_all.html"
-            )
+            size_reg = regex.size("width", "height", "size")
+            reg = re.compile(f"!getwr(\s+{size_reg})(\s+(?P<is_moves>moves))?")
+            match = reg.fullmatch(command)
+
+            if match is None:
+                raise SyntaxError(f"failed to parse arguments")
+
+            groups = match.groupdict()
+
+            if groups["is_moves"] is None:
+                url = "http://slidysim2.000webhostapp.com/leaderboard/records_all.html"
+            else:
+                url = "http://slidysim2.000webhostapp.com/leaderboard/records_all_moves.html"
+
+            fp = urllib.request.urlopen(url)
             mybytes = fp.read()
             mystr = mybytes.decode("utf8")
             mystr = html2text.html2text(mystr)
             mystr = mystr.splitlines()
             fp.close()
-            wrsize = command[7:] + " "
-            matching = [s for s in mystr if wrsize in s]
+
+            size = match["size"]
+            matching = [s for s in mystr if size in s]
+
             if len(matching) == 0:
-                await message.channel.send(
-                    "Sorry, i can't find anything :(\nTry this: http://bit.ly/wrspage"
-                )
+                await message.channel.send("Couldn't find any records")
             else:
                 out = matching[0]
                 await message.channel.send(out)
