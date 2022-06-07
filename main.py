@@ -379,9 +379,7 @@ async def on_message(message):
             matching = [s for s in mystr if username in s]
             my_string = "\n".join(matching)
             if len(matching) == 0:
-                await message.channel.send(
-                    "Sorry, i can't find anything :(\nTry this: http://bit.ly/wrspage"
-                )
+                await message.channel.send("Couldn't find any records")
             else:
                 if len(my_string) > 1950:
                     await dh.send_as_file(my_string, "wrsby.txt", "WR list:", message.channel)
