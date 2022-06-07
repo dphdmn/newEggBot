@@ -121,4 +121,4 @@ def update():
         f.write(file)
 
     # update wr list
-    requests.get(os.environ["updateURL"]).text
+    requests.get(os.environ["updateURL"], timeout=5).text

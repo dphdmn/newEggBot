@@ -15,7 +15,8 @@ def get_leaderboard(width=-1, height=-1, solvetype="any", avglen=-1, pbtype="tim
         "user"        : user,
         "solvedata"   : 0,
         "version"     : "28.3"
-    })
+    }, timeout=5
+    )
 
     if r.text[-7:] != "success":
         raise Exception("failed to read leaderboard")
