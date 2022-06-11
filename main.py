@@ -351,11 +351,10 @@ async def on_message(message):
             size = match["size"]
             matching = [s for s in records if size in s]
 
-            msg = "\n".join(matching)
             if len(matching) == 0:
                 await message.channel.send("Couldn't find any records")
             else:
-                await message.channel.send("```" + msg + "```")
+                await message.channel.send(f"```{matching[0]}```")
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
