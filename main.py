@@ -4,7 +4,6 @@ import os
 from keep_alive import keep_alive
 import discord
 from discord.ext import commands,tasks
-import urllib.request
 import html2text
 import traceback
 from log import log
@@ -346,45 +345,38 @@ async def on_message(message):
             else:
                 url = "http://slidysim2.000webhostapp.com/leaderboard/records_all_moves.html"
 
-            fp = urllib.request.urlopen(url)
-            mybytes = fp.read()
-            mystr = mybytes.decode("utf8")
-            mystr = html2text.html2text(mystr)
-            mystr = mystr.splitlines()
-            fp.close()
+            text = requests.get(url, timeout=5).text
+            records = html2text.html2text(text).splitlines()[8:]
 
             size = match["size"]
-            matching = [s for s in mystr if size in s]
+            matching = [s for s in records if size in s]
 
+            msg = "\n".join(matching)
             if len(matching) == 0:
                 await message.channel.send("Couldn't find any records")
             else:
-                out = matching[0]
-                await message.channel.send(out)
+                await message.channel.send("```" + msg + "```")
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
     elif command.startswith("!wrsby"):
         try:
-            fp = urllib.request.urlopen(
-                "http://slidysim2.000webhostapp.com/leaderboard/records_all.html"
-            )
-            mybytes = fp.read()
-            mystr = mybytes.decode("utf8")
-            mystr = html2text.html2text(mystr)
-            alltext=mystr
-            mystr = mystr.splitlines()
-            fp.close()
+            url = "http://slidysim2.000webhostapp.com/leaderboard/records_all.html"
+
+            text = requests.get(url, timeout=5).text
+            records = html2text.html2text(text).splitlines()[8:]
+
             username = command[7:]
-            matching = [s for s in mystr if username in s]
-            my_string = "\n".join(matching)
+            matching = [s for s in records if username in s]
+
+            msg = "\n".join(matching)
             if len(matching) == 0:
                 await message.channel.send("Couldn't find any records")
             else:
-                if len(my_string) > 1950:
-                    await dh.send_as_file(my_string, "wrsby.txt", "WR list:", message.channel)
+                if len(msg) > 1950:
+                    await dh.send_as_file(msg, "wrsby.txt", "WR list:", message.channel)
                 else:
-                    await message.channel.send("```" + my_string + "```")
+                    await message.channel.send("```" + msg + "```")
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
