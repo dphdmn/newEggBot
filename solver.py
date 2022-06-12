@@ -88,7 +88,7 @@ def solve(puzzle, mode):
     (w, h) = puzzle.size()
     if (w, h) in solvers:
         solver = solvers[(w, h)]
-        solutions = solver.solveOne(puzzle, mode=mode)
+        solutions = solver.solve(puzzle, mode)
         if mode == SolverRunType.ONE:
             return solutions[0]
         else:
@@ -96,7 +96,7 @@ def solve(puzzle, mode):
     elif (h, w) in solvers:
         solver = solvers[(h, w)]
         p = puzzle.transpose()
-        solutions = solver.solve(p, mode=mode)
+        solutions = solver.solve(p, mode)
         transposed_sols = [s.transpose() for s in solutions]
         transposed_sols.sort(key=lambda s: [move.value for (move, amount) in s.moves for _ in range(amount)])
         if mode == SolverRunType.ONE:
