@@ -8,20 +8,26 @@ class Solver:
         self.width = w
         self.height = h
         self.name = f"solver{w}x{h}"
+        self.running = False
 
     def start(self):
         program = f"./solvers/{self.name}"
         log.info(f"starting solver \"{program}\"")
         self.process = subprocess.Popen(program, stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
+        self.running = True
 
     def stop(self):
         log.info(f"terminating {self.name}")
         self.process.terminate()
+        self.running = False
 
     def solve(self, scramble):
         # check that the scramble is solvable
         if not scramble.solvable():
             raise ValueError(f"puzzle state \"{scramble}\" is not solvable")
+
+        if not self.running:
+            self.start()
 
         log.info(f"solving scramble: {scramble}")
 
