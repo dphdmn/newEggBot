@@ -847,15 +847,13 @@ async def on_message(message):
                         await message.channel.send(f"No cheating, {name}!")
                         return
 
-            if size == (3, 3) or size == (4, 4):
-                good_moves = [move.to_string(sol.first()) for sol in solver.solve(scramble, SolverRunType.GOOD)]
-                good_moves_str = ", ".join(good_moves)
+            good_moves = [move.to_string(sol.first()) for sol in solver.solve(scramble, SolverRunType.GOOD)]
+            good_moves_str = ", ".join(good_moves)
 
-                msg  = f"Scramble: {scramble}\n"
-                msg += f"Good moves: {good_moves_str}"
-                await message.channel.send(msg)
-            else:
-                raise ValueError(f"puzzle size {scramble.size()} must be 3x3 or 4x4")
+            msg  = f"Scramble: {scramble}\n"
+            msg += f"Good moves: {good_moves_str}"
+
+            await message.channel.send(msg)
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
