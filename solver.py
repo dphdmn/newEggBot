@@ -1,3 +1,4 @@
+from enum import Enum
 from log import log
 import subprocess
 import os
@@ -80,3 +81,36 @@ solvers = {
     (5, 3): Solver(5, 3),
     (4, 4): Solver(4, 4, keep_alive=True)
 }
+
+class SolverRunType(Enum):
+    ONE = 0
+    ALL = 1
+    GOOD = 2
+
+def solve(puzzle, type):
+    (w, h) = puzzle.size()
+    if (w, h) in solvers:
+        solver = solvers[(w, h)]
+        if type == SolverRunType.ONE:
+            return solver.solveOne(puzzle)
+        elif type == SolverRunType.ALL:
+            return solver.solveAll(puzzle)
+        elif type == SolverRunType.GOOD:
+            return solver.solveGood(puzzle)
+    elif (h, w) in solvers:
+        solver = solvers[(h, w)]
+        p = puzzle.transpose()
+        if type == SolverRunType.ONE:
+            solutions = [solver.solveOne(p)]
+        elif type == SolverRunType.ALL:
+            solutions = solver.solveAll(p)
+        elif type == SolverRunType.GOOD:
+            solutions = solver.solveGood(p)
+        transposed_sols = [s.transpose() for s in solutions]
+        transposed_sols.sort(key=lambda s: [move.value for (move, amount) in s.moves for _ in range(amount)])
+        if type == SolverRunType.ONE:
+            return transposed_sols[0]
+        else:
+            return transposed_sols
+    else:
+        raise Exception(f"{w}x{h} solver not available")
