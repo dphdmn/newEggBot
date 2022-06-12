@@ -307,7 +307,7 @@ async def on_message(message):
         await message.channel.send("Generating scramble!")
 
         state = scrambler.getScramble(4)
-        solution = solvers[4].solveOne(state)
+        solution = solvers[(4, 4)].solveOne(state)
         scramble = Algorithm("D3 R U2 R D2 R U3 L3") + solution.inverse()
 
         scrambleState = PuzzleState()
@@ -410,7 +410,7 @@ async def on_message(message):
                     scramble.reset(3)
                     scramble.apply(solution.inverse())
 
-                opt_len = len(solvers[3].solveOne(scramble))
+                opt_len = len(solvers[(3, 3)].solveOne(scramble))
                 user_len = len(solution)
 
                 opt_total += opt_len
@@ -565,7 +565,7 @@ async def on_message(message):
             scramble = PuzzleState()
             scramble.reset(4, 4)
             scramble.apply(solution.inverse())
-            optSolution = solvers[4].solveOne(scramble)
+            optSolution = solvers[(4, 4)].solveOne(scramble)
 
             msg  = f"Scramble: {scramble}\n"
             msg += f"Your solution [{len(solution)}]: {solution}\n"
@@ -847,7 +847,7 @@ async def on_message(message):
                         return
 
             if size == (3, 3) or size == (4, 4):
-                solver = solvers[size[0]]
+                solver = solvers[size]
                 good_moves = [move.to_string(sol.first()) for sol in solver.solveGood(scramble)]
                 good_moves_str = ", ".join(good_moves)
 
@@ -885,7 +885,7 @@ async def on_message(message):
 
                 if solutions is None:
                     a = perf_counter()
-                    solutions = solvers[size[0]].solveAll(scramble)
+                    solutions = solvers[size].solveAll(scramble)
                     b = perf_counter()
                     elapsed = b-a
                     if size == (4, 4) and elapsed >= 3:
@@ -935,7 +935,7 @@ async def on_message(message):
                     elapsed = None
 
             if solution is None:
-                solver = solvers[size[0]]
+                solver = solvers[size]
                 a = perf_counter()
                 solution = solver.solveOne(scramble)
                 b = perf_counter()
@@ -997,7 +997,7 @@ async def on_message(message):
             l = []
             for i in range(n):
                 scramble = scrambler.getScramble(3)
-                solution = solvers[3].solveOne(scramble)
+                solution = solvers[(3, 3)].solveOne(scramble)
                 length = len(solution)
 
                 # generate real scramble
@@ -1006,7 +1006,7 @@ async def on_message(message):
                 puzzle.reset(3)
                 puzzle.apply(prefix.inverse())
                 puzzle.apply(solution.inverse())
-                real_scramble = prefix + solvers[3].solveOne(puzzle).inverse()
+                real_scramble = prefix + solvers[(3, 3)].solveOne(puzzle).inverse()
                 real_scramble.simplify()
 
                 l.append(length)

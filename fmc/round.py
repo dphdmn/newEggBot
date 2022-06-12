@@ -11,7 +11,7 @@ class FMCRound:
     def __init__(self, db_path, scramble=None, duration=86400, warnings=[],
                  on_close=None, on_warning=None,
                  generator=lambda: scrambler.getScramble(4),
-                 solver=lambda x: solvers[4].solveOne(x)):
+                 solver=lambda x: solvers[(4, 4)].solveOne(x)):
         self.db_path = db_path + "current/"
         self.scramble = scramble
         self.duration = duration

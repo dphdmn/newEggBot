@@ -53,7 +53,7 @@ class FMC:
 
         def solve(pos):
             if size in [3, 4]:
-                return solvers[size].solveOne(pos)
+                return solvers[(size, size)].solveOne(pos)
             return None
 
         self.round = FMCRound(self.db_path,

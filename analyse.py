@@ -13,7 +13,7 @@ def analyse(solution):
     table.field_names = ["N", "State", "Setup", "Move", "Better", "Your ending", "Better ending", "Your+opt"]
 
     # the optimal solution of the scramble
-    opt_end = solvers[4].solveOne(scramble)
+    opt_end = solvers[(4, 4)].solveOne(scramble)
 
     for i in range(1, len(solution)):
         # the first i moves of our solution
@@ -27,7 +27,7 @@ def analyse(solution):
         last_opt_end = opt_end
 
         # solutions of the position with i moves applied
-        opt_end = solvers[4].solveOne(scramble)
+        opt_end = solvers[(4, 4)].solveOne(scramble)
         user_end = solution.drop(i)
 
         # the optimal solution length increased, so this is a mistake

@@ -43,7 +43,7 @@ class MovesGameRound:
 
         # calculate good moves if not already given
         if self.good_moves is None:
-            solutions = solvers[4].solveGood(scramble)
+            solutions = solvers[(4, 4)].solveGood(scramble)
             good_moves = "".join([move.to_string(sol.first()) for sol in solutions])
             log.info(f"found good moves: {good_moves}")
         else:

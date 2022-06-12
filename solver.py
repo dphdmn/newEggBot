@@ -4,16 +4,18 @@ import os
 from algorithm import Algorithm
 
 class Solver:
-    def __init__(self, size):
-        self.size = size
+    def __init__(self, w, h):
+        self.width = w
+        self.height = h
+        self.name = f"solver{w}x{h}"
 
     def start(self):
-        program = f"./solver{self.size}"
+        program = f"./{self.name}"
         log.info(f"starting solver \"{program}\"")
         self.process = subprocess.Popen(program, stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
 
     def stop(self):
-        log.info(f"terminating solver {self.size}")
+        log.info(f"terminating {self.name}")
         self.process.terminate()
 
     def solve(self, scramble):
@@ -55,13 +57,13 @@ class Solver:
         return self.solve(scramble)
 
 solvers = {
-    3: Solver(3),
-    4: Solver(4)
+    (3, 3): Solver(3, 3),
+    (4, 4): Solver(4, 4)
 }
 
 # create tables directory if it doesn't exist yet
 if not os.path.exists("tables"):
     os.mkdir("tables")
 
-solvers[3].start()
-solvers[4].start()
+solvers[(3, 3)].start()
+solvers[(4, 4)].start()
