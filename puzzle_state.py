@@ -142,3 +142,25 @@ class PuzzleState:
                     swaps += 1
 
         return swaps % 2 == 0
+
+    def transpose(self):
+        (w, h) = self.size()
+        arr = [[0]*h for _ in range(w)]
+
+        for y in range(h):
+            for x in range(w):
+                piece = self.arr[y][x]
+                if piece == 0:
+                    piece = w*h
+                px, py = (piece-1)%w, (piece-1)//w
+
+                new_piece = 1+py+h*px
+                if new_piece == w*h:
+                    new_piece = 0
+                arr[x][y] = new_piece
+
+        p = PuzzleState()
+        p.reset(h, w)
+        p.arr = arr
+
+        return p

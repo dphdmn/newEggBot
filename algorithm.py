@@ -1,6 +1,7 @@
 import re
 import copy
 import move
+from move import Move
 
 class Algorithm:
     def __init__(self, alg=""):
@@ -178,3 +179,20 @@ class Algorithm:
         if self.moves == []:
             raise ValueError("algorithm is empty")
         return self.moves[-1][0]
+
+    def transpose(self):
+        t = {
+            Move.U: Move.L,
+            Move.L: Move.U,
+            Move.D: Move.R,
+            Move.R: Move.D,
+        }
+
+        arr = []
+        for (move, amount) in self.moves:
+            arr.append((t[move], amount))
+
+        a = Algorithm()
+        a.moves = arr
+
+        return a
