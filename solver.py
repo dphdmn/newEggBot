@@ -4,11 +4,12 @@ import os
 from algorithm import Algorithm
 
 class Solver:
-    def __init__(self, w, h):
+    def __init__(self, w, h, keep_alive=False):
         self.width = w
         self.height = h
         self.name = f"solver{w}x{h}"
         self.running = False
+        self.keep_alive = keep_alive
 
     def start(self):
         program = f"./solvers/{self.name}"
@@ -44,6 +45,10 @@ class Solver:
                 solutions.append(solution)
                 log.info(f"found solution: {solution}")
 
+        # kill the solver process if we don't want to keep it running
+        if not self.keep_alive:
+            self.stop()
+
         log.info(f"solver finished, found {len(solutions)} solutions")
         return solutions
 
@@ -70,10 +75,10 @@ solvers = {
     (6, 2): Solver(6, 2),
     (7, 2): Solver(7, 2),
     (8, 2): Solver(8, 2),
-    (3, 3): Solver(3, 3),
+    (3, 3): Solver(3, 3, keep_alive=True),
     (4, 3): Solver(4, 3),
     (5, 3): Solver(5, 3),
-    (4, 4): Solver(4, 4)
+    (4, 4): Solver(4, 4, keep_alive=True)
 }
 
 solvers[(3, 3)].start()
