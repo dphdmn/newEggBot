@@ -1037,6 +1037,38 @@ async def on_message(message):
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
+    elif command.startswith("!addsolve"):
+        try:
+            if not permissions.is_egg_admin(message.author):
+                raise Exception("you don't have permission")
+
+            if len(message.attachments) != 1:
+                raise Exception("no attached file found")
+
+            state_reg = regex.puzzle_state("state")
+            reg = re.compile(f"!addsolve(\s+{state_reg})(\s+(?P<is_all>all))?")
+            match = reg.fullmatch(command)
+
+            if match is None:
+                raise SyntaxError(f"failed to parse arguments")
+
+            groups = match.groupdict()
+
+            text = await message.attachments[0].read()
+            text = text.decode()
+
+            state = PuzzleState(groups["state"])
+            solutions = [Algorithm(x) for x in text.splitlines()]
+
+            if groups["is_all"] is None:
+                is_all = False
+            else:
+                is_all = True
+
+            solve_db.store(state, solutions, is_all)
+        except Exception as e:
+            traceback.print_exc()
+            await message.channel.send(f"```\n{repr(e)}\n```")
     elif command == "!egg":
         with open("misc/egg.txt", "r") as f:
             egg = f.read()
