@@ -872,39 +872,33 @@ async def on_message(message):
                     await message.channel.send(f"No cheating, {name}!")
                     return
 
-        if size == (3, 3) or size == (4, 4):
-            try:
-                solutions = None
+        try:
+            solutions = None
+            result = solve_db.lookup(scramble)
+            if result is not None:
+                if result["all"]:
+                    solutions = result["solutions"]
+                    elapsed = None
 
-                if size == (4, 4):
-                    result = solve_db.lookup(scramble)
-                    if result is not None:
-                        if result["all"]:
-                            solutions = result["solutions"]
-                            elapsed = None
+            if solutions is None:
+                a = perf_counter()
+                solutions = solver.solve(scramble, SolverRunType.ALL)
+                b = perf_counter()
+                elapsed = b-a
+                if elapsed >= 3:
+                    solve_db.store(scramble, solutions, True)
 
-                if solutions is None:
-                    a = perf_counter()
-                    solutions = solver.solve(scramble, SolverRunType.ALL)
-                    b = perf_counter()
-                    elapsed = b-a
-                    if size == (4, 4) and elapsed >= 3:
-                        solve_db.store(scramble, solutions, True)
+            string = ""
+            if elapsed is not None:
+                string += f"Time: {round(elapsed, 3)}\n"
+            string += f"Number of solutions: {len(solutions)}\n"
+            string += f"Length: {len(solutions[0])}\n"
+            string += "\n".join([str(s) for s in solutions])
 
-                string = ""
-                if elapsed is not None:
-                    string += f"Time: {round(elapsed, 3)}\n"
-                string += f"Number of solutions: {len(solutions)}\n"
-                string += f"Length: {len(solutions[0])}\n"
-                string += "\n".join([str(s) for s in solutions])
-
-                await dh.send_as_file(string, "solutions.txt", f"Scramble: {scramble}", message.channel)
-            except Exception as e:
-                traceback.print_exc()
-                await message.channel.send(f"```\n{repr(e)}\n```")
-        else:
-            print(len(scramble))
-            await message.channel.send("Your scramble is wrong.")
+            await dh.send_as_file(string, "solutions.txt", f"Scramble: {scramble}", message.channel)
+        except Exception as e:
+            traceback.print_exc()
+            await message.channel.send(f"```\n{repr(e)}\n```")
     elif command.startswith("!solve") or command.startswith("!video"):
         try:
             video = command.startswith("!video")
@@ -921,25 +915,20 @@ async def on_message(message):
                         await message.channel.send(f"No cheating, {name}!")
                         return
 
-            if size != (3, 3) and size != (4, 4):
-                raise ValueError(f"puzzle size {size} must be 3x3 or 4x4")
-            if size == (3, 3) and video:
+            if video and size != (4, 4):
                 raise ValueError(f"puzzle size {size} must be 4x4")
 
-            solution = None
-
-            if size == (4, 4):
-                result = solve_db.lookup(scramble)
-                if result is not None:
-                    solution = result["solutions"][0]
-                    elapsed = None
-
-            if solution is None:
+            # try looking up in list of known hard scrambles
+            result = solve_db.lookup(scramble)
+            if result is not None:
+                solution = result["solutions"][0]
+                elapsed = None
+            else:
                 a = perf_counter()
                 solution = solver.solve(scramble, SolverRunType.ONE)
                 b = perf_counter()
                 elapsed = b-a
-                if size == (4, 4) and elapsed >= 3:
+                if elapsed >= 3:
                     solve_db.store(scramble, [solution], False)
 
             # solution of solved puzzle = egg
