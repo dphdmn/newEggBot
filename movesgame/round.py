@@ -1,7 +1,8 @@
 import asyncio
 import time
 from log import log
-from solver import solvers
+import solver
+from solver import SolverRunType
 import scrambler
 import move
 from draw_state import draw_state
@@ -43,7 +44,7 @@ class MovesGameRound:
 
         # calculate good moves if not already given
         if self.good_moves is None:
-            solutions = solvers[(4, 4)].solveGood(scramble)
+            solutions = solver.solve(scramble, SolverRunType.GOOD)
             good_moves = "".join([move.to_string(sol.first()) for sol in solutions])
             log.info(f"found good moves: {good_moves}")
         else:

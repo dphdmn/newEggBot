@@ -3,7 +3,8 @@ from animate import make_video
 from draw_state import draw_state
 from puzzle_state import PuzzleState
 from algorithm import Algorithm
-from solver import solvers
+import solver
+from solver import SolverRunType
 import scrambler
 from database import db
 from prettytable import PrettyTable
@@ -53,7 +54,7 @@ class FMC:
 
         def solve(pos):
             if size in [3, 4]:
-                return solvers[(size, size)].solveOne(pos)
+                return solver.solve(pos, SolverRunType.ONE)
             return None
 
         self.round = FMCRound(self.db_path,
