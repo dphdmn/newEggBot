@@ -57,13 +57,18 @@ class Solver:
         return self.solve(scramble)
 
 solvers = {
+    (2, 2): Solver(2, 2),
+    (3, 2): Solver(3, 2),
+    (4, 2): Solver(4, 2),
+    (5, 2): Solver(5, 2),
+    (6, 2): Solver(6, 2),
+    (7, 2): Solver(7, 2),
+    (8, 2): Solver(8, 2),
     (3, 3): Solver(3, 3),
+    (4, 3): Solver(4, 3),
+    (5, 3): Solver(5, 3),
     (4, 4): Solver(4, 4)
 }
-
-# create tables directory if it doesn't exist yet
-if not os.path.exists("tables"):
-    os.mkdir("tables")
 
 solvers[(3, 3)].start()
 solvers[(4, 4)].start()
