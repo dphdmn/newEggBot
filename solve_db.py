@@ -18,7 +18,6 @@ def lookup(state):
     else:
         return None
 
-
 # is_all is True if we are storing all solutions, false if we only have one
 def store(state, solutions, is_all):
     data = db[db_key]
@@ -42,3 +41,5 @@ def store(state, solutions, is_all):
             "all": is_all
         }
         db[db_key] = data
+
+    return should_update
