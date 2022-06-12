@@ -10,7 +10,7 @@ class Solver:
         self.name = f"solver{w}x{h}"
 
     def start(self):
-        program = f"./{self.name}"
+        program = f"./solvers/{self.name}"
         log.info(f"starting solver \"{program}\"")
         self.process = subprocess.Popen(program, stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
 
