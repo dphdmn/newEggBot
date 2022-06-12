@@ -4,6 +4,11 @@ import subprocess
 import os
 from algorithm import Algorithm
 
+class SolverRunType(Enum):
+    ONE = "one"
+    ALL = "all"
+    GOOD = "good"
+
 class Solver:
     def __init__(self, w, h, keep_alive=False):
         self.width = w
@@ -23,13 +28,16 @@ class Solver:
         self.process.terminate()
         self.running = False
 
-    def solve(self, scramble):
+    def solve(self, scramble, mode):
         # check that the scramble is solvable
         if not scramble.solvable():
             raise ValueError(f"puzzle state \"{scramble}\" is not solvable")
 
         if not self.running:
             self.start()
+
+        self.process.stdin.write(mode.value + "\n")
+        log.info(f"set solver to mode \"{mode.value}\"")
 
         log.info(f"solving scramble: {scramble}")
 
@@ -54,19 +62,13 @@ class Solver:
         return solutions
 
     def solveOne(self, scramble):
-        log.info("set solver to mode \"one\"")
-        self.process.stdin.write("one\n")
-        return self.solve(scramble)[0]
+        return self.solve(scramble, mode=SolverRunType.ONE)[0]
 
     def solveGood(self, scramble):
-        log.info("set solver to mode \"good\"")
-        self.process.stdin.write("good\n")
-        return self.solve(scramble)
+        return self.solve(scramble, mode=SolverRunType.GOOD)
 
     def solveAll(self, scramble):
-        log.info("set solver to mode \"all\"")
-        self.process.stdin.write("all\n")
-        return self.solve(scramble)
+        return self.solve(scramble, mode=SolverRunType.ALL)
 
 solvers = {
     (2, 2): Solver(2, 2),
@@ -82,33 +84,22 @@ solvers = {
     (4, 4): Solver(4, 4, keep_alive=True)
 }
 
-class SolverRunType(Enum):
-    ONE = 0
-    ALL = 1
-    GOOD = 2
-
-def solve(puzzle, type):
+def solve(puzzle, mode):
     (w, h) = puzzle.size()
     if (w, h) in solvers:
         solver = solvers[(w, h)]
-        if type == SolverRunType.ONE:
-            return solver.solveOne(puzzle)
-        elif type == SolverRunType.ALL:
-            return solver.solveAll(puzzle)
-        elif type == SolverRunType.GOOD:
-            return solver.solveGood(puzzle)
+        solutions = solver.solveOne(puzzle, mode=mode)
+        if mode == SolverRunType.ONE:
+            return solutions[0]
+        else:
+            return solutions
     elif (h, w) in solvers:
         solver = solvers[(h, w)]
         p = puzzle.transpose()
-        if type == SolverRunType.ONE:
-            solutions = [solver.solveOne(p)]
-        elif type == SolverRunType.ALL:
-            solutions = solver.solveAll(p)
-        elif type == SolverRunType.GOOD:
-            solutions = solver.solveGood(p)
+        solutions = solver.solve(p, mode=mode)
         transposed_sols = [s.transpose() for s in solutions]
         transposed_sols.sort(key=lambda s: [move.value for (move, amount) in s.moves for _ in range(amount)])
-        if type == SolverRunType.ONE:
+        if mode == SolverRunType.ONE:
             return transposed_sols[0]
         else:
             return transposed_sols
