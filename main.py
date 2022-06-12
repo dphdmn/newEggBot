@@ -438,7 +438,7 @@ async def on_message(message):
     elif command.startswith("!getpb"):
         try:
             size_reg = regex.size("width", "height", "size")
-            reg = re.compile(f"!getpb(\s+(?P<user>[A-Za-z0-9]+))?(\s+{size_reg})?(\s+(?P<is_moves>moves))?")
+            reg = re.compile(f"!getpb(\s+(?P<user>[A-Za-z0-9]+))??(\s+{size_reg})?(\s+(?P<is_moves>moves))?")
             match = reg.fullmatch(command)
 
             if match is None:
