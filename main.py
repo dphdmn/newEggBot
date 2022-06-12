@@ -1065,7 +1065,11 @@ async def on_message(message):
             else:
                 is_all = True
 
-            solve_db.store(state, solutions, is_all)
+            stored = solve_db.store(state, solutions, is_all)
+            if stored:
+                await message.channel.send(f"Stored {len(solutions)} solutions")
+            else:
+                await message.channel.send(f"Not updated")
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
