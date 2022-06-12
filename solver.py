@@ -80,6 +80,3 @@ solvers = {
     (5, 3): Solver(5, 3),
     (4, 4): Solver(4, 4, keep_alive=True)
 }
-
-solvers[(3, 3)].start()
-solvers[(4, 4)].start()
