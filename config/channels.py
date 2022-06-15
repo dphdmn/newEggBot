@@ -8,6 +8,8 @@ fmc_5x5           = int(os.environ["channel_5x5_fmc"])
 movesgame            = int(os.environ["channel_movesgame"])
 movesgame_tournament = int(os.environ["channel_movesgame_tournament"])
 
+optimal_game = int(os.environ["channel_optimal_game"])
+
 random_game = [int(x) for x in os.environ["channel_random_game"].split(",")]
 
 _nxn_ids = [int(x) for x in os.environ["channel_nxn"].split(",")]
