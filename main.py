@@ -35,6 +35,7 @@ from draw_state import draw_state
 from fmc.fmc import FMC
 from movesgame.movesgame import MovesGame
 from movesgame.tournament import MovesGameTournament
+from optimal_game.game import OptimalGame
 from random_game import RandomGame
 from probability import comparison, distributions
 from probability.format import format_prob
@@ -140,6 +141,10 @@ async def on_ready():
     global movesgame, movesgame_tournament
     movesgame = MovesGame(bot, config.channels.movesgame)
     movesgame_tournament = MovesGameTournament(bot, config.channels.movesgame_tournament)
+
+    # create optimal_game
+    global optimal_game
+    optimal_game = OptimalGame(bot, config.channels.optimal_game)
 
     # create random game
     global random_game
@@ -833,6 +838,9 @@ async def on_message(message):
     elif command.startswith("!tournament"):
         if message.channel.id == movesgame_tournament.channel.id:
             await movesgame_tournament.run()
+    elif command.startswith("!game"):
+        if message.channel.id == optimal_game.channel.id:
+            await optimal_game.start()
     elif command.startswith("!goodm"):
         try:
             scramble = PuzzleState(command[7:])
