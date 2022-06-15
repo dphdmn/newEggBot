@@ -271,6 +271,32 @@ async def on_message(message):
                         provisional_msg += f"({user.name}: {good}/{good+bad} = {formatted})\n"
 
             await message.channel.send(results_msg + provisional_msg)
+        elif message.channel.id == optimal_game.channel.id:
+            results = optimal_game.lifetime_results()
+            ids = results.keys()
+
+            fractions = {}
+            for (id, result) in results.items():
+                fractions[id] = result["distance"]/result["rounds"]
+            sorted_ids = [x[0] for x in sorted(fractions.items(), key=lambda x: x[1])]
+
+            results_msg = ""
+            provisional_msg = ""
+            for id in sorted_ids:
+                user = bot.get_user(id)
+                if user:
+                    result = results[id]
+                    distance = result["distance"]
+                    rounds = result["rounds"]
+                    formatted = format(fractions[id], ".2f")
+
+                    # only show results for people with enough rounds
+                    if rounds >= 30:
+                        results_msg += f"{user.name}: {distance}/{rounds} = {formatted}\n"
+                    else:
+                        provisional_msg += f"({user.name}: {distance}/{rounds} = {formatted})\n"
+
+            await message.channel.send(results_msg + provisional_msg)
     elif command.startswith("!setsolution"):
         if not permissions.is_egg_admin(message.author):
             return
