@@ -297,6 +297,29 @@ async def on_message(message):
                         provisional_msg += f"({user.name}: {distance}/{rounds} = {formatted})\n"
 
             await message.channel.send(results_msg + provisional_msg)
+    elif command.startswith("!delete"):
+        try:
+            if not permissions.is_egg_admin(message.author):
+                raise Exception("you don't have permission")
+
+            if message.channel.id in fmcs:
+                scramble_reg = regex.puzzle_state("scramble")
+                reg = re.compile(f"!delete(\s+{scramble_reg})(\s+(?P<user_id>[0-9]+))")
+                match = reg.fullmatch(command)
+                if match is None:
+                    raise SyntaxError(f"failed to parse args")
+                groups = match.groupdict()
+
+                fmc = fmcs[message.channel.id]
+                scramble = PuzzleState(groups["scramble"])
+                user_id = int(groups["user_id"])
+                round_number = fmc.find_scramble(scramble)
+                fmc.delete_result(round_number, user_id)
+
+                await message.channel.send("Result deleted")
+        except Exception as e:
+            traceback.print_exc()
+            await message.channel.send(f"```\n{repr(e)}\n```")
     elif command.startswith("!setsolution"):
         if not permissions.is_egg_admin(message.author):
             return

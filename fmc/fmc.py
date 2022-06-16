@@ -191,3 +191,24 @@ class FMC:
                 await self.channel.send(f"[{previous_length} -> {new_length}] Solution updated for {name}")
             else:
                 await self.channel.send(f"[{new_length}] You already have a {previous_length} move solution, {name}")
+
+    # given a scramble, find the round number that had it
+    def find_scramble(self, scramble: PuzzleState):
+        keys = db.prefix(self.db_path + f"history/round_blocks/")
+        for (i, key) in enumerate(keys):
+            block = db[key]
+            for j in range(self.block_size):
+                r = block[i]
+                if r["scramble"] == scramble:
+                    return self.block_size * i + j
+        raise Exception("scramble not found")
+
+    # delete a users historical result
+    def delete_result(self, round_num, user):
+        block       = round_num // self.block_size
+        block_round = round_num  % self.block_size
+
+        key = self.db_path + f"history/round_blocks/{block}"
+        b = db[key]
+        del b[block_round]["results"][user]
+        db[key] = b
