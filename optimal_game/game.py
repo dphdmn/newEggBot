@@ -1,6 +1,7 @@
 from algorithm import Algorithm
 from optimal_game.round import OptimalGameRound
 from database import db
+from puzzle_state import PuzzleState
 
 class OptimalGame:
     def __init__(self, bot, channel_id):
@@ -93,3 +94,38 @@ class OptimalGame:
         await self.channel.send(msg)
 
         self.running = False
+
+    # given a scramble, find the round number that had it
+    def find_scramble(self, scramble: PuzzleState):
+        keys = db.prefix(self.db_path + f"history/round_blocks/")
+        for (i, key) in enumerate(keys):
+            block = db[key]
+            for j in range(self.block_size):
+                r = block[i]
+                if r["scramble"] == scramble:
+                    return self.block_size * i + j
+        raise Exception("scramble not found")
+
+    # delete a users historical result
+    def delete_result(self, round_num, user):
+        block       = round_num // self.block_size
+        block_round = round_num  % self.block_size
+
+        key = self.db_path + f"history/round_blocks/{block}"
+        b = db[key]
+        r = b[block_round]
+        results = r["results"][user]
+        solution = Algorithm(r["solution"])
+
+        # update lifetime results
+        lifetime_results = db[self.db_path + "lifetime_results"]
+        user_results = lifetime_results[user]
+        distance = abs(len(solution) - results["distance"])
+        user_results["distance"] -= distance
+        user_results["rounds"] -= 1
+        lifetime_results["user"] = user_results
+        db[self.db_path + "lifetime_results"] = lifetime_results
+
+        # delete their results
+        del b[block_round]["results"][user]
+        db[key] = b
