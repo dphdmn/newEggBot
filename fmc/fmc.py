@@ -194,12 +194,13 @@ class FMC:
 
     # given a scramble, find the round number that had it
     def find_scramble(self, scramble: PuzzleState):
-        keys = db.prefix(self.db_path + f"history/round_blocks/")
+        keys = db.prefix(self.db_path + "history/round_blocks/")
         for (i, key) in enumerate(keys):
             block = db[key]
             for j in range(self.block_size):
-                r = block[i]
-                if r["scramble"] == scramble:
+                r = block[j]
+                round_scramble = PuzzleState(r["scramble"])
+                if round_scramble == scramble:
                     return self.block_size * i + j
         raise Exception("scramble not found")
 

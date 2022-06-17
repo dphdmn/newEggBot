@@ -97,12 +97,13 @@ class OptimalGame:
 
     # given a scramble, find the round number that had it
     def find_scramble(self, scramble: PuzzleState):
-        keys = db.prefix(self.db_path + f"history/round_blocks/")
+        keys = db.prefix(self.db_path + "history/round_blocks/")
         for (i, key) in enumerate(keys):
             block = db[key]
             for j in range(self.block_size):
-                r = block[i]
-                if r["scramble"] == scramble:
+                r = block[j]
+                round_scramble = PuzzleState(r["scramble"])
+                if round_scramble == scramble:
                     return self.block_size * i + j
         raise Exception("scramble not found")
 
@@ -114,13 +115,14 @@ class OptimalGame:
         key = self.db_path + f"history/round_blocks/{block}"
         b = db[key]
         r = b[block_round]
-        results = r["results"][user]
         solution = Algorithm(r["solution"])
 
         # update lifetime results
         lifetime_results = db[self.db_path + "lifetime_results"]
         user_results = lifetime_results[user]
-        distance = abs(len(solution) - results["distance"])
+        user_length = r["results"][user]
+        opt_length = len(solution)
+        distance = abs(opt_length - user_length)
         user_results["distance"] -= distance
         user_results["rounds"] -= 1
         lifetime_results["user"] = user_results
