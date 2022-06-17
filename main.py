@@ -317,6 +317,20 @@ async def on_message(message):
                 fmc.delete_result(round_number, user_id)
 
                 await message.channel.send("Result deleted")
+            elif message.channel.id == movesgame.channel.id:
+                scramble_reg = regex.puzzle_state("scramble")
+                reg = re.compile(f"!delete(\s+{scramble_reg})(\s+(?P<user_id>[0-9]+))")
+                match = reg.fullmatch(command)
+                if match is None:
+                    raise SyntaxError(f"failed to parse args")
+                groups = match.groupdict()
+
+                scramble = PuzzleState(groups["scramble"])
+                user_id = int(groups["user_id"])
+                round_number = movesgame.find_scramble(scramble)
+                movesgame.delete_result(round_number, user_id)
+
+                await message.channel.send("Result deleted")
             elif message.channel.id == optimal_game.channel.id:
                 scramble_reg = regex.puzzle_state("scramble")
                 reg = re.compile(f"!delete(\s+{scramble_reg})(\s+(?P<user_id>[0-9]+))")

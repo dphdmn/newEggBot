@@ -1,5 +1,6 @@
 from movesgame.round import MovesGameRound
 from database import db
+from puzzle_state import PuzzleState
 
 class MovesGame:
     def __init__(self, bot, channel_id):
@@ -85,3 +86,40 @@ class MovesGame:
         await self.channel.send(msg)
 
         self.running = False
+
+    # given a scramble, find the round number that had it
+    def find_scramble(self, scramble: PuzzleState):
+        keys = db.prefix(self.db_path + "history/round_blocks/")
+        for (i, key) in enumerate(keys):
+            block = db[key]
+            for j in range(self.block_size):
+                r = block[j]
+                round_scramble = PuzzleState(r["scramble"])
+                if round_scramble == scramble:
+                    return self.block_size * i + j
+        raise Exception("scramble not found")
+
+    # delete a users historical result
+    def delete_result(self, round_num, user):
+        block       = round_num // self.block_size
+        block_round = round_num  % self.block_size
+
+        key = self.db_path + f"history/round_blocks/{block}"
+        b = db[key]
+        r = b[block_round]
+
+        # update lifetime results
+        lifetime_results = db[self.db_path + "lifetime_results"]
+        user_results = lifetime_results[user]
+        good_moves = r["good_moves"]
+        user_move = r["results"][user]
+        if user_move in good_moves:
+            user_results["correct"] -= 1
+        else:
+            user_results["incorrect"] -= 1
+        lifetime_results["user"] = user_results
+        db[self.db_path + "lifetime_results"] = lifetime_results
+
+        # delete their results
+        del b[block_round]["results"][user]
+        db[key] = b
