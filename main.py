@@ -302,49 +302,22 @@ async def on_message(message):
             if not permissions.is_egg_admin(message.author):
                 raise Exception("you don't have permission")
 
-            if message.channel.id in fmcs:
-                scramble_reg = regex.puzzle_state("scramble")
-                reg = re.compile(f"!delete(\s+{scramble_reg})(\s+(?P<user_id>[0-9]+))")
-                match = reg.fullmatch(command)
-                if match is None:
-                    raise SyntaxError(f"failed to parse args")
-                groups = match.groupdict()
+            games = dict(list(fmcs.items()) + [(movesgame.channel.id, movesgame), (optimal_game.channel.id, optimal_game)])
+            game = games[message.channel.id]
 
-                fmc = fmcs[message.channel.id]
-                scramble = PuzzleState(groups["scramble"])
-                user_id = int(groups["user_id"])
-                round_number = fmc.find_scramble(scramble)
-                fmc.delete_result(round_number, user_id)
+            scramble_reg = regex.puzzle_state("scramble")
+            reg = re.compile(f"!delete(\s+{scramble_reg})(\s+(?P<user_id>[0-9]+))")
+            match = reg.fullmatch(command)
+            if match is None:
+                raise SyntaxError(f"failed to parse args")
+            groups = match.groupdict()
 
-                await message.channel.send("Result deleted")
-            elif message.channel.id == movesgame.channel.id:
-                scramble_reg = regex.puzzle_state("scramble")
-                reg = re.compile(f"!delete(\s+{scramble_reg})(\s+(?P<user_id>[0-9]+))")
-                match = reg.fullmatch(command)
-                if match is None:
-                    raise SyntaxError(f"failed to parse args")
-                groups = match.groupdict()
+            scramble = PuzzleState(groups["scramble"])
+            user_id = int(groups["user_id"])
+            round_number = game.find_scramble(scramble)
+            game.delete_result(round_number, user_id)
 
-                scramble = PuzzleState(groups["scramble"])
-                user_id = int(groups["user_id"])
-                round_number = movesgame.find_scramble(scramble)
-                movesgame.delete_result(round_number, user_id)
-
-                await message.channel.send("Result deleted")
-            elif message.channel.id == optimal_game.channel.id:
-                scramble_reg = regex.puzzle_state("scramble")
-                reg = re.compile(f"!delete(\s+{scramble_reg})(\s+(?P<user_id>[0-9]+))")
-                match = reg.fullmatch(command)
-                if match is None:
-                    raise SyntaxError(f"failed to parse args")
-                groups = match.groupdict()
-
-                scramble = PuzzleState(groups["scramble"])
-                user_id = int(groups["user_id"])
-                round_number = optimal_game.find_scramble(scramble)
-                optimal_game.delete_result(round_number, user_id)
-
-                await message.channel.send("Result deleted")
+            await message.channel.send("Result deleted")
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
