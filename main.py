@@ -345,6 +345,15 @@ async def on_message(message):
         except Exception as e:
             traceback.print_exc()
             await message.channel.send(f"```\n{repr(e)}\n```")
+    elif command.startswith("!numwrs"):
+        url = "http://slidysim2.000webhostapp.com/leaderboard/records.html"
+        text = requests.get(url, timeout=5).text
+        lines = html2text.html2text(text).splitlines()
+        idx = lines.index("---|---  ")
+        lines = lines[idx+1:-3]
+        msg = "```" + "\n".join(lines) + "```"
+        msg = msg.replace(" |", ":")
+        await message.channel.send(msg)
     elif command.startswith("!startfmc"):
         if message.channel.id != short_fmc.channel.id or short_fmc.round.running():
             return
