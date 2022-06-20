@@ -431,12 +431,24 @@ async def on_message(message):
             await message.channel.send(f"```\n{repr(e)}\n```")
     elif command.startswith("!wrsby"):
         try:
-            url = "http://slidysim2.000webhostapp.com/leaderboard/records_all.html"
+            reg = re.compile("!wrsby(\s+(?P<user>[A-Za-z0-9]+))(\s+(?P<is_moves>moves))?")
+            match = reg.fullmatch(command)
+
+            if match is None:
+                raise SyntaxError(f"failed to parse arguments")
+
+            groups = match.groupdict()
+
+            moves = groups["is_moves"] is not None
+            if moves:
+                url = "http://slidysim2.000webhostapp.com/leaderboard/records_all_moves.html"
+            else:
+                url = "http://slidysim2.000webhostapp.com/leaderboard/records_all.html"
 
             text = requests.get(url, timeout=5).text
             records = html2text.html2text(text).splitlines()[8:]
 
-            username = command[7:]
+            username = groups["user"]
             matching = [s for s in records if username in s]
 
             msg = "\n".join(matching)
@@ -444,7 +456,11 @@ async def on_message(message):
                 await message.channel.send("Couldn't find any records")
             else:
                 if len(msg) > 1950:
-                    await dh.send_as_file(msg, "wrsby.txt", "WR list:", message.channel)
+                    if moves:
+                        text = "Movecount WR list:"
+                    else:
+                        text = "WR list:"
+                    await dh.send_as_file(msg, "wrsby.txt", text, message.channel)
                 else:
                     await message.channel.send("```" + msg + "```")
         except Exception as e:
