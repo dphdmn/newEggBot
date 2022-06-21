@@ -288,7 +288,7 @@ async def on_message(message):
                     result = results[id]
                     distance = result["distance"]
                     rounds = result["rounds"]
-                    formatted = format(fractions[id], ".2f")
+                    formatted = format(fractions[id], ".4f")
 
                     # only show results for people with enough rounds
                     if rounds >= 30:
