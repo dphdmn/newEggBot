@@ -152,7 +152,8 @@ async def on_ready():
     random_game.start()
 
     # Start automatic leaderboard updates
-    silent_update.start()
+    if os.environ["auto_update"] == "1":
+        silent_update.start()
 
 @bot.listen()
 async def on_message(message):
