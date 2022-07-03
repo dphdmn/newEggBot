@@ -98,13 +98,14 @@ class OptimalGame:
     # given a scramble, find the round number that had it
     def find_scramble(self, scramble: PuzzleState):
         keys = db.prefix(self.db_path + "history/round_blocks/")
-        for (i, key) in enumerate(keys):
+        for key in keys:
+            block_num = int(key.split("/")[-1])
             block = db[key]
             for j in range(self.block_size):
                 r = block[j]
                 round_scramble = PuzzleState(r["scramble"])
                 if round_scramble == scramble:
-                    return self.block_size * i + j
+                    return self.block_size * block_num + j
         raise Exception("scramble not found")
 
     # delete a users historical result
