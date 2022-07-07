@@ -146,10 +146,16 @@ async def on_ready():
     global optimal_game
     optimal_game = OptimalGame(bot, config.channels.optimal_game)
 
-    # create random game
-    global random_game
-    random_game = RandomGame(bot, config.channels.random_game, 181440)
+    # create random games
+    global random_games
+    random_game = RandomGame(bot, config.channels.random_game, "egg", 181440)
     random_game.start()
+    random_game_2 = RandomGame(bot, config.channels.random_game, "yaytso", 181440*25)
+    random_game_2.start()
+    random_games = {
+        "egg"    : random_game,
+        "yaytso" : random_game_2
+    }
 
     # Start automatic leaderboard updates
     if os.environ["auto_update"] == "1":
@@ -1168,7 +1174,15 @@ async def on_message(message):
             egg = f.read()
         await message.channel.send("```" + egg + "```")
     elif command == "!rareegg":
-        scores = random_game.scores()
+        scores = random_games["egg"].scores()
+        msg = ""
+        for id, score in scores.items():
+            user = bot.get_user(id)
+            if user:
+                msg += f"{user.name}: {score}\n"
+        await message.channel.send(msg)
+    elif command == "!rareyaytso":
+        scores = random_games["yaytso"].scores()
         msg = ""
         for id, score in scores.items():
             user = bot.get_user(id)
