@@ -5,10 +5,10 @@ from discord.ext import tasks
 from database import db
 
 class RandomGame:
-    def __init__(self, bot, channel_ids, freq):
+    def __init__(self, bot, channel_ids, game_id, freq):
         self.bot = bot
         self.channels = [bot.get_channel(c) for c in channel_ids]
-        self.db_path = str(self.channels[0].guild.id) + "/random_game/"
+        self.db_path = str(self.channels[0].guild.id) + f"/random_game/{game_id}/"
         self.freq = freq
         self.running = False
 
