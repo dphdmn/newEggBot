@@ -148,9 +148,24 @@ async def on_ready():
 
     # create random games
     global random_games
-    random_game = RandomGame(bot, config.channels.random_game, "egg", 181440)
+    random_game = RandomGame(
+        bot=bot,
+        channel_ids=config.channels.random_game,
+        game_id="egg",
+        message=":egg: Egg! :egg:",
+        response="egg",
+        freq=181440
+    )
     random_game.start()
-    random_game_2 = RandomGame(bot, config.channels.random_game, "yaytso", 181440*25)
+    yaytso = f"<:yaytso:{config.emoji.yaytso}>"
+    random_game_2 = RandomGame(
+        bot=bot,
+        channel_ids=config.channels.random_game,
+        game_id="yaytso",
+        message=f"{yaytso} Yaytso! {yaytso}",
+        response="yaytso",
+        freq=181440*25
+    )
     random_game_2.start()
     random_games = {
         "egg"    : random_game,

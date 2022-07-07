@@ -5,11 +5,15 @@ from discord.ext import tasks
 from database import db
 
 class RandomGame:
-    def __init__(self, bot, channel_ids, game_id, freq):
+    def __init__(self, bot, channel_ids, game_id, message, response, freq):
         self.bot = bot
         self.channels = [bot.get_channel(c) for c in channel_ids]
-        self.db_path = str(self.channels[0].guild.id) + f"/random_game/{game_id}/"
+        self.game_id = game_id
+        self.message = message
+        self.response = response
         self.freq = freq
+
+        self.db_path = str(self.channels[0].guild.id) + f"/random_game/{game_id}/"
         self.running = False
 
         bot.add_listener(self.on_message)
@@ -40,7 +44,7 @@ class RandomGame:
         self.running = True
 
         channel = random.choice(self.channels)
-        message = await channel.send(":egg: Egg! :egg:")
+        message = await channel.send(self.message)
 
         timestamp = time.time()
 
@@ -87,7 +91,7 @@ class RandomGame:
         if round_number > 0:
             last_round = rounds[round_number-1]
             time_since_last = int(timestamp - last_round["timestamp"])
-            msg += "\nTime since last rare egg: " + time_format.format_long(time_since_last)
+            msg += f"\nTime since last rare {self.game_id}: " + time_format.format_long(time_since_last)
 
         await winner_message.reply(msg)
 
@@ -105,7 +109,7 @@ class RandomGame:
 
         id = db[self.db_path + "current/channel_id"]
         if message.channel.id == id:
-            if message.content.lower() == "egg":
+            if message.content.lower() == self.response:
                 await self.finish(message, timestamp)
 
     @tasks.loop(seconds=1)
