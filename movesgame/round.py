@@ -15,7 +15,7 @@ class MovesGameRound:
         self.running = False
 
         # time per round in seconds
-        self.delay = 8
+        self.delay = 15
 
         # scramble and good moves, if given
         self.scramble = scramble
