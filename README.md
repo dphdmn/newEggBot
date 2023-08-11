@@ -1,4 +1,7 @@
 # newEggBot
+
+This repo is essentially abondened, new version is here - https://github.com/benwh1/eggbot
+
 Egg bot for sliding puzzle discord server
 https://discord.gg/7vXrWAS3yZ
 
